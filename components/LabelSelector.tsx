@@ -2,7 +2,6 @@ import { useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
 import ILabel from "../types/label";
-import { thumbnailUrl } from "../util/thumbnail";
 import Paper from "./Paper";
 
 type Props = {

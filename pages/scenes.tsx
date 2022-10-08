@@ -109,6 +109,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
+    fetchScenes(x);
   }
 
   async function refresh(): Promise<void> {
@@ -128,8 +129,6 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
   useUpdateEffect(() => {
     setPage(0);
   }, [query, favorite, bookmark, sortBy, sortDir, JSON.stringify(selectedLabels)]);
-
-  useUpdateEffect(refresh, [page]);
 
   const hasNoLabels = !labelLoader && !labelList.length;
 

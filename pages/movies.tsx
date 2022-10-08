@@ -84,6 +84,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
+    fetchMovies(x);
   }
 
   async function refresh(): Promise<void> {
@@ -101,8 +102,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   useUpdateEffect(() => {
     setPage(0);
   }, [query, favorite, bookmark, sortBy, sortDir]);
-
-  useUpdateEffect(refresh, [page]);
 
   function renderContent() {
     if (loading) {

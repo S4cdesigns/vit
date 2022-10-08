@@ -148,8 +148,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
     JSON.stringify(selectedLabels),
   ]);
 
-  useUpdateEffect(refresh, [page]);
-
   const hasNoLabels = !labelLoader && !labelList.length;
 
   return (

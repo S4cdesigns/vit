@@ -110,6 +110,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
+    fetchImages(x);
   }
 
   async function refresh(): Promise<void> {
@@ -129,8 +130,6 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
   useUpdateEffect(() => {
     setPage(0);
   }, [query, favorite, bookmark, sortBy, sortDir, JSON.stringify(selectedLabels)]);
-
-  useUpdateEffect(refresh, [page]);
 
   const hasNoLabels = !labelLoader && !labelList.length;
 
