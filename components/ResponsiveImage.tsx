@@ -18,28 +18,8 @@ export default function ResponsiveImage({ href, src, aspectRatio, children }: Pr
   const inner = src ? (
     <img style={{ objectFit: "cover", aspectRatio }} width="100%" src={src} />
   ) : (
-    <div style={{ aspectRatio }}></div>
-  );
-
-  const linkContainer = href ? (
-    <Link href={href} passHref>
-      <a style={{ display: src ? "flex" : "block" }} className="hover">
-        {inner}
-      </a>
-    </Link>
-  ) : (
-    <div>{inner}</div>
-  );
-
-  return (
-    <div
-      suppressHydrationWarning={true}
-      className="hover"
-      style={{ backgroundColor: color, position: "relative" }}
-    >
-      {linkContainer}
-      {children}
-      <div
+    <div style={{ aspectRatio }}>
+      <span
         style={{
           fontSize: 64,
           opacity: 0.05,
@@ -50,7 +30,22 @@ export default function ResponsiveImage({ href, src, aspectRatio, children }: Pr
         }}
       >
         ?
-      </div>
+      </span>
+    </div>
+  );
+
+  const linkContainer = href ? (
+    <Link href={href} passHref>
+      <a style={{ display: src ? "flex" : "block" }}>{inner}</a>
+    </Link>
+  ) : (
+    <div>{inner}</div>
+  );
+
+  return (
+    <div suppressHydrationWarning={true} style={{ backgroundColor: color, position: "relative" }}>
+      {linkContainer}
+      {children}
     </div>
   );
 }

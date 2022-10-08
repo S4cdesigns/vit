@@ -2,9 +2,8 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { IMovie } from "../types/movie";
 import { formatDuration } from "../util/string";
@@ -19,16 +18,17 @@ export default function MovieCard({ movie }: { movie: IMovie }) {
   const t = useTranslations();
   const [hover, setHover] = useState(false);
 
-  const thumb = hover ? movie.backCover?._id : movie.frontCover?._id;
+  const thumbSrc = useMemo(() => {
+    if (hover && movie.backCover) {
+      return movie.backCover && thumbnailUrl(movie.backCover._id);
+    }
+    return movie.frontCover && thumbnailUrl(movie.frontCover._id);
+  }, [hover]);
 
   return (
     <Paper style={{ position: "relative" }}>
       <div onMouseLeave={() => setHover(false)} onMouseEnter={() => setHover(true)}>
-        <ResponsiveImage
-          aspectRatio="0.71"
-          href={`/movie/${movie._id}`}
-          src={thumb && thumbnailUrl(thumb)}
-        >
+        <ResponsiveImage aspectRatio="0.71" href={`/movie/${movie._id}`} src={thumbSrc}>
           <div
             style={{
               display: "flex",

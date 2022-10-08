@@ -140,6 +140,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
         }}
       >
         <input
+          type="text"
           style={{ maxWidth: 120 }}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {

@@ -7,6 +7,9 @@ export interface IActor {
     _id: string;
     color?: string;
   };
+  altThumbnail?: {
+    _id: string;
+  };
   avatar?: {
     _id: string;
     color?: string;

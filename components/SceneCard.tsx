@@ -13,7 +13,11 @@ import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
 
-export default function SceneCard({ scene }: { scene: IScene }) {
+export default function SceneCard({
+  scene,
+}: {
+  scene: Omit<IScene, "markers" | "movies" | "path">;
+}) {
   return (
     <Paper style={{ position: "relative" }}>
       <ResponsiveImage

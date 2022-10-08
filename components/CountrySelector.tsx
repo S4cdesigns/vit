@@ -12,7 +12,7 @@ type Props = {
   style?: React.CSSProperties;
 };
 
-export function CountrySelector({ style, value, onChange, relevancy: minRelevancy }: Props) {
+export function CountrySelector({ value, onChange, relevancy: minRelevancy }: Props) {
   const { theme } = useContext(ThemeContext);
 
   const countries = useMemo(() => {

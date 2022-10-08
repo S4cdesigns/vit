@@ -112,7 +112,7 @@ const messages: Record<string, any> = {
     image: "{numItems, plural, one {Bild} other {Bilder} }",
     marker: "Kapitel",
     views: "{numItems, plural, one {gesehene Szene} other {gesehene Szenen} }",
-    labels: "{numItems, plural, one {Label} other {Labels} }",
+    labels: "{numItems, plural, one {Kategorie} other {Kategorien} }",
     settings: "Einstellungen",
 
     foundScenes:

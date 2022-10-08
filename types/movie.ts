@@ -1,10 +1,17 @@
+import { IActor } from "./actor";
+import { IScene } from "./scene";
+
 export interface IMovie {
   _id: string;
   name: string;
+  description?: string;
   frontCover?: {
     _id: string;
   };
   backCover?: {
+    _id: string;
+  };
+  spineCover?: {
     _id: string;
   };
   labels: {
@@ -13,19 +20,18 @@ export interface IMovie {
     color?: string;
   }[];
   duration: number;
+  size: number;
   rating: number;
   favorite: boolean;
   bookmark: boolean;
   releaseDate?: number;
-  actors: {
-    _id: string;
-    name: string;
-  }[];
+  actors: IActor[];
   studio?: {
     _id: string;
     name: string;
+    thumbnail?: {
+      _id: string;
+    };
   };
-  scenes: {
-    _id: string;
-  }[];
+  scenes: IScene[];
 }

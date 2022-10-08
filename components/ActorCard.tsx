@@ -2,6 +2,8 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import { useMemo } from "react";
+import { useState } from "react";
 
 import { IActor } from "../types/actor";
 import { thumbnailUrl } from "../util/thumbnail";
@@ -12,13 +14,20 @@ import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
 
 export default function ActorCard({ actor }: { actor: IActor }) {
+  const [hover, setHover] = useState(false);
+
+  const thumbSrc = useMemo(() => {
+    if (hover && actor.altThumbnail) {
+      return actor.altThumbnail && thumbnailUrl(actor.altThumbnail._id);
+    }
+    return actor.thumbnail && thumbnailUrl(actor.thumbnail._id);
+  }, [hover]);
+
   return (
     <Paper style={{ position: "relative" }}>
-      <ResponsiveImage
-        aspectRatio="3 / 4"
-        href={`/actor/${actor._id}`}
-        src={actor.thumbnail?._id && thumbnailUrl(actor.thumbnail._id)}
-      />
+      <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+        <ResponsiveImage aspectRatio="3 / 4" href={`/actor/${actor._id}`} src={thumbSrc} />
+      </div>
       <div
         style={{
           color: "white",

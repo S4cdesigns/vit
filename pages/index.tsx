@@ -5,6 +5,9 @@ import FavoritesCard from "../components/widgets/FavoritesCard";
 import LibraryTimeCard from "../components/widgets/LibraryTimeCard";
 import ScanCard from "../components/widgets/ScanCard";
 import StatsCard from "../components/widgets/StatsCard";
+import { Masonry } from "masonic";
+
+const widgets = [<StatsCard />, <FavoritesCard />, <ScanCard />, <LibraryTimeCard />];
 
 export default function IndexPage() {
   const t = useTranslations();
@@ -28,18 +31,14 @@ export default function IndexPage() {
           }}
         />
       </div> */}
-      <div
-        style={{
-          gridTemplateColumns: "repeat(auto-fit, minmax(275px, 1fr))",
-          display: "grid",
-          gap: 10,
-        }}
-      >
-        <StatsCard />
-        <FavoritesCard />
-        <ScanCard />
-        <LibraryTimeCard />
-      </div>
+
+      <Masonry
+        items={widgets}
+        rowGutter={1}
+        columnGutter={4}
+        render={({ data }) => data}
+        columnWidth={300}
+      />
     </div>
   );
 }

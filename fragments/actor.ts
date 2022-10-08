@@ -10,6 +10,9 @@ fragment ActorCard on Actor {
     _id
     color
   }
+  altThumbnail {
+    _id
+  }
   labels {
     _id
     name
