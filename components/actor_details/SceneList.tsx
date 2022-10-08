@@ -63,6 +63,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
   const [page, setPage] = useState(props.initialState.page);
   const {
     scenes,
+    editScene,
     fetchScenes,
     numItems: numScenes,
     numPages: numScenePages,
@@ -229,7 +230,28 @@ export default function ActorDetailsPageSceneList(props: Props) {
       </div>
       <ListWrapper loading={sceneLoader} noResults={!numScenes}>
         {scenes.map((scene) => (
-          <SceneCard key={scene._id} scene={scene} />
+          <SceneCard
+            onFav={(value) => {
+              editScene(scene._id, (scene) => {
+                scene.favorite = value;
+                return scene;
+              });
+            }}
+            onBookmark={(value) => {
+              editScene(scene._id, (scene) => {
+                scene.bookmark = !!value;
+                return scene;
+              });
+            }}
+            onRate={(rating) => {
+              editScene(scene._id, (scene) => {
+                scene.rating = rating;
+                return scene;
+              });
+            }}
+            key={scene._id}
+            scene={scene}
+          />
         ))}
       </ListWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>

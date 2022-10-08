@@ -2,7 +2,7 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import { useMemo , useState } from "react";
+import { useMemo, useState } from "react";
 
 import { IActor } from "../types/actor";
 import { thumbnailUrl } from "../util/thumbnail";
@@ -36,8 +36,8 @@ export default function ActorCard({ actor }: { actor: IActor }) {
           borderRadius: 5,
           padding: 3,
           position: "absolute",
-          left: 0,
-          top: 0,
+          left: 1,
+          top: 1,
         }}
       >
         <div className="hover">

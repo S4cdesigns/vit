@@ -97,15 +97,18 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
   const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
   const [labelQuery, setLabelQuery] = useState("");
 
-  const { scenes, fetchScenes, loading, numItems, numPages } = useSceneList(props.initial, {
-    rating,
-    query,
-    favorite,
-    bookmark,
-    sortBy,
-    sortDir,
-    include: selectedLabels,
-  });
+  const { scenes, editScene, fetchScenes, loading, numItems, numPages } = useSceneList(
+    props.initial,
+    {
+      rating,
+      query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      include: selectedLabels,
+    }
+  );
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
@@ -223,7 +226,28 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
       </div>
       <ListWrapper loading={loading} noResults={!numItems}>
         {scenes.map((scene) => (
-          <SceneCard key={scene._id} scene={scene}></SceneCard>
+          <SceneCard
+            onFav={(value) => {
+              editScene(scene._id, (scene) => {
+                scene.favorite = value;
+                return scene;
+              });
+            }}
+            onBookmark={(value) => {
+              editScene(scene._id, (scene) => {
+                scene.bookmark = !!value;
+                return scene;
+              });
+            }}
+            onRate={(rating) => {
+              editScene(scene._id, (scene) => {
+                scene.rating = rating;
+                return scene;
+              });
+            }}
+            key={scene._id}
+            scene={scene}
+          ></SceneCard>
         ))}
       </ListWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>

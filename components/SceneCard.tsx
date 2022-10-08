@@ -1,10 +1,12 @@
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
+import WatchedIcon from "mdi-react/EyeIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import Link from "next/link";
 
 import { IScene } from "../types/scene";
+import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";
 import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
@@ -15,9 +17,32 @@ import ResponsiveImage from "./ResponsiveImage";
 
 export default function SceneCard({
   scene,
+  onFav,
+  onBookmark,
+  onRate,
 }: {
   scene: Omit<IScene, "markers" | "movies" | "path">;
+  onFav: (value: boolean) => void;
+  onBookmark: (value: Date | null) => void;
+  onRate: (rating: number) => void;
 }) {
+  async function toggleFav(): Promise<void> {
+    const newValue = !scene.favorite;
+    await favoriteScene(scene._id, newValue);
+    onFav(newValue);
+  }
+
+  async function toggleBookmark(): Promise<void> {
+    const newValue = scene.bookmark ? null : new Date();
+    await bookmarkScene(scene._id, newValue);
+    onBookmark(newValue);
+  }
+
+  async function changeRating(rating: number): Promise<void> {
+    await rateScene(scene._id, rating);
+    onRate(rating);
+  }
+
   return (
     <Paper style={{ position: "relative" }}>
       <ResponsiveImage
@@ -25,6 +50,28 @@ export default function SceneCard({
         href={`/scene/${scene._id}`}
         src={scene.thumbnail?._id && thumbnailUrl(scene.thumbnail._id)}
       >
+        {!!scene.watches.length && (
+          <div
+            style={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              background: "#000000bb",
+              borderRadius: 5,
+              padding: 3,
+              position: "absolute",
+              left: 1,
+              bottom: 1,
+              fontSize: 12,
+              gap: 5,
+            }}
+          >
+            <WatchedIcon size={18} />
+            <span>
+              <b>Watched ({scene.watches.length}x)</b>
+            </span>
+          </div>
+        )}
         <div
           style={{
             display: "flex",
@@ -33,15 +80,13 @@ export default function SceneCard({
             fontWeight: "bold",
             color: "white",
             position: "absolute",
-            right: 5,
-            bottom: 5,
+            right: 1,
+            bottom: 1,
           }}
         >
-          {scene.meta.duration && (
-            <div style={{ borderRadius: 4, padding: "2px 5px", background: "#000000dd" }}>
-              {formatDuration(scene.meta.duration)}
-            </div>
-          )}
+          <div style={{ borderRadius: 4, padding: "2px 5px", background: "#000000dd" }}>
+            <b>{formatDuration(scene.meta.duration)}</b>
+          </div>
         </div>
       </ResponsiveImage>
       <div
@@ -53,19 +98,23 @@ export default function SceneCard({
           borderRadius: 5,
           padding: 3,
           position: "absolute",
-          left: 0,
-          top: 0,
+          left: 1,
+          top: 1,
         }}
       >
         {scene.favorite ? (
-          <HeartIcon style={{ fontSize: 28, color: "#ff3355" }} />
+          <HeartIcon
+            onClick={toggleFav}
+            className="hover"
+            style={{ fontSize: 28, color: "#ff3355" }}
+          />
         ) : (
-          <HeartBorderIcon style={{ fontSize: 28 }} />
+          <HeartBorderIcon onClick={toggleFav} className="hover" style={{ fontSize: 28 }} />
         )}
         {scene.bookmark ? (
-          <BookmarkIcon style={{ fontSize: 28 }} />
+          <BookmarkIcon onClick={toggleBookmark} className="hover" style={{ fontSize: 28 }} />
         ) : (
-          <BookmarkBorderIcon style={{ fontSize: 28 }} />
+          <BookmarkBorderIcon onClick={toggleBookmark} className="hover" style={{ fontSize: 28 }} />
         )}
       </div>
       <div style={{ margin: "4px 8px 8px 8px" }}>
@@ -109,7 +158,7 @@ export default function SceneCard({
         {!!scene.actors.length && <ActorList actors={scene.actors} />}
 
         <div style={{ marginTop: 5 }}>
-          <Rating value={scene.rating || 0} readonly />
+          <Rating onChange={changeRating} value={scene.rating || 0} />
         </div>
 
         <div style={{ marginTop: 5 }}>

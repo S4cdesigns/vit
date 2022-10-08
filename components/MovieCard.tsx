@@ -34,19 +34,18 @@ export default function MovieCard({ movie }: { movie: IMovie }) {
               display: "flex",
               gap: 2,
               fontSize: 14,
-              fontWeight: "bold",
               color: "white",
               position: "absolute",
-              right: 5,
-              bottom: 5,
+              right: 1,
+              bottom: 1,
             }}
           >
             <div style={{ borderRadius: 4, padding: "2px 5px", background: "#000000dd" }}>
-              {movie.scenes.length} {t("scene", { numItems: movie.scenes.length })}
+              <b>{movie.scenes.length}</b> {t("scene", { numItems: movie.scenes.length })}
             </div>
             {movie.duration && (
               <div style={{ borderRadius: 4, padding: "2px 5px", background: "#000000dd" }}>
-                {formatDuration(movie.duration)}
+                <b>{formatDuration(movie.duration)}</b>
               </div>
             )}
           </div>
@@ -61,8 +60,8 @@ export default function MovieCard({ movie }: { movie: IMovie }) {
           borderRadius: 5,
           padding: 3,
           position: "absolute",
-          left: 0,
-          top: 0,
+          left: 1,
+          top: 1,
         }}
       >
         <div className="hover">

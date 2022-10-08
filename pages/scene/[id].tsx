@@ -22,6 +22,7 @@ import Rating from "../../components/Rating";
 import { actorCardFragment } from "../../fragments/actor";
 import { movieCardFragment } from "../../fragments/movie";
 import { IScene } from "../../types/scene";
+import { bookmarkScene, favoriteScene, rateScene } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 
@@ -107,8 +108,27 @@ export default function ScenePage({ scene }: { scene: IScene }) {
 
   const videoEl = useRef<HTMLVideoElement | null>(null);
 
+  const [favorite, setFavorite] = useState(scene.favorite);
+  const [bookmark, setBookmark] = useState(!!scene.bookmark);
   const [rating, setRating] = useState(scene.rating);
   const [markers] = useState(scene.markers);
+
+  async function toggleFav(): Promise<void> {
+    const newValue = !scene.favorite;
+    await favoriteScene(scene._id, newValue);
+    setFavorite(newValue);
+  }
+
+  async function toggleBookmark(): Promise<void> {
+    const newValue = scene.bookmark ? null : new Date();
+    await bookmarkScene(scene._id, newValue);
+    setBookmark(!!newValue);
+  }
+
+  async function changeRating(rating: number): Promise<void> {
+    await rateScene(scene._id, rating);
+    setRating(rating);
+  }
 
   return (
     <div>
@@ -152,17 +172,25 @@ export default function ScenePage({ scene }: { scene: IScene }) {
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div>
-                {scene.favorite ? (
-                  <HeartIcon style={{ fontSize: 32, color: "#ff3355" }} />
+                {favorite ? (
+                  <HeartIcon onClick={toggleFav} style={{ fontSize: 32, color: "#ff3355" }} />
                 ) : (
-                  <HeartBorderIcon style={{ fontSize: 32 }} />
+                  <HeartBorderIcon onClick={toggleFav} style={{ fontSize: 32 }} />
                 )}
               </div>
               <div>
-                {scene.bookmark ? (
-                  <BookmarkIcon style={{ fontSize: 32 }} />
+                {bookmark ? (
+                  <BookmarkIcon
+                    onClick={toggleBookmark}
+                    className="hover"
+                    style={{ fontSize: 32 }}
+                  />
                 ) : (
-                  <BookmarkBorderIcon style={{ fontSize: 32 }} />
+                  <BookmarkBorderIcon
+                    onClick={toggleBookmark}
+                    className="hover"
+                    style={{ fontSize: 32 }}
+                  />
                 )}
               </div>
               <div style={{ flexGrow: 1 }} />
@@ -228,14 +256,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                   </CardSection>
                 )}
                 <CardSection title={t("rating")}>
-                  <Rating
-                    onChange={(rating) => {
-                      // TODO: mutation
-                      setRating(rating);
-                    }}
-                    readonly={false}
-                    value={rating}
-                  ></Rating>
+                  <Rating onChange={changeRating} readonly={false} value={rating}></Rating>
                 </CardSection>
                 <CardSection title={t("labels", { numItems: 2 })}>
                   <LabelGroup limit={999} labels={scene.labels} />

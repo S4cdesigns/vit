@@ -31,6 +31,18 @@ export function useSceneList(initial: IPaginationResult<IScene>, query: any) {
     setLoader(false);
   }
 
+  function editScene(sceneId: string, fn: (scene: IScene) => IScene): void {
+    setScenes((scenes) => {
+      const copy = [...scenes];
+      const index = copy.findIndex((scene) => scene._id === sceneId);
+      if (index > -1) {
+        const scene = copy[index];
+        copy.splice(index, 1, fn(scene));
+      }
+      return copy;
+    });
+  }
+
   return {
     scenes,
     loading,
@@ -38,6 +50,7 @@ export function useSceneList(initial: IPaginationResult<IScene>, query: any) {
     numItems,
     numPages,
     fetchScenes: _fetchScenes,
+    editScene,
   };
 }
 

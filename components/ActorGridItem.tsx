@@ -29,7 +29,7 @@ export default function ActorCard({ id, name, thumbnailId, favorite }: Props) {
                 top: 4,
               }}
             >
-              <HeartIcon color="error" />
+              <HeartIcon color="#ff3355" />
             </div>
           )}
           <div

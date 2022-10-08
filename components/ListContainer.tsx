@@ -12,7 +12,7 @@ export default function ListContainer({ children, size, gap }: Props): JSX.Eleme
       className="list-container"
       style={{
         display: "grid",
-        gridTemplateColumns: `repeat(auto-fill, minmax(${size || 200}px, 1fr))`,
+        gridTemplateColumns: `repeat(auto-fill, minmax(${size || 225}px, 1fr))`,
         gridGap: gap || 5,
       }}
     >
