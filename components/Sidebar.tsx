@@ -73,7 +73,7 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
             <a onClick={toggleSidebar}>
               <div
                 className={clsx(
-                  router.pathname == link.url ? styles["active"] : "",
+                  router.pathname == link.url ? styles.active : "",
                   styles["sidebar-link"]
                 )}
               >

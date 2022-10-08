@@ -1,13 +1,13 @@
 import Axios from "axios";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import HeartIcon from "mdi-react/HeartIcon";
-import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
+import HeartIcon from "mdi-react/HeartIcon";
+import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-import { IImage } from "../types/image";
 import Button from "../components/Button";
+import { IImage } from "../types/image";
 
 async function getRandomImage() {
   const res = await Axios.post(

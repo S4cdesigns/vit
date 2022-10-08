@@ -1,29 +1,28 @@
 import axios from "axios";
-import { GetServerSideProps } from "next";
-import { useTranslations } from "next-intl";
-import Head from "next/head";
-import Card from "../../components/Card";
-import { actorCardFragment } from "../../fragments/actor";
-
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import { GetServerSideProps } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import prettyBytes from "pretty-bytes";
 
-import { sceneCardFragment } from "../../fragments/scene";
-import { IMovie } from "../../types/movie";
-import { thumbnailUrl } from "../../util/thumbnail";
+import ActorCard from "../../components/ActorCard";
+import Card from "../../components/Card";
+import CardSection from "../../components/CardSection";
+import CardTitle from "../../components/CardTitle";
+import LabelGroup from "../../components/LabelGroup";
 import ListWrapper from "../../components/ListWrapper";
+import Rating from "../../components/Rating";
 import ResponsiveImage from "../../components/ResponsiveImage";
 import SceneCard from "../../components/SceneCard";
-import CardTitle from "../../components/CardTitle";
-import ActorCard from "../../components/ActorCard";
-import CardSection from "../../components/CardSection";
-import Link from "next/link";
-import Rating from "../../components/Rating";
-import LabelGroup from "../../components/LabelGroup";
+import { actorCardFragment } from "../../fragments/actor";
+import { sceneCardFragment } from "../../fragments/scene";
+import { IMovie } from "../../types/movie";
 import { formatDuration } from "../../util/string";
-import prettyBytes from "pretty-bytes";
+import { thumbnailUrl } from "../../util/thumbnail";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data } = await axios.post(

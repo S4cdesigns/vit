@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
-import Rating from "../Rating";
 
+import Rating from "../Rating";
 import StatCard from "./StatCard";
 
 type Props = {

@@ -1,3 +1,4 @@
+import { Masonry } from "masonic";
 import Head from "next/head";
 import { useTranslations } from "next-intl";
 
@@ -5,7 +6,6 @@ import FavoritesCard from "../components/widgets/FavoritesCard";
 import LibraryTimeCard from "../components/widgets/LibraryTimeCard";
 import ScanCard from "../components/widgets/ScanCard";
 import StatsCard from "../components/widgets/StatsCard";
-import { Masonry } from "masonic";
 
 const widgets = [<StatsCard />, <FavoritesCard />, <ScanCard />, <LibraryTimeCard />];
 
