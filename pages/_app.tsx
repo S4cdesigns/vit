@@ -7,7 +7,7 @@ import Head from "next/head";
 import Router from "next/router";
 import { NextIntlProvider } from "next-intl";
 import nprogress from "nprogress";
-import React, { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
 import lang from "../locale";
@@ -16,13 +16,13 @@ Router.events.on("routeChangeStart", () => nprogress.start());
 Router.events.on("routeChangeComplete", () => nprogress.done());
 Router.events.on("routeChangeError", () => nprogress.done());
 
-export const ThemeContext = React.createContext({
+export const ThemeContext = createContext({
   theme: "light",
   toggleTheme: () => {},
 });
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
-  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   function toggleTheme() {
     const nextTheme = theme === "light" ? "dark" : "light";

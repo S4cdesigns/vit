@@ -34,7 +34,24 @@ export default function ActorProfile(props: Props) {
       }}
     >
       <div style={{ position: "relative" }}>
-        <img className={styles.avatar} width="125" src={thumbnailUrl(props.avatarId)} />
+        {props.avatarId ? (
+          <img className={styles.avatar} width="140" src={thumbnailUrl(props.avatarId)} />
+        ) : (
+          <div className={styles.avatar} style={{ width: 140, height: 140, aspectRatio: "1" }}>
+            <span
+              style={{
+                fontSize: 64,
+                opacity: 0.1,
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                position: "absolute",
+              }}
+            >
+              ?
+            </span>
+          </div>
+        )}
         {props.nationality && (
           <div
             style={{

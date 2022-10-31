@@ -5,7 +5,11 @@ import ILabel from "../types/label";
 import { gqlIp } from "../util/ip";
 
 async function fetchLabels() {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getLabels: ILabel[];
+    };
+  }>(
     gqlIp(),
     {
       query: `
@@ -26,7 +30,7 @@ async function fetchLabels() {
       },
     }
   );
-  return data.data.getLabels as ILabel[];
+  return data.data.getLabels;
 }
 
 export default function useLabelList() {
@@ -42,7 +46,7 @@ export default function useLabelList() {
   }
 
   useEffect(() => {
-    load();
+    load().catch(() => {});
   }, []);
 
   return {

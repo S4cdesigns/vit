@@ -26,6 +26,7 @@ import SortDirectionButton, { SortDirection } from "../components/SortDirectionB
 import { fetchImages, useImageList } from "../composables/use_image_list";
 import useLabelList from "../composables/use_label_list";
 import useUpdateEffect from "../composables/use_update_effect";
+import { useWindowSize } from "../composables/use_window_size";
 import { IImage } from "../types/image";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
@@ -81,6 +82,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 export default function ImageListPage(props: { page: number; initial: IPaginationResult<IImage> }) {
   const router = useRouter();
   const t = useTranslations();
+  const { width: windowWidth } = useWindowSize();
 
   const [activeIndex, setActive] = useState<number>(-1);
 
@@ -110,11 +112,10 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
-    fetchImages(x);
+    await fetchImages(x);
   }
 
   async function refresh(): Promise<void> {
-    fetchImages(page);
     queryParser.store(router, {
       q: query,
       favorite,
@@ -125,6 +126,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
       rating,
       labels: selectedLabels,
     });
+    await fetchImages(page);
   }
 
   useUpdateEffect(() => {
@@ -153,8 +155,9 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
     return (
       <Masonry
         items={images}
-        rowGutter={1}
+        rowGutter={0}
         columnGutter={4}
+        columnCount={(windowWidth || 1080) < 480 ? 2 : undefined}
         render={({ data, index }) => (
           <ImageCard
             // TODO: use a "hasPrevious" prop instead
@@ -199,7 +202,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
           type="text"
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              refresh();
+              refresh().catch(() => {});
             }
           }}
           placeholder={t("findContent")}

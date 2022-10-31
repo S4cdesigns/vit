@@ -19,6 +19,8 @@ import ListContainer from "../../components/ListContainer";
 import MovieCard from "../../components/MovieCard";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
+import { useActorList } from "../../composables/use_actor_list";
+import { useMovieList } from "../../composables/use_movie_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { movieCardFragment } from "../../fragments/movie";
 import { IScene } from "../../types/scene";
@@ -27,7 +29,11 @@ import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getSceneById: IScene;
+    };
+  }>(
     "http://localhost:3000/api/ql",
     {
       query: `
@@ -112,6 +118,24 @@ export default function ScenePage({ scene }: { scene: IScene }) {
   const [bookmark, setBookmark] = useState(!!scene.bookmark);
   const [rating, setRating] = useState(scene.rating);
   const [markers] = useState(scene.markers);
+
+  const { actors, editActor } = useActorList(
+    {
+      items: scene.actors,
+      numItems: scene.actors.length,
+      numPages: 1,
+    },
+    {}
+  );
+
+  const { movies, editMovie } = useMovieList(
+    {
+      items: scene.movies,
+      numItems: scene.movies.length,
+      numPages: 1,
+    },
+    {}
+  );
 
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
@@ -290,22 +314,58 @@ export default function ScenePage({ scene }: { scene: IScene }) {
               </div>
             </div>
           </Card>
-          {!!scene.actors.length && (
+          {!!actors.length && (
             <div>
               <CardTitle style={{ marginBottom: 20 }}>{t("starring")}</CardTitle>
-              <ListContainer size={175}>
-                {scene.actors.map((actor) => (
-                  <ActorCard key={actor._id} actor={actor}></ActorCard>
+              <ListContainer size={150}>
+                {actors.map((actor) => (
+                  <ActorCard
+                    onFav={(value) => {
+                      editActor(actor._id, (actor) => {
+                        actor.favorite = value;
+                        return actor;
+                      });
+                    }}
+                    onBookmark={(value) => {
+                      editActor(actor._id, (actor) => {
+                        actor.bookmark = !!value;
+                        return actor;
+                      });
+                    }}
+                    onRate={(rating) => {
+                      editActor(actor._id, (actor) => {
+                        actor.rating = rating;
+                        return actor;
+                      });
+                    }}
+                    key={actor._id}
+                    actor={actor}
+                  ></ActorCard>
                 ))}
               </ListContainer>
             </div>
           )}
-          {!!scene.movies.length && (
+          {!!movies.length && (
             <div>
               <CardTitle style={{ marginBottom: 20 }}>{t("movieFeatures")}</CardTitle>
               <ListContainer size={225}>
-                {scene.movies.map((movie) => (
-                  <MovieCard key={movie._id} movie={movie}></MovieCard>
+                {movies.map((movie) => (
+                  <MovieCard
+                    onFav={(value) => {
+                      editMovie(movie._id, (movie) => {
+                        movie.favorite = value;
+                        return movie;
+                      });
+                    }}
+                    onBookmark={(value) => {
+                      editMovie(movie._id, (movie) => {
+                        movie.bookmark = !!value;
+                        return movie;
+                      });
+                    }}
+                    key={movie._id}
+                    movie={movie}
+                  ></MovieCard>
                 ))}
               </ListContainer>
             </div>

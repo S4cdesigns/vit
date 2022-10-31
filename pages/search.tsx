@@ -15,7 +15,13 @@ import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
 
 async function searchAll(query: string) {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getScenes: IScene[];
+      getActors: IActor[];
+      getMovies: IMovie[];
+    };
+  }>(
     "http://localhost:3000/api/ql",
     {
       query: `
@@ -95,28 +101,40 @@ export default function SearchPage(props: {
     <div style={{ padding: 10 }}>
       {/* Actors */}
       <div style={{ marginBottom: 20 }}>
-        <h6 style={{ marginBottom: 10 }}>{t("foundActors", { numItems: actorResult.numItems })}</h6>
+        <div style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
+          {t("foundActors", { numItems: actorResult.numItems })}
+        </div>
         <ListContainer>
           {actorResult.items.map((actor) => (
-            <ActorCard actor={actor} key={actor._id} />
+            <ActorCard
+              onBookmark={() => {}}
+              onFav={() => {}}
+              onRate={() => {}}
+              actor={actor}
+              key={actor._id}
+            />
           ))}
         </ListContainer>
       </div>
       {/* Movies */}
       <div style={{ marginBottom: 20 }}>
-        <h6 style={{ marginBottom: 10 }}>{t("foundMovies", { numItems: movieResult.numItems })}</h6>
+        <div style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
+          {t("foundMovies", { numItems: movieResult.numItems })}
+        </div>
         <ListContainer size={250}>
           {movieResult.items.map((movie) => (
-            <MovieCard key={movie._id} movie={movie} />
+            <MovieCard onBookmark={() => {}} onFav={() => {}} key={movie._id} movie={movie} />
           ))}
         </ListContainer>
       </div>
       {/* Scenes */}
       <div>
-        <h6 style={{ marginBottom: 10 }}>{t("foundScenes", { numItems: sceneResult.numItems })}</h6>
+        <div style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
+          {t("foundScenes", { numItems: sceneResult.numItems })}
+        </div>
         <ListContainer size={250}>
           {sceneResult.items.map((scene) => (
-            <SceneCard scene={scene} />
+            <SceneCard onBookmark={() => {}} onFav={() => {}} onRate={() => {}} scene={scene} />
           ))}
         </ListContainer>
       </div>

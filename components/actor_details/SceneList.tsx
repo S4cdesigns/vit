@@ -85,7 +85,6 @@ export default function ActorDetailsPageSceneList(props: Props) {
   );
 
   async function refreshScenes(): Promise<void> {
-    fetchScenes(page);
     props.writeQuery({
       q: query,
       page,
@@ -95,11 +94,12 @@ export default function ActorDetailsPageSceneList(props: Props) {
       labels: selectedLabels,
       actors: selectedActors,
     });
+    await fetchScenes(page);
   }
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
-    fetchScenes(x);
+    await fetchScenes(x);
   }
 
   useUpdateEffect(() => {
@@ -114,7 +114,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
   ]);
 
   useEffect(() => {
-    refreshScenes();
+    refreshScenes().catch(() => {});
   }, [page]);
 
   const hasNoCollabs = !collabsLoader && !collabs.length;
@@ -145,7 +145,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
           style={{ maxWidth: 120 }}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              refreshScenes();
+              refreshScenes().catch(() => {});
             }
           }}
           placeholder={t("findContent")}

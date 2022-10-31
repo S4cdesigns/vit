@@ -1,0 +1,18 @@
+.wrapper {
+  display: inline-flex;
+}
+
+.star {
+  transition: transform 0.075s ease-in-out;
+  cursor: pointer;
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  &:not(.disabled) {
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}

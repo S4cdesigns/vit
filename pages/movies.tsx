@@ -10,8 +10,7 @@ import { useMemo, useState } from "react";
 
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
-import ListContainer from "../components/ListContainer";
-import Loader from "../components/Loader";
+import ListWrapper from "../components/ListWrapper";
 import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
@@ -40,6 +39,7 @@ const queryParser = buildQueryParser({
   bookmark: {
     default: false,
   },
+  // TODO: rating
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
@@ -74,21 +74,23 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   const [sortDir, setSortDir] = useState(parsedQuery.sortDir);
   const [page, setPage] = useState(props.page);
 
-  const { movies, loading, numPages, numItems, fetchMovies } = useMovieList(props.initial, {
-    query,
-    favorite,
-    bookmark,
-    sortBy,
-    sortDir,
-  });
+  const { movies, loading, numPages, numItems, fetchMovies, editMovie } = useMovieList(
+    props.initial,
+    {
+      query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+    }
+  );
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
-    fetchMovies(x);
+    await fetchMovies(x);
   }
 
   async function refresh(): Promise<void> {
-    fetchMovies(page);
     queryParser.store(router, {
       q: query,
       favorite,
@@ -97,37 +99,12 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       sortDir,
       page,
     });
+    await fetchMovies(page);
   }
 
   useUpdateEffect(() => {
     setPage(0);
   }, [query, favorite, bookmark, sortBy, sortDir]);
-
-  function renderContent() {
-    if (loading) {
-      return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Loader />
-        </div>
-      );
-    }
-
-    if (!movies.length) {
-      return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {t("foundMovies", { numItems })}
-        </div>
-      );
-    }
-
-    return (
-      <ListContainer>
-        {movies.map((movie) => (
-          <MovieCard key={movie._id} movie={movie}></MovieCard>
-        ))}
-      </ListContainer>
-    );
-  }
 
   return (
     <div style={{ padding: 10 }}>
@@ -138,6 +115,12 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
         <div style={{ flexGrow: 1 }}></div>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+      </div>
+      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
+        <Button style={{ marginRight: 10 }}>+ Add movie</Button>
+        {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
+        {/* <Button style={{ marginRight: 10 }}>Choose</Button>
+        <Button style={{ marginRight: 10 }}>Randomize</Button> */}
       </div>
       <div
         style={{
@@ -152,7 +135,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           type="text"
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              refresh();
+              refresh().catch(() => {});
             }
           }}
           placeholder={t("findContent")}
@@ -187,7 +170,26 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           {t("refresh")}
         </Button>
       </div>
-      <div>{renderContent()}</div>
+      <ListWrapper loading={loading} noResults={!numItems}>
+        {movies.map((movie) => (
+          <MovieCard
+            onFav={(value) => {
+              editMovie(movie._id, (movie) => {
+                movie.favorite = value;
+                return movie;
+              });
+            }}
+            onBookmark={(value) => {
+              editMovie(movie._id, (movie) => {
+                movie.bookmark = !!value;
+                return movie;
+              });
+            }}
+            key={movie._id}
+            movie={movie}
+          ></MovieCard>
+        ))}
+      </ListWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>

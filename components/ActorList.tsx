@@ -2,6 +2,20 @@ import Link from "next/link";
 import { Fragment } from "react";
 
 export default function ActorList({ actors }: { actors: { _id: string; name: string }[] }) {
+  if (actors.length > 4) {
+    return (
+      <div
+        style={{
+          fontSize: 14,
+          marginTop: 5,
+          opacity: 0.66,
+        }}
+      >
+        With {actors.length} actors
+      </div>
+    );
+  }
+
   return (
     <div
       style={{

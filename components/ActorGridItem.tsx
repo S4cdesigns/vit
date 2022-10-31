@@ -34,7 +34,7 @@ export default function ActorCard({ id, name, thumbnailId, favorite }: Props) {
           )}
           <div
             style={{
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: 600,
               color: "white",
               background: "#000000bb",

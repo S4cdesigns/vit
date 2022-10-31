@@ -17,7 +17,7 @@ export function useCollabs(actorId: string) {
   }
 
   useEffect(() => {
-    loadCollabs();
+    loadCollabs().catch(() => {});
   }, []);
 
   return { loading: loader, collabs };

@@ -78,7 +78,7 @@ export async function startup() {
 
   for (const bin of magickBins) {
     // @ts-ignore
-    const path = config.imagemagick[`${bin}Path`];
+    const path = config.imagemagick[`${bin}Path`] as string;
     logger.verbose(`Checking imagemagick (${bin})...`);
 
     try {

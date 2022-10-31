@@ -17,7 +17,7 @@ export default function ActorStats(props: Props) {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(175px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(125px, 1fr))",
         gap: 10,
       }}
     >

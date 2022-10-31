@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
 import { imageCardFragment } from "../fragments/image";
@@ -22,10 +22,11 @@ export function useImageList(initial: IPaginationResult<IImage>, query: any) {
       setNumItems(result.numItems);
       setNumPages(result.numPages);
     } catch (fetchError: any) {
-      if (!fetchError.response) {
-        setError(fetchError.message);
+      const axioxError = fetchError as AxiosError;
+      if (!axioxError.response) {
+        setError(axioxError.message);
       } else {
-        setError(fetchError.message);
+        setError(axioxError.message);
       }
     }
     setLoader(false);
@@ -42,7 +43,11 @@ export function useImageList(initial: IPaginationResult<IImage>, query: any) {
 }
 
 export async function fetchImages(page = 0, query: any) {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getImages: IPaginationResult<IImage>;
+    };
+  }>(
     gqlIp(),
     {
       query: `
@@ -74,5 +79,5 @@ export async function fetchImages(page = 0, query: any) {
     }
   );
 
-  return data.data.getImages as IPaginationResult<IImage>;
+  return data.data.getImages;
 }

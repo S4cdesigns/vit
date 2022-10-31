@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import { IMovie } from "../types/movie";
+import { bookmarkMovie, favoriteMovie } from "../util/mutations/movie";
 import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
@@ -14,7 +15,13 @@ import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
 
-export default function MovieCard({ movie }: { movie: IMovie }) {
+type Props = {
+  movie: IMovie;
+  onFav: (value: boolean) => void;
+  onBookmark: (value: Date | null) => void;
+};
+
+export default function MovieCard({ movie, onFav, onBookmark }: Props) {
   const t = useTranslations();
   const [hover, setHover] = useState(false);
 
@@ -24,6 +31,18 @@ export default function MovieCard({ movie }: { movie: IMovie }) {
     }
     return movie.frontCover && thumbnailUrl(movie.frontCover._id);
   }, [hover]);
+
+  async function toggleFav(): Promise<void> {
+    const newValue = !movie.favorite;
+    await favoriteMovie(movie._id, newValue);
+    onFav(newValue);
+  }
+
+  async function toggleBookmark(): Promise<void> {
+    const newValue = movie.bookmark ? null : new Date();
+    await bookmarkMovie(movie._id, newValue);
+    onBookmark(newValue);
+  }
 
   return (
     <Paper style={{ position: "relative" }}>
@@ -66,23 +85,23 @@ export default function MovieCard({ movie }: { movie: IMovie }) {
       >
         <div className="hover">
           {movie.favorite ? (
-            <HeartIcon style={{ fontSize: 28, color: "#ff3355" }} />
+            <HeartIcon onClick={toggleFav} style={{ fontSize: 28, color: "#ff3355" }} />
           ) : (
-            <HeartBorderIcon style={{ fontSize: 28 }} />
+            <HeartBorderIcon onClick={toggleFav} style={{ fontSize: 28 }} />
           )}
         </div>
         <div className="hover">
           {movie.bookmark ? (
-            <BookmarkIcon style={{ fontSize: 28 }} />
+            <BookmarkIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
           ) : (
-            <BookmarkBorderIcon style={{ fontSize: 28 }} />
+            <BookmarkBorderIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
           )}
         </div>
       </div>
-      <div style={{ margin: "4px 8px 8px 8px" }}>
+      <div style={{ margin: "6px 8px 8px 8px" }}>
         <div style={{ display: "flex", marginBottom: 5 }}>
           {movie.studio && (
-            <div style={{ textTransform: "uppercase", fontSize: 13, opacity: 0.8 }}>
+            <div style={{ textTransform: "uppercase", fontSize: 12, opacity: 0.8 }}>
               {movie.studio.name}
             </div>
           )}

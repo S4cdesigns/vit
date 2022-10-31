@@ -31,7 +31,7 @@ export default function Topbar({ toggleSidebar }: Props) {
           onChange={(ev) => setSearchText(ev.target.value)}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              router.push(`/search?q=${searchText}`);
+              router.push(`/search?q=${searchText}`).catch(() => {});
             }
           }}
         />

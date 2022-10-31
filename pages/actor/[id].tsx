@@ -54,7 +54,11 @@ const queryParser = buildQueryParser({
 });
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getActorById: IActor;
+    };
+  }>(
     "http://localhost:3000/api/ql",
     {
       query: `
@@ -182,7 +186,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
                   <div style={{ opacity: 0.5, fontSize: 15 }}>
                     {field.type === "MULTI_SELECT" && (
                       <div>
-                        {value.join(", ")} {field.unit}
+                        {(value as string[]).join(", ")} {field.unit}
                       </div>
                     )}
                     {field.type === "SINGLE_SELECT" && (

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
 import { actorCardFragment } from "../fragments/actor";
@@ -22,13 +22,26 @@ export function useActorList(initial: IPaginationResult<IActor>, query: any) {
       setNumItems(result.numItems);
       setNumPages(result.numPages);
     } catch (fetchError: any) {
-      if (!fetchError.response) {
-        setError(fetchError.message);
+      const axioxError = fetchError as AxiosError;
+      if (!axioxError.response) {
+        setError(axioxError.message);
       } else {
-        setError(fetchError.message);
+        setError(axioxError.message);
       }
     }
     setLoader(false);
+  }
+
+  function editActor(actorId: string, fn: (actor: IActor) => IActor): void {
+    setActors((actors) => {
+      const copy = [...actors];
+      const index = copy.findIndex((actor) => actor._id === actorId);
+      if (index > -1) {
+        const actor = copy[index];
+        copy.splice(index, 1, fn(actor));
+      }
+      return copy;
+    });
   }
 
   return {
@@ -38,11 +51,16 @@ export function useActorList(initial: IPaginationResult<IActor>, query: any) {
     numItems,
     numPages,
     fetchActors: _fetchActors,
+    editActor,
   };
 }
 
 export async function fetchActors(page = 0, query: any) {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getActors: IPaginationResult<IActor>;
+    };
+  }>(
     gqlIp(),
     {
       query: `
@@ -75,5 +93,5 @@ export async function fetchActors(page = 0, query: any) {
     }
   );
 
-  return data.data.getActors as IPaginationResult<IActor>;
+  return data.data.getActors;
 }

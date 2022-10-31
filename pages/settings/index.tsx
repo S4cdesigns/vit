@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
-import { getFullStatus, ServiceStatus,StatusData } from "../../util/status";
+import { getFullStatus, ServiceStatus, StatusData } from "../../util/status";
 
 export default function SettingsPage() {
   const t = useTranslations();
@@ -39,7 +39,7 @@ export default function SettingsPage() {
   }
 
   useEffect(() => {
-    fetchData();
+    fetchData().catch(() => {});
     const interval = setInterval(fetchData, 30 * 1000);
     return () => clearInterval(interval);
   }, []);

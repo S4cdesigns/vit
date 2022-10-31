@@ -104,24 +104,26 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
   const [labelQuery, setLabelQuery] = useState("");
 
-  const { actors, loading, numPages, numItems, fetchActors } = useActorList(props.initial, {
-    query,
-    favorite,
-    bookmark,
-    sortBy,
-    sortDir,
-    nationality,
-    rating,
-    include: selectedLabels,
-  });
+  const { actors, loading, numPages, numItems, fetchActors, editActor } = useActorList(
+    props.initial,
+    {
+      query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      nationality,
+      rating,
+      include: selectedLabels,
+    }
+  );
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
-    fetchActors(x);
+    await fetchActors(x);
   }
 
   async function refresh(): Promise<void> {
-    fetchActors(page);
     queryParser.store(router, {
       q: query,
       nationality,
@@ -133,6 +135,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       rating,
       labels: selectedLabels,
     });
+    await fetchActors(page);
   }
 
   useUpdateEffect(() => {
@@ -180,7 +183,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           style={{ maxWidth: 120 }}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              refresh();
+              refresh().catch(() => {});
             }
           }}
           placeholder={t("findContent")}
@@ -260,9 +263,30 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           {t("refresh")}
         </Button>
       </div>
-      <ListWrapper loading={loading} noResults={!numItems}>
+      <ListWrapper loading={loading} noResults={!numItems} size={150}>
         {actors.map((actor) => (
-          <ActorCard key={actor._id} actor={actor}></ActorCard>
+          <ActorCard
+            onFav={(value) => {
+              editActor(actor._id, (actor) => {
+                actor.favorite = value;
+                return actor;
+              });
+            }}
+            onBookmark={(value) => {
+              editActor(actor._id, (actor) => {
+                actor.bookmark = !!value;
+                return actor;
+              });
+            }}
+            onRate={(rating) => {
+              editActor(actor._id, (actor) => {
+                actor.rating = rating;
+                return actor;
+              });
+            }}
+            key={actor._id}
+            actor={actor}
+          />
         ))}
       </ListWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>

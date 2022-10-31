@@ -5,6 +5,7 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useMemo, useState } from "react";
 
 import { IActor } from "../types/actor";
+import { bookmarkActor, favoriteActor, rateActor } from "../util/mutations/actor";
 import { thumbnailUrl } from "../util/thumbnail";
 import Flag from "./Flag";
 import LabelGroup from "./LabelGroup";
@@ -12,7 +13,26 @@ import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
 
-export default function ActorCard({ actor }: { actor: IActor }) {
+type Props = {
+  actor: Pick<
+    IActor,
+    | "_id"
+    | "altThumbnail"
+    | "thumbnail"
+    | "favorite"
+    | "bookmark"
+    | "age"
+    | "nationality"
+    | "name"
+    | "rating"
+    | "labels"
+  >;
+  onFav: (value: boolean) => void;
+  onBookmark: (value: Date | null) => void;
+  onRate: (rating: number) => void;
+};
+
+export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
   const [hover, setHover] = useState(false);
 
   const thumbSrc = useMemo(() => {
@@ -21,6 +41,23 @@ export default function ActorCard({ actor }: { actor: IActor }) {
     }
     return actor.thumbnail && thumbnailUrl(actor.thumbnail._id);
   }, [hover]);
+
+  async function toggleFav(): Promise<void> {
+    const newValue = !actor.favorite;
+    await favoriteActor(actor._id, newValue);
+    onFav(newValue);
+  }
+
+  async function toggleBookmark(): Promise<void> {
+    const newValue = actor.bookmark ? null : new Date();
+    await bookmarkActor(actor._id, newValue);
+    onBookmark(newValue);
+  }
+
+  async function changeRating(rating: number): Promise<void> {
+    await rateActor(actor._id, rating);
+    onRate(rating);
+  }
 
   return (
     <Paper style={{ position: "relative" }}>
@@ -42,16 +79,16 @@ export default function ActorCard({ actor }: { actor: IActor }) {
       >
         <div className="hover">
           {actor.favorite ? (
-            <HeartIcon style={{ fontSize: 28, color: "#ff3355" }} />
+            <HeartIcon onClick={toggleFav} style={{ fontSize: 28, color: "#ff3355" }} />
           ) : (
-            <HeartBorderIcon style={{ fontSize: 28 }} />
+            <HeartBorderIcon onClick={toggleFav} style={{ fontSize: 28 }} />
           )}
         </div>
         <div className="hover">
           {actor.bookmark ? (
-            <BookmarkIcon style={{ fontSize: 28 }} />
+            <BookmarkIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
           ) : (
-            <BookmarkBorderIcon style={{ fontSize: 28 }} />
+            <BookmarkBorderIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
           )}
         </div>
       </div>
@@ -86,7 +123,7 @@ export default function ActorCard({ actor }: { actor: IActor }) {
         </div>
 
         <div style={{ marginTop: 5 }}>
-          <Rating value={actor.rating || 0} readonly />
+          <Rating onChange={changeRating} value={actor.rating || 0} />
         </div>
 
         <div style={{ marginTop: 5 }}>

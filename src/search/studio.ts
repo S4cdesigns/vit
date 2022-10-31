@@ -27,6 +27,7 @@ export interface IStudioSearchDoc {
   averageRating: number;
   numScenes: number;
   custom: Record<string, boolean | string | number | string[] | null>;
+  // TODO: aliases, parents
 
   rawQuery?: unknown;
 }
@@ -99,6 +100,7 @@ export async function searchStudios(
   shuffleSeed = "default",
   extraFilter: unknown[] = []
 ): Promise<ISearchResults> {
+  // TODO: aliases, parents
   const query = searchQuery(options.query, ["name^2", "labelNames"]);
   const _shuffle = shuffle(shuffleSeed, query, options.sortBy);
 

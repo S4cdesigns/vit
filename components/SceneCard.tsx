@@ -15,17 +15,28 @@ import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
 
-export default function SceneCard({
-  scene,
-  onFav,
-  onBookmark,
-  onRate,
-}: {
-  scene: Omit<IScene, "markers" | "movies" | "path">;
+type Props = {
+  scene: Pick<
+    IScene,
+    | "_id"
+    | "name"
+    | "favorite"
+    | "bookmark"
+    | "actors"
+    | "studio"
+    | "rating"
+    | "labels"
+    | "thumbnail"
+    | "meta"
+    | "releaseDate"
+    | "watches"
+  >;
   onFav: (value: boolean) => void;
   onBookmark: (value: Date | null) => void;
   onRate: (rating: number) => void;
-}) {
+};
+
+export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
     await favoriteScene(scene._id, newValue);
@@ -117,12 +128,12 @@ export default function SceneCard({
           <BookmarkBorderIcon onClick={toggleBookmark} className="hover" style={{ fontSize: 28 }} />
         )}
       </div>
-      <div style={{ margin: "4px 8px 8px 8px" }}>
+      <div style={{ margin: "6px 8px 8px 8px" }}>
         <div style={{ display: "flex", marginBottom: 5 }}>
           {scene.studio && (
             <Link href={`/studio/${scene.studio._id}`} passHref>
               <a>
-                <div style={{ textTransform: "uppercase", fontSize: 13, opacity: 0.8 }}>
+                <div style={{ textTransform: "uppercase", fontSize: 12, opacity: 0.8 }}>
                   {scene.studio.name}
                 </div>
               </a>

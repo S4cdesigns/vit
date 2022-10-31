@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
 import { movieCardFragment } from "../fragments/movie";
@@ -22,13 +22,26 @@ export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
       setNumItems(result.numItems);
       setNumPages(result.numPages);
     } catch (fetchError: any) {
-      if (!fetchError.response) {
-        setError(fetchError.message);
+      const axioxError = fetchError as AxiosError;
+      if (!axioxError.response) {
+        setError(axioxError.message);
       } else {
-        setError(fetchError.message);
+        setError(axioxError.message);
       }
     }
     setLoader(false);
+  }
+
+  function editMovie(movieId: string, fn: (movie: IMovie) => IMovie): void {
+    setMovies((movies) => {
+      const copy = [...movies];
+      const index = copy.findIndex((movie) => movie._id === movieId);
+      if (index > -1) {
+        const movie = copy[index];
+        copy.splice(index, 1, fn(movie));
+      }
+      return copy;
+    });
   }
 
   return {
@@ -38,11 +51,16 @@ export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
     numItems,
     numPages,
     fetchMovies: _fetchMovies,
+    editMovie,
   };
 }
 
 export async function fetchMovies(page = 0, query: any) {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getMovies: IPaginationResult<IMovie>;
+    };
+  }>(
     gqlIp(),
     {
       query: `
@@ -74,5 +92,5 @@ export async function fetchMovies(page = 0, query: any) {
     }
   );
 
-  return data.data.getMovies as IPaginationResult<IMovie>;
+  return data.data.getMovies;
 }

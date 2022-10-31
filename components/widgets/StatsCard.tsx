@@ -6,7 +6,15 @@ import useSWR from "swr";
 import WidgetCard from "./WidgetCard";
 
 async function getInfo() {
-  const res = await Axios.post("/api/ql", {
+  const res = await Axios.post<{
+    data: {
+      numScenes: number;
+      numActors: number;
+      numMovies: number;
+      numImages: number;
+      numStudios: number;
+    };
+  }>("/api/ql", {
     query: `
     {
       numScenes
@@ -18,11 +26,11 @@ async function getInfo() {
     `,
   });
   return {
-    numScenes: res.data.data.numScenes as number,
-    numActors: res.data.data.numActors as number,
-    numMovies: res.data.data.numMovies as number,
-    numImages: res.data.data.numImages as number,
-    numStudios: res.data.data.numStudios as number,
+    numScenes: res.data.data.numScenes,
+    numActors: res.data.data.numActors,
+    numMovies: res.data.data.numMovies,
+    numImages: res.data.data.numImages,
+    numStudios: res.data.data.numStudios,
   };
 }
 

@@ -62,7 +62,7 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
 
   function switchLocale(locale: string): void {
     const { pathname, asPath, query } = router;
-    router.push({ pathname, query }, asPath, { locale, scroll: false });
+    router.push({ pathname, query }, asPath, { locale, scroll: false }).catch(() => {});
   }
 
   const sidebarContent = (
@@ -73,7 +73,7 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
             <a onClick={toggleSidebar}>
               <div
                 className={clsx(
-                  router.pathname == link.url ? styles.active : "",
+                  router.pathname === link.url ? styles.active : "",
                   styles["sidebar-link"]
                 )}
               >

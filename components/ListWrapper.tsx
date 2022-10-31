@@ -7,12 +7,13 @@ type Props = {
   children?: ReactNode;
   loading: boolean;
   noResults: boolean;
+  size?: number;
 };
 
-export default function ListWrapper({ children, loading, noResults }: Props) {
+export default function ListWrapper({ children, loading, noResults, size }: Props) {
   if (loading) {
     return (
-      <ListContainer>
+      <ListContainer size={size}>
         {[...new Array(16)].map((_, i) => (
           <Paper key={i} className="skeleton-card"></Paper>
         ))}
@@ -22,5 +23,5 @@ export default function ListWrapper({ children, loading, noResults }: Props) {
   if (noResults) {
     return <>No results</>;
   }
-  return <ListContainer>{children}</ListContainer>;
+  return <ListContainer size={size}>{children}</ListContainer>;
 }

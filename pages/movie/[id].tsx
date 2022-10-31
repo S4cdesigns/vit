@@ -16,8 +16,8 @@ import CardTitle from "../../components/CardTitle";
 import LabelGroup from "../../components/LabelGroup";
 import ListWrapper from "../../components/ListWrapper";
 import Rating from "../../components/Rating";
-import ResponsiveImage from "../../components/ResponsiveImage";
 import SceneCard from "../../components/SceneCard";
+import { useActorList } from "../../composables/use_actor_list";
 import { useSceneList } from "../../composables/use_scene_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { sceneCardFragment } from "../../fragments/scene";
@@ -26,7 +26,11 @@ import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getMovieById: IMovie;
+    };
+  }>(
     "http://localhost:3000/api/ql",
     {
       query: `
@@ -100,6 +104,15 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
     {
       items: movie.scenes,
       numItems: movie.scenes.length,
+      numPages: 1,
+    },
+    {}
+  );
+
+  const { actors, editActor } = useActorList(
+    {
+      items: movie.actors,
+      numItems: movie.actors.length,
       numPages: 1,
     },
     {}
@@ -286,12 +299,33 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
           </ListWrapper>
           <CardTitle>
             <span>
-              {movie.actors.length} {t("actor", { numItems: movie.actors.length })}
+              {actors.length} {t("actor", { numItems: actors.length })}
             </span>
           </CardTitle>
-          <ListWrapper loading={false} noResults={!movie.actors.length}>
-            {movie.actors.map((actor) => (
-              <ActorCard key={actor._id} actor={actor}></ActorCard>
+          <ListWrapper loading={false} noResults={!actors.length} size={150}>
+            {actors.map((actor) => (
+              <ActorCard
+                onFav={(value) => {
+                  editActor(actor._id, (actor) => {
+                    actor.favorite = value;
+                    return actor;
+                  });
+                }}
+                onBookmark={(value) => {
+                  editActor(actor._id, (actor) => {
+                    actor.bookmark = !!value;
+                    return actor;
+                  });
+                }}
+                onRate={(rating) => {
+                  editActor(actor._id, (actor) => {
+                    actor.rating = rating;
+                    return actor;
+                  });
+                }}
+                key={actor._id}
+                actor={actor}
+              ></ActorCard>
             ))}
           </ListWrapper>
         </div>

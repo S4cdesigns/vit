@@ -9,7 +9,11 @@ import Button from "../Button";
 import WidgetCard from "./WidgetCard";
 
 async function getActors(skip = 0): Promise<{ actors: IActor[] }> {
-  const res = await Axios.post("/api/ql", {
+  const res = await Axios.post<{
+    data: {
+      topActors: IActor[];
+    };
+  }>("/api/ql", {
     query: `
       query($skip: Int) {
         topActors(skip: $skip, take: 4) {
@@ -45,7 +49,7 @@ export default function FavoritesCard() {
   }
 
   useEffect(() => {
-    nextPage();
+    nextPage().catch(() => {});
   }, []);
 
   return (

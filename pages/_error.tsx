@@ -1,8 +1,8 @@
 import Axios from "axios";
-import BookmarkIcon from "mdi-react/BookmarkIcon";
+/* import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
-import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import HeartBorderIcon from "mdi-react/HeartOutlineIcon"; */
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -10,7 +10,18 @@ import Button from "../components/Button";
 import { IImage } from "../types/image";
 
 async function getRandomImage() {
-  const res = await Axios.post(
+  const res = await Axios.post<{
+    data: {
+      getImages: {
+        items: {
+          _id: string;
+          favorite: string;
+          actors: { name: string }[];
+          scene: { _id: string; name: string };
+        }[];
+      };
+    };
+  }>(
     "/api/ql",
     {
       query: `
@@ -50,17 +61,18 @@ async function getRandomImage() {
 }
 
 export default function ErrorPage() {
-  const [img, setImg] = useState<
-    | (IImage & {
-        actors: { name: string }[];
-        scene: { _id: string; name: string };
-      })
-    | null
-  >(null);
+  const [img, setImg] = useState<{
+    _id: string;
+    favorite: string;
+    actors: { name: string }[];
+    scene: { _id: string; name: string };
+  } | null>(null);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    getRandomImage().then(setImg);
+    getRandomImage()
+      .then(setImg)
+      .catch(() => {});
   }, [count]);
 
   return (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ReactNode, useContext, useMemo } from "react";
+import { CSSProperties, ReactNode, useContext, useMemo } from "react";
 
 import { ThemeContext } from "../pages/_app";
 import { generateThumbnailPlaceholderColor } from "../util/color";
@@ -9,20 +9,33 @@ type Props = {
   aspectRatio: string;
   href?: string | null;
   children?: ReactNode;
+  objectFit?: "cover" | "contain";
+  imgStyle?: CSSProperties;
 };
 
-export default function ResponsiveImage({ href, src, aspectRatio, children }: Props) {
+export default function ResponsiveImage({
+  href,
+  src,
+  aspectRatio,
+  children,
+  objectFit,
+  imgStyle,
+}: Props) {
   const { theme } = useContext(ThemeContext);
   const color = useMemo(() => generateThumbnailPlaceholderColor(theme === "dark"), [theme]);
 
   const inner = src ? (
-    <img style={{ objectFit: "cover", aspectRatio }} width="100%" src={src} />
+    <img
+      style={{ objectFit: objectFit || "cover", aspectRatio, ...imgStyle }}
+      width="100%"
+      src={src}
+    />
   ) : (
     <div style={{ aspectRatio }}>
       <span
         style={{
           fontSize: 64,
-          opacity: 0.05,
+          opacity: 0.1,
           left: "50%",
           top: "50%",
           transform: "translate(-50%, -50%)",
@@ -43,7 +56,10 @@ export default function ResponsiveImage({ href, src, aspectRatio, children }: Pr
   );
 
   return (
-    <div suppressHydrationWarning={true} style={{ backgroundColor: color, position: "relative" }}>
+    <div
+      suppressHydrationWarning={true}
+      style={{ backgroundColor: src ? undefined : color, position: "relative" }}
+    >
       {linkContainer}
       {children}
     </div>

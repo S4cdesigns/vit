@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
 import { sceneCardFragment } from "../fragments/scene";
@@ -22,10 +22,11 @@ export function useSceneList(initial: IPaginationResult<IScene>, query: any) {
       setNumItems(result.numItems);
       setNumPages(result.numPages);
     } catch (fetchError: any) {
-      if (!fetchError.response) {
-        setError(fetchError.message);
+      const axioxError = fetchError as AxiosError;
+      if (!axioxError.response) {
+        setError(axioxError.message);
       } else {
-        setError(fetchError.message);
+        setError(axioxError.message);
       }
     }
     setLoader(false);
@@ -55,7 +56,11 @@ export function useSceneList(initial: IPaginationResult<IScene>, query: any) {
 }
 
 export async function fetchScenes(page = 0, query: any) {
-  const { data } = await axios.post(
+  const { data } = await axios.post<{
+    data: {
+      getScenes: IPaginationResult<IScene>;
+    };
+  }>(
     gqlIp(),
     {
       query: `
@@ -87,5 +92,5 @@ export async function fetchScenes(page = 0, query: any) {
     }
   );
 
-  return data.data.getScenes as IPaginationResult<IScene>;
+  return data.data.getScenes;
 }

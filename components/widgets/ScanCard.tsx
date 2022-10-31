@@ -7,7 +7,14 @@ import Loader from "../Loader";
 import WidgetCard from "./WidgetCard";
 
 async function getQueueStats() {
-  const { data } = await Axios.post("/api/ql", {
+  const { data } = await Axios.post<{
+    data: {
+      getQueueInfo: {
+        length: number;
+        processing: boolean;
+      };
+    };
+  }>("/api/ql", {
     query: `
 { 
   getQueueInfo {    
@@ -27,10 +34,12 @@ export default function LibraryTimeCard() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    getQueueStats().then((info) => {
-      setActive(info.processing);
-      setCount(info.length);
-    });
+    getQueueStats()
+      .then((info) => {
+        setActive(info.processing);
+        setCount(info.length);
+      })
+      .catch(() => {});
   }, []);
 
   return (

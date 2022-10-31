@@ -81,8 +81,6 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
   const router = useRouter();
   const t = useTranslations();
 
-  const [activeIndex, setActive] = useState<number>(-1);
-
   const parsedQuery = useMemo(() => queryParser.parse(router.query), []);
 
   const [query, setQuery] = useState(parsedQuery.q);
@@ -112,11 +110,10 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
 
   async function onPageChange(x: number): Promise<void> {
     setPage(x);
-    fetchScenes(x);
+    await fetchScenes(x);
   }
 
   async function refresh(): Promise<void> {
-    fetchScenes(page);
     queryParser.store(router, {
       q: query,
       favorite,
@@ -127,6 +124,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
       rating,
       labels: selectedLabels,
     });
+    await fetchScenes(page);
   }
 
   useUpdateEffect(() => {
@@ -158,7 +156,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
           type="text"
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              refresh();
+              refresh().catch(() => {});
             }
           }}
           placeholder={t("findContent")}

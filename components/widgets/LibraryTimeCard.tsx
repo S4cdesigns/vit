@@ -32,13 +32,15 @@ export default function LibraryTimeCard() {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
-    getWatchStats().then((data) => {
-      setViews(data.numViews);
-      setDays(+data.currentIntervalDays.toFixed(0));
-      setPercent(data.viewedPercent);
-      setYears(data.remainingYears);
-      setDate(new Date(data.remainingTimestamp));
-    });
+    getWatchStats()
+      .then((data) => {
+        setViews(data.numViews);
+        setDays(+data.currentIntervalDays.toFixed(0));
+        setPercent(data.viewedPercent);
+        setYears(data.remainingYears);
+        setDate(new Date(data.remainingTimestamp));
+      })
+      .catch(() => {});
   }, []);
 
   return (
