@@ -134,7 +134,13 @@ export default function SearchPage(props: {
         </div>
         <ListContainer size={250}>
           {sceneResult.items.map((scene) => (
-            <SceneCard onBookmark={() => {}} onFav={() => {}} onRate={() => {}} scene={scene} />
+            <SceneCard
+              onBookmark={() => {}}
+              onFav={() => {}}
+              onRate={() => {}}
+              key={scene._id}
+              scene={scene}
+            />
           ))}
         </ListContainer>
       </div>

@@ -1,0 +1,39 @@
+$seek-color: #ff55aa;
+$seek-bg: #555555;
+
+.controls {
+  transition: opacity 0.25s ease-in-out;
+
+  .seekbar {
+    position: relative;
+    height: 6px;
+    transition: height 0.1s ease-in-out;
+    background-color: $seek-bg;
+    width: 100%;
+    cursor: pointer;
+    overflow: hidden;
+
+    .inner {
+      position: absolute;
+      height: 100%;
+      background-color: $seek-color;
+      transition: background-color 0.15s ease-in-out, width 0.25s ease-in-out;
+
+      &:hover {
+        background-color: darken($seek-color, 10%) !important;
+      }
+    }
+
+    &:hover {
+      height: 10px;
+      background-color: darken($seek-bg, 10%) !important;
+    }
+  }
+
+  .buttons {
+    padding: 8px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+}

@@ -14,11 +14,13 @@ import ActorCard from "../../components/ActorCard";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
+import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import MovieCard from "../../components/MovieCard";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
+import VideoPlayer from "../../components/VideoPlayer";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { actorCardFragment } from "../../fragments/actor";
@@ -159,24 +161,16 @@ export default function ScenePage({ scene }: { scene: IScene }) {
       <Head>
         <title>{scene.name}</title>
       </Head>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: "#05050a",
-        }}
-      >
-        <div style={{ maxWidth: 1000 }}>
-          <video
-            ref={videoEl}
-            poster={thumbnailUrl(scene.thumbnail?._id)}
-            controls
-            src={`/api/media/scene/${scene._id}`}
-            width="100%"
-            height="100%"
-          />
-        </div>
-      </div>
+      <VideoPlayer
+        duration={scene.meta.duration}
+        markers={markers.map((marker) => ({
+          ...marker,
+          time: marker.time / scene.meta.duration,
+          thumbnail: thumbnailUrl(marker.thumbnail?._id),
+        }))}
+        poster={thumbnailUrl(scene.thumbnail?._id)}
+        src={`/api/media/scene/${scene._id}`}
+      />
       <div
         style={{
           display: "flex",
@@ -266,17 +260,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                 )}
                 {scene.description && (
                   <CardSection title={t("description")}>
-                    <p
-                      style={{
-                        textAlign: "justify",
-                        opacity: 0.5,
-                        margin: 0,
-                        lineHeight: "150%",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {scene.description}
-                    </p>
+                    <Description>{scene.description}</Description>
                   </CardSection>
                 )}
                 <CardSection title={t("rating")}>
@@ -377,7 +361,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                 {markers
                   .sort((a, b) => a.time - b.time)
                   .map((marker) => (
-                    <Paper>
+                    <Paper key={marker._id}>
                       <img
                         onClick={() => {
                           if (videoEl.current) {

@@ -13,6 +13,7 @@ import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
 import ComplexGrid from "../../components/ComplexGrid";
+import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import { actorCardFragment } from "../../fragments/actor";
@@ -167,11 +168,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
         )}
         {actor.description && (
           <CardSection title={t("description")}>
-            <pre
-              style={{ opacity: 0.5, margin: 0, whiteSpace: "pre-wrap", wordWrap: "break-word" }}
-            >
-              {actor.description}
-            </pre>
+            <Description>{actor.description}</Description>
           </CardSection>
         )}
         <CardSection title={t("labels", { numItems: 2 })}>

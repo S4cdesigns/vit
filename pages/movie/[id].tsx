@@ -13,6 +13,7 @@ import ActorCard from "../../components/ActorCard";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
+import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListWrapper from "../../components/ListWrapper";
 import Rating from "../../components/Rating";
@@ -234,17 +235,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                 )}
                 {movie.description && (
                   <CardSection title={t("description")}>
-                    <p
-                      style={{
-                        textAlign: "justify",
-                        opacity: 0.5,
-                        margin: 0,
-                        lineHeight: "150%",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {movie.description}
-                    </p>
+                    <Description>{movie.description}</Description>
                   </CardSection>
                 )}
                 <CardSection title={t("rating")}>
