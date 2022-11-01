@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+import Subheading from "./Subheading";
+
 type Props = {
   title: ReactNode;
   children: ReactNode;
@@ -8,17 +10,7 @@ type Props = {
 export default function CardSection({ title, children }: Props) {
   return (
     <div>
-      <div
-        style={{
-          fontWeight: "semibold",
-          opacity: 0.9,
-          marginBottom: 10,
-          textTransform: "capitalize",
-          fontSize: 18,
-        }}
-      >
-        {title}
-      </div>
+      <Subheading>{title}</Subheading>
       <div>{children}</div>
     </div>
   );

@@ -131,7 +131,7 @@ export default async (): Promise<Vault> => {
     vault.setupMessage = "Loading search engine...";
     await ensureIndices(argv.reindex || false);
   } catch (error) {
-    handleError(`Error while loading search engine`, error, true);
+    handleError("Error while loading search engine", error, true);
   }
   vault.setupMessage = "";
 
@@ -140,7 +140,7 @@ export default async (): Promise<Vault> => {
   if (config.scan.scanOnStartup) {
     // Scan and auto schedule next scans
     scanFolders(config.scan.interval).catch((err: Error) => {
-      handleError("Scan error: ", err);
+      handleError("Scan error", err);
     });
   } else {
     // Only schedule next scans
@@ -148,7 +148,7 @@ export default async (): Promise<Vault> => {
 
     logger.warn("Scanning folders is currently disabled.");
     tryStartProcessing().catch((err: Error) => {
-      handleError("Couldn't start processing: ", err);
+      handleError("Couldn't start processing", err);
     });
   }
 

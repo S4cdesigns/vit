@@ -82,7 +82,7 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
           logger.debug(`Pushed folder ${path}`);
           folderStack.push(path);
         } else if (validExtension(options.extensions, file)) {
-          logger.debug(`Found file ${file}`);
+          logger.silly(`Found file ${file}`);
           const resolvedPath = resolve(path);
           const res = await options.cb(resolvedPath);
           if (res) {

@@ -1,22 +1,24 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
+
+import Text from "./Text";
 
 type Props = {
   children: ReactNode;
+  style?: CSSProperties;
 };
 
-export default function DescriptionField({ children }: Props) {
+export default function Description({ children, style }: Props) {
   return (
-    <div
+    <Text
       style={{
-        opacity: 0.5,
-        margin: 0,
         wordWrap: "break-word",
         textAlign: "justify",
         lineHeight: "150%",
         overflow: "hidden",
+        ...style,
       }}
     >
       {children}
-    </div>
+    </Text>
   );
 }

@@ -49,7 +49,7 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
               top: 0,
             }}
           >
-            <Card style={{ padding: 20, minWidth: 400 }}>
+            <Card style={{ padding: 20, minWidth: 400, maxWidth: "95vw" }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <CardTitle>{title}</CardTitle>
                 <div style={{ flexGrow: 1 }}></div>

@@ -42,6 +42,13 @@ function createFileTransport(level: string, prefix = "", silent: boolean) {
     silent,
     dirname: configPath("logs"),
     auditFile: configPath("logs", `${prefix}pv_audit.json`),
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.printf(({ level, message, timestamp }) => {
+        const msg = formatMessage(message);
+        return `${timestamp as string} [vault] ${level}: ${msg}`;
+      })
+    ),
   });
 }
 
@@ -50,17 +57,17 @@ export function createVaultLogger(
   files: { level: string; prefix: string; silent: boolean }[]
 ) {
   return winston.createLogger({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.timestamp(),
-      winston.format.printf(({ level, message, timestamp }) => {
-        const msg = formatMessage(message);
-        return `${<string>timestamp} [vault] ${level}: ${msg}`;
-      })
-    ),
     transports: [
       new winston.transports.Console({
         level: consoleLevel,
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.timestamp(),
+          winston.format.printf(({ level, message, timestamp }) => {
+            const msg = formatMessage(message);
+            return `${timestamp as string} [vault] ${level}: ${msg}`;
+          })
+        ),
       }),
       ...fileTransports(files),
     ],

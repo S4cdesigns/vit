@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import { useRef, useState } from "react";
+import CopyIcon from "mdi-react/ContentCopyIcon";
 
 import ActorCard from "../../components/ActorCard";
 import Card from "../../components/Card";
@@ -29,6 +30,42 @@ import { IScene } from "../../types/scene";
 import { bookmarkScene, favoriteScene, rateScene } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+import Text from "../../components/Text";
+import Button from "../../components/Button";
+import { gqlIp } from "../../util/ip";
+import type { FfprobeData } from "fluent-ffmpeg";
+import Window from "../../components/Window";
+import Code from "../../components/Code";
+
+async function runFFprobe(sceneId: string) {
+  const res = await axios.post<{
+    data: {
+      runFFProbe: {
+        ffprobe: string;
+      };
+    };
+  }>(
+    gqlIp(),
+    {
+      query: `
+mutation($id: String!) {
+  runFFProbe(id: $id) {
+    ffprobe
+  }
+}
+      `,
+      variables: {
+        id: sceneId,
+      },
+    },
+    {
+      headers: {
+        "x-pass": "xxx",
+      },
+    }
+  );
+  return JSON.parse(res.data.data.runFFProbe.ffprobe) as FfprobeData;
+}
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data } = await axios.post<{
@@ -120,6 +157,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
   const [bookmark, setBookmark] = useState(!!scene.bookmark);
   const [rating, setRating] = useState(scene.rating);
   const [markers] = useState(scene.markers);
+  const [ffprobeData, setFFprobeData] = useState<FfprobeData | null>(null);
 
   const { actors, editActor } = useActorList(
     {
@@ -244,22 +282,20 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                 }}
               >
                 <CardSection title={t("title")}>
-                  <div style={{ opacity: 0.5 }}>{scene.name}</div>
+                  <Text>{scene.name}</Text>
                 </CardSection>
                 {!!scene.studio && (
-                  <CardSection title={t("studio", { numItems: 2 })}>
-                    <div style={{ opacity: 0.5 }}>
+                  <CardSection title="Studio">
+                    <Text>
                       <Link href={`/studio/${scene.studio._id}`}>
                         <a>{scene.studio.name}</a>
                       </Link>
-                    </div>
+                    </Text>
                   </CardSection>
                 )}
                 {scene.releaseDate && (
                   <CardSection title={t("releaseDate")}>
-                    <div style={{ opacity: 0.5 }}>
-                      {new Date(scene.releaseDate).toLocaleDateString()}
-                    </div>
+                    <Text>{new Date(scene.releaseDate).toLocaleDateString()}</Text>
                   </CardSection>
                 )}
                 {scene.description && (
@@ -268,35 +304,86 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                   </CardSection>
                 )}
                 <CardSection title={t("rating")}>
-                  <Rating onChange={changeRating} readonly={false} value={rating}></Rating>
+                  <Rating onChange={changeRating} value={rating}></Rating>
                 </CardSection>
-                <CardSection title={t("labels", { numItems: 2 })}>
+                <CardSection title="Labels">
                   <LabelGroup limit={999} labels={scene.labels} />
                 </CardSection>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <CardSection title={t("videoDuration")}>
-                  <div style={{ opacity: 0.5 }}>{formatDuration(scene.meta.duration)}</div>
+                  <Text>{formatDuration(scene.meta.duration)}</Text>
                 </CardSection>
                 <CardSection title={t("path")}>
-                  <div style={{ opacity: 0.5 }}>{scene.path}</div>
+                  <Text style={{ lineHeight: "150%" }}>
+                    {scene.path}
+                    <CopyIcon
+                      onClick={() => {
+                        navigator.clipboard.writeText(scene.path).catch(() => {});
+                      }}
+                      className="hover"
+                      style={{ marginLeft: 8 }}
+                      size={16}
+                    ></CopyIcon>
+                  </Text>
                 </CardSection>
                 <CardSection title={t("fileSize")}>
-                  <div title={`${scene.meta.size} bytes`} style={{ opacity: 0.5 }}>
-                    {prettyBytes(scene.meta.size)}
+                  <div title={`${scene.meta.size} bytes`}>
+                    <Text>{prettyBytes(scene.meta.size)}</Text>
                   </div>
                 </CardSection>
                 <CardSection title={t("videoDimensions")}>
-                  <div style={{ opacity: 0.5 }}>
+                  <Text>
                     {scene.meta.dimensions.width}x{scene.meta.dimensions.height}
-                  </div>
+                  </Text>
                 </CardSection>
                 <CardSection title={t("fps")}>
-                  <div style={{ opacity: 0.5 }}>{scene.meta.fps}</div>
+                  <Text>{scene.meta.fps.toFixed(2)}</Text>
                 </CardSection>
                 <CardSection title={t("bitrate")}>
-                  <div style={{ opacity: 0.5 }}>
+                  <Text>
                     {((scene.meta.size / 1000 / scene.meta.duration) * 8).toFixed(0)} kBit/s
+                  </Text>
+                </CardSection>
+                <CardSection title={t("actions")}>
+                  <div>
+                    <Button
+                      onClick={() => {
+                        runFFprobe(scene._id).then(setFFprobeData);
+                      }}
+                    >
+                      Run FFprobe
+                    </Button>
+                    <Window
+                      isOpen={!!ffprobeData}
+                      title="FFprobe result"
+                      onClose={() => setFFprobeData(null)}
+                      actions={
+                        <>
+                          <div style={{ flexGrow: 1 }}></div>
+                          <Button
+                            onClick={() => {
+                              navigator.clipboard
+                                .writeText(JSON.stringify(ffprobeData, null, 2).trim())
+                                .catch(() => {});
+                            }}
+                          >
+                            Copy
+                          </Button>
+                          <Button onClick={() => setFFprobeData(null)}>Close</Button>
+                        </>
+                      }
+                    >
+                      <Code
+                        style={{
+                          maxHeight: "50vh",
+                          overflowX: "scroll",
+                          overflowY: "scroll",
+                          maxWidth: 700,
+                        }}
+                        value={ffprobeData}
+                      ></Code>
+                    </Window>
                   </div>
                 </CardSection>
               </div>

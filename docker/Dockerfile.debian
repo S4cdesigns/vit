@@ -16,6 +16,7 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
 RUN apt-get update && \
     apt-get -y install ca-certificates ffmpeg imagemagick && \
     rm -rf /var/lib/apt/lists/*
+# TODO: this may not be completely right
 RUN sed -i 's/name="width" value="16KP"/name="width" value="32KP"/' /etc/ImageMagick-6/policy.xml && sed -i 's/name="height" value="16KP"/name="height" value="32KP"/' /etc/ImageMagick-6/policy.xml
 
 COPY --from=build-env /app/releases/node14 /

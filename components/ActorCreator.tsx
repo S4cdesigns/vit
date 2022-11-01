@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useWindow } from "../composables/use_window";
 import { gqlIp } from "../util/ip";
 import Button from "./Button";
+import Subheading from "./Subheading";
 import Window from "./Window";
 
 async function createActor(name: string, aliases: string[]) {
@@ -76,7 +77,7 @@ export default function ActorCreator({ onCreate }: Props) {
         }
       >
         <div>
-          <div style={{ fontSize: 14, opacity: 0.66, marginBottom: 3 }}>Actor name</div>
+          <Subheading>Actor name</Subheading>
           <input
             value={name}
             onChange={(ev) => setName(ev.target.value)}
@@ -85,7 +86,7 @@ export default function ActorCreator({ onCreate }: Props) {
           />
         </div>
         <div>
-          <div style={{ fontSize: 14, opacity: 0.66, marginBottom: 3 }}>Aliases</div>
+          <Subheading>Aliases</Subheading>
           <textarea
             value={aliases}
             onChange={(ev) => setAliases(ev.target.value)}

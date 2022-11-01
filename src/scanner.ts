@@ -30,14 +30,13 @@ export async function scanFolders(nextScanMs = 0): Promise<void> {
     logger.info("Scanning folders");
     isScanning = true;
 
-    logger.verbose("Scanning video folders");
     await checkVideoFolders().catch((err: Error) => {
       handleError("Error while scanning video folders...", err);
     });
     logger.info("Video scan done.");
 
     // Start processing as soon as video scan is done
-    logger.verbose("Starting processing worker");
+    logger.debug("Starting processing worker");
     tryStartProcessing().catch((err: Error) => {
       handleError("Couldn't start processing: ", err);
     });
