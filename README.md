@@ -6,7 +6,7 @@ Manage your ever-growing porn collection
 ![Discord](https://img.shields.io/discord/652499331265331245)
 ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/porn_vault?style=social)
 
-There's a Discord channel! Join in to the discussion: [Discord](https://discord.gg/t499hxK)
+There's a Discord channel! Join in to the discussion: [Discord](https://discord.gg/QfeHYtKGEa)
 
 ## Support
 
