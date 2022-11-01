@@ -24,7 +24,7 @@ import VERSION from "./version";
 export let vault: Vault | null;
 
 export default async (): Promise<Vault> => {
-  logger.info("Check https://github.com/porn-vault/porn-vault for discussion & updates");
+  logger.info("Check https://gitlab.com/porn-vault/porn-vault for discussion & updates");
 
   const config = getConfig();
   const port = config.server.port || 3000;
@@ -67,7 +67,7 @@ export default async (): Promise<Vault> => {
     }
   } catch (error) {
     handleError(
-      `Error pinging Elasticsearch @ ${config.search.host}, please make sure Elasticsearch is running at the given URL. See https://porn-vault.github.io/porn-vault/faq.html#error-pinging-elasticsearch`,
+      `Error pinging Elasticsearch @ ${config.search.host}, please make sure Elasticsearch is running at the given URL. See https://gitlab.com/porn-vault/porn-vault/-/blob/docs/page/docs/faq.md`,
       error,
       true
     );
@@ -80,7 +80,7 @@ export default async (): Promise<Vault> => {
     if (!(await izzyHasMinVersion())) {
       logger.error(`Izzy does not satisfy min version: ${minIzzyVersion}`);
       logger.info(
-        "Use --update-izzy, delete izzy(.exe) and restart or download manually from https://github.com/boi123212321/izzy/releases"
+        "Use --update-izzy, delete izzy(.exe) and restart or download manually from https://gitlab.com/porn-vault/izzy/-/releases"
       );
       logger.debug("Killing izzy...");
       await exitIzzy();

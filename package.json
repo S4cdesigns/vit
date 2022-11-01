@@ -35,14 +35,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/boi123212321/porn-vault.git"
+    "url": "git+https://gitlab.com/porn-vault/porn-vault.git"
   },
   "author": "boi123212321",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/boi123212321/porn-vault/issues"
+    "url": "https://gitlab.com/porn-vault/porn-vault/-/issues"
   },
-  "homepage": "https://github.com/boi123212321/porn-vault#readme",
+  "homepage": "https://gitlab.com/porn-vault/porn-vault",
   "dependencies": {
     "@apollo/client": "3.3.0",
     "@atlaskit/dropdown-menu": "^11.2.2",

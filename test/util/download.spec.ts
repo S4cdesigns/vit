@@ -9,7 +9,7 @@ describe("Download file", () => {
       unlinkSync(file);
     }
     expect(existsSync(file)).to.be.false;
-    await downloadFile("https://github.com/porn-vault/porn-vault/blob/dev/tsconfig.json", file);
+    await downloadFile("https://gitlab.com/porn-vault/porn-vault/-/raw/dev/tsconfig.json", file);
     expect(existsSync(file)).to.be.true;
     expect(readFileSync(file, "utf-8")).to.include("compilerOptions");
     unlinkSync(file);
