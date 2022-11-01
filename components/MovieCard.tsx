@@ -85,16 +85,24 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
       >
         <div className="hover">
           {movie.favorite ? (
-            <HeartIcon onClick={toggleFav} style={{ fontSize: 28, color: "#ff3355" }} />
+            <HeartIcon
+              className="hover"
+              onClick={toggleFav}
+              style={{ fontSize: 28, color: "#ff3355" }}
+            />
           ) : (
-            <HeartBorderIcon onClick={toggleFav} style={{ fontSize: 28 }} />
+            <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 28 }} />
           )}
         </div>
         <div className="hover">
           {movie.bookmark ? (
-            <BookmarkIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
+            <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
           ) : (
-            <BookmarkBorderIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
+            <BookmarkBorderIcon
+              className="hover"
+              onClick={toggleBookmark}
+              style={{ fontSize: 28 }}
+            />
           )}
         </div>
       </div>

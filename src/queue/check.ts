@@ -42,7 +42,7 @@ export async function checkVideoFolders(): Promise<void> {
   }
 
   for (const folder of config.import.videos) {
-    logger.verbose(`Scanning ${folder} for videos...`);
+    logger.debug(`Scanning ${folder} for videos...`);
     let numFiles = 0;
     const loader = ora(`Scanned ${numFiles} videos`).start();
 
@@ -53,11 +53,11 @@ export async function checkVideoFolders(): Promise<void> {
       cb: async (path) => {
         loader.text = `Scanned ${++numFiles} videos`;
         if (basename(path).startsWith(".")) {
-          logger.debug(`Ignoring file ${path}`);
+          logger.silly(`Ignoring file ${path}`);
         } else {
-          logger.debug(`Found matching file ${path}`);
+          logger.silly(`Found matching file ${path}`);
           const existingScene = await Scene.getByPath(path);
-          logger.debug(`Scene with that path exists already: ${!!existingScene}`);
+          logger.silly(`Scene with that path exists already: ${!!existingScene}`);
           if (!existingScene) unknownVideos.push(path);
         }
       },
@@ -98,17 +98,17 @@ async function processImage(imagePath: string, readImage = true, generateThumb =
 
     // Extract scene
     const extractedScenes = await extractScenes(imagePath);
-    logger.verbose(`Found ${extractedScenes.length} scenes in image path.`);
+    logger.debug(`Found ${extractedScenes.length} scenes in image path.`);
     image.scene = extractedScenes[0] || null;
 
     // Extract actors
     const extractedActors = await extractActors(imagePath);
-    logger.verbose(`Found ${extractedActors.length} actors in image path.`);
+    logger.debug(`Found ${extractedActors.length} actors in image path.`);
     await Image.setActors(image, [...new Set(extractedActors)]);
 
     // Extract labels
     const extractedLabels = await extractLabels(imagePath);
-    logger.verbose(`Found ${extractedLabels.length} labels in image path.`);
+    logger.debug(`Found ${extractedLabels.length} labels in image path.`);
     await Image.setLabels(image, [...new Set(extractedLabels)]);
 
     if (generateThumb) {
@@ -166,7 +166,7 @@ export async function checkImageFolders(): Promise<void> {
             config.processing.generateImageThumbnails
           );
           numAddedImages++;
-          logger.verbose(`Added image '${path}'`);
+          logger.silly(`Added image '${path}'`);
         } else {
           logger.debug(`Image '${path}' already exists`);
         }

@@ -10,8 +10,8 @@ export function useStudioList(initial: IPaginationResult<IStudio>, query: any) {
   const [studios, setStudios] = useState<IStudio[]>(initial?.items || []);
   const [loading, setLoader] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [numItems, setNumItems] = useState(initial?.numItems || -1);
-  const [numPages, setNumPages] = useState(initial?.numPages || -1);
+  const [numItems, setNumItems] = useState(initial?.numItems ?? -1);
+  const [numPages, setNumPages] = useState(initial?.numPages ?? -1);
 
   async function _fetchStudios(page = 0) {
     try {

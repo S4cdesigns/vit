@@ -71,7 +71,7 @@ const messages: Record<string, any> = {
     favorite: "Favorite",
     bookmark: "Bookmark",
     bookmarked: "Bookmarked",
-    yourFavorites: "Your favorites",
+    yourFavorites: "Leaderboard",
     showMore: "Show more",
 
     relevance: "Relevance",
@@ -159,7 +159,7 @@ const messages: Record<string, any> = {
     favorite: "Favorit",
     bookmark: "Merkliste",
     bookmarked: "Gemerkt",
-    yourFavorites: "Deine Favoriten",
+    yourFavorites: "Leaderboard",
     showMore: "Mehr anzeigen",
 
     relevance: "Relevanz",

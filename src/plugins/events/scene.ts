@@ -48,7 +48,6 @@ export async function createMarker(
     return null;
   }
   const marker = new Marker(name, sceneId, seconds);
-  await Marker.createMarkerThumbnail(marker);
   await collections.markers.upsert(marker._id, marker);
   return marker;
 }
@@ -309,6 +308,7 @@ export async function onSceneCreate(
       await indexImages(createdImages);
 
       for (const marker of createdMarkers) {
+        await Marker.createMarkerThumbnail(marker);
         await Marker.setActors(marker, sceneActors);
 
         // Extract labels

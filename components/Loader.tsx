@@ -7,5 +7,9 @@ type Props = {
 };
 
 export default function Loader({ style }: Props) {
-  return <div className={styles.loader} style={style}></div>;
+  return (
+    <div style={style}>
+      <div className={styles.loader}></div>
+    </div>
+  );
 }

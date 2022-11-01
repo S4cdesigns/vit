@@ -10,8 +10,8 @@ export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
   const [movies, setMovies] = useState<IMovie[]>(initial?.items || []);
   const [loading, setLoader] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [numItems, setNumItems] = useState(initial?.numItems || -1);
-  const [numPages, setNumPages] = useState(initial?.numPages || -1);
+  const [numItems, setNumItems] = useState(initial?.numItems ?? -1);
+  const [numPages, setNumPages] = useState(initial?.numPages ?? -1);
 
   async function _fetchMovies(page = 0) {
     try {

@@ -79,16 +79,24 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
       >
         <div className="hover">
           {actor.favorite ? (
-            <HeartIcon onClick={toggleFav} style={{ fontSize: 28, color: "#ff3355" }} />
+            <HeartIcon
+              className="hover"
+              onClick={toggleFav}
+              style={{ fontSize: 28, color: "#ff3355" }}
+            />
           ) : (
-            <HeartBorderIcon onClick={toggleFav} style={{ fontSize: 28 }} />
+            <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 28 }} />
           )}
         </div>
         <div className="hover">
           {actor.bookmark ? (
-            <BookmarkIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
+            <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
           ) : (
-            <BookmarkBorderIcon onClick={toggleBookmark} style={{ fontSize: 28 }} />
+            <BookmarkBorderIcon
+              className="hover"
+              onClick={toggleBookmark}
+              style={{ fontSize: 28 }}
+            />
           )}
         </div>
       </div>

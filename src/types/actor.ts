@@ -131,11 +131,20 @@ export default class Actor {
       .sort((a, b) => a.date - b.date);
   }
 
-  static calculateScore(actor: Actor, numViews: number, numScenes: number): number {
-    const viewScore = Math.round((10 * numViews) / (numScenes / 2) || 0);
+  static async countUniqueViews(actor: Actor): Promise<number> {
+    const scenes = await Scene.getByActor(actor._id);
+    const sceneViews = await mapAsync(scenes, (scene) => {
+      return SceneView.getCount(scene._id);
+    });
+    return sceneViews.filter((x) => x > 0).length;
+  }
+
+  static calculateScore(actor: Actor, uniqueViews: number, avgRating: number): number {
+    const ratingFactor = avgRating / 10;
+    const viewScore = uniqueViews * 1.5 * ratingFactor;
     const favScore = +actor.favorite * 10;
-    const score = viewScore + numViews + favScore + actor.rating;
-    return score;
+    const ratingScore = actor.rating * 5;
+    return Math.floor(viewScore + favScore + ratingScore);
   }
 
   static async getLabelUsage(): Promise<
@@ -186,9 +195,7 @@ export default class Actor {
     return createObjectSet(movies.flat(), "_id");
   }
 
-  static async getCollabs(
-    actor: Actor
-  ): Promise<
+  static async getCollabs(actor: Actor): Promise<
     {
       scene: Scene;
       actors: Actor[];

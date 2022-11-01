@@ -1,12 +1,13 @@
 @import "../styles/color.scss";
 
 .button {
+  position: relative;
   cursor: pointer;
   color: #333333;
   border: 2px solid darken($bg, 8%);
   font-weight: 600;
   border-radius: 4px;
-  padding: 7px 12px;
+  padding: 8px 12px;
   transition: all 0.075s ease-in-out;
   outline: none;
   font-size: 14px;

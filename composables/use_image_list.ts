@@ -10,8 +10,8 @@ export function useImageList(initial: IPaginationResult<IImage>, query: any) {
   const [images, setImages] = useState<IImage[]>(initial?.items || []);
   const [loading, setLoader] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [numItems, setNumItems] = useState(initial?.numItems || -1);
-  const [numPages, setNumPages] = useState(initial?.numPages || -1);
+  const [numItems, setNumItems] = useState(initial?.numItems ?? -1);
+  const [numPages, setNumPages] = useState(initial?.numPages ?? -1);
 
   async function _fetchImages(page = 0) {
     try {

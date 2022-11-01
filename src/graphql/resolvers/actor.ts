@@ -9,9 +9,9 @@ import { createObjectSet } from "../../utils/misc";
 
 export default {
   async score(actor: Actor): Promise<number> {
-    const numViews = (await Actor.getWatches(actor)).length;
-    const numScenes = (await Scene.getByActor(actor._id)).length;
-    return Actor.calculateScore(actor, numViews, numScenes);
+    const avgRating = await Actor.getAverageRating(actor);
+    const numViews = await Actor.countUniqueViews(actor);
+    return Actor.calculateScore(actor, numViews, avgRating);
   },
   async averageRating(actor: Actor): Promise<number> {
     return await Actor.getAverageRating(actor);

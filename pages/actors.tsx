@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import Window from "../components/Window";
 import ActorCard from "../components/ActorCard";
 import Button from "../components/Button";
 import { CountrySelector } from "../components/CountrySelector";
@@ -31,6 +32,8 @@ import useUpdateEffect from "../composables/use_update_effect";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
+import { useWindow } from "../composables/use_window";
+import ActorCreator from "../components/ActorCreator";
 
 const queryParser = buildQueryParser({
   q: {
@@ -164,7 +167,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
         <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <Button style={{ marginRight: 10 }}>+ Add actor</Button>
+        <ActorCreator onCreate={() => onPageChange(0)} />
         {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
         {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}

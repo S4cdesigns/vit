@@ -1,48 +1,30 @@
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
-import { getFullStatus, ServiceStatus, StatusData } from "../../util/status";
+import Loader from "../../components/Loader";
+import { getFullStatus } from "../../util/status";
 
 export default function SettingsPage() {
   const t = useTranslations();
-  const [status, setStatus] = useState<StatusData>({
-    izzy: {
-      status: ServiceStatus.Unknown,
-      version: "unknown",
-      collections: [],
-      collectionBuildInfoMap: {},
-      allCollectionsBuilt: false,
-    },
-    elasticsearch: {
-      status: ServiceStatus.Unknown,
-      version: "unknown",
-      indices: [],
-      indexBuildInfoMap: {},
-      allIndexesBuilt: false,
-    },
-    serverUptime: 0,
-    osUptime: 0,
-    serverReady: false,
-  });
 
-  async function fetchData() {
-    try {
-      const res = await getFullStatus();
-      setStatus(res.data);
-    } catch (err) {
-      console.error(err);
+  const { data: status } = useSWR(
+    "settings:status",
+    () => getFullStatus().then((res) => res.data),
+    {
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      revalidateOnMount: true,
+      refreshInterval: 15_000,
     }
-  }
+  );
 
-  useEffect(() => {
-    fetchData().catch(() => {});
-    const interval = setInterval(fetchData, 30 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+  if (!status) {
+    return <Loader />;
+  }
 
   return (
     <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 20 }}>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Router } from "express";
+import { existsSync } from "fs";
 import { uptime } from "os";
 
 import { exitIzzy, izzyVersion } from "../binaries/izzy";
@@ -72,12 +73,23 @@ router.get("/status/full", async (req, res) => {
             }
 
             const count = await collections[collectionDef.key].count();
-            const stats = await statAsync(libraryPath(collectionDef.path));
-            izzyCollections.push({
-              name,
-              count,
-              size: stats.size,
-            });
+
+            const path = libraryPath(collectionDef.path);
+
+            if (!existsSync(path)) {
+              izzyCollections.push({
+                name,
+                count: 0,
+                size: 0,
+              });
+            } else {
+              const stats = await statAsync(path);
+              izzyCollections.push({
+                name,
+                count,
+                size: stats.size,
+              });
+            }
           }
         );
         await Promise.all(collectionInfoPromises);

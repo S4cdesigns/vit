@@ -41,7 +41,7 @@ export default function StatsCard() {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
     revalidateOnMount: true,
-    refreshInterval: 60000,
+    refreshInterval: 60_000,
   });
 
   return (

@@ -191,9 +191,13 @@ export default function ScenePage({ scene }: { scene: IScene }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div>
                 {favorite ? (
-                  <HeartIcon onClick={toggleFav} style={{ fontSize: 32, color: "#ff3355" }} />
+                  <HeartIcon
+                    className="hover"
+                    onClick={toggleFav}
+                    style={{ fontSize: 32, color: "#ff3355" }}
+                  />
                 ) : (
-                  <HeartBorderIcon onClick={toggleFav} style={{ fontSize: 32 }} />
+                  <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 32 }} />
                 )}
               </div>
               <div>

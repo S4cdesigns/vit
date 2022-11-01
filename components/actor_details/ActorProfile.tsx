@@ -3,6 +3,8 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { bookmarkActor, favoriteActor, rateActor } from "../../util/mutations/actor";
 
 import { thumbnailUrl } from "../../util/thumbnail";
 import Flag from "../Flag";
@@ -10,6 +12,7 @@ import Rating from "../Rating";
 import styles from "./ActorProfile.module.scss";
 
 type Props = {
+  actorId: string;
   avatarId?: string;
   nationality?: { name: string; alias?: string; alpha2: string };
   actorName: string;
@@ -22,6 +25,39 @@ type Props = {
 
 export default function ActorProfile(props: Props) {
   const t = useTranslations();
+
+  const [favorite, setFavorite] = useState(props.favorite);
+  const [bookmark, setBookmark] = useState(props.bookmark);
+  const [rating, setRating] = useState(props.rating);
+
+  useEffect(() => {
+    setFavorite(props.favorite);
+  }, [props.favorite]);
+
+  useEffect(() => {
+    setBookmark(props.bookmark);
+  }, [props.bookmark]);
+
+  useEffect(() => {
+    setRating(props.rating);
+  }, [props.rating]);
+
+  async function changeRating(rating: number): Promise<void> {
+    await rateActor(props.actorId, rating);
+    setRating(rating);
+  }
+
+  async function toggleFav(): Promise<void> {
+    const newValue = !favorite;
+    await favoriteActor(props.actorId, newValue);
+    setFavorite(newValue);
+  }
+
+  async function toggleBookmark(): Promise<void> {
+    const newValue = bookmark ? null : new Date();
+    await bookmarkActor(props.actorId, newValue);
+    setBookmark(!!newValue);
+  }
 
   return (
     <div
@@ -80,21 +116,29 @@ export default function ActorProfile(props: Props) {
       </div>
       <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
         <div>
-          {props.favorite ? (
-            <HeartIcon style={{ fontSize: 32, color: "#ff3355" }} />
+          {favorite ? (
+            <HeartIcon
+              className="hover"
+              onClick={toggleFav}
+              style={{ fontSize: 32, color: "#ff3355" }}
+            />
           ) : (
-            <HeartBorderIcon style={{ fontSize: 32 }} />
+            <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 32 }} />
           )}
         </div>
         <div>
-          {props.bookmark ? (
-            <BookmarkIcon style={{ fontSize: 32 }} />
+          {bookmark ? (
+            <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 32 }} />
           ) : (
-            <BookmarkBorderIcon style={{ fontSize: 32 }} />
+            <BookmarkBorderIcon
+              className="hover"
+              onClick={toggleBookmark}
+              style={{ fontSize: 32 }}
+            />
           )}
         </div>
       </div>
-      <Rating value={props.rating} readonly />
+      <Rating value={rating} onChange={changeRating} />
     </div>
   );
 }

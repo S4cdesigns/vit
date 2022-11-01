@@ -174,16 +174,16 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div>
                 {movie.favorite ? (
-                  <HeartIcon style={{ fontSize: 32, color: "#ff3355" }} />
+                  <HeartIcon className="hover" style={{ fontSize: 32, color: "#ff3355" }} />
                 ) : (
-                  <HeartBorderIcon style={{ fontSize: 32 }} />
+                  <HeartBorderIcon className="hover" style={{ fontSize: 32 }} />
                 )}
               </div>
               <div>
                 {movie.bookmark ? (
-                  <BookmarkIcon style={{ fontSize: 32 }} />
+                  <BookmarkIcon className="hover" style={{ fontSize: 32 }} />
                 ) : (
-                  <BookmarkBorderIcon style={{ fontSize: 32 }} />
+                  <BookmarkBorderIcon className="hover" style={{ fontSize: 32 }} />
                 )}
               </div>
               <div style={{ flexGrow: 1 }} />

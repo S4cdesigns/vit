@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ActorProfile from "../../components/actor_details/ActorProfile";
 import ActorStats from "../../components/actor_details/ActorStats";
@@ -133,6 +133,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
     <div>
       <Card style={{ padding: "20px 10px" }}>
         <ActorProfile
+          actorId={actor._id}
           actorName={actor.name}
           age={actor.age}
           bornOn={actor.bornOn}

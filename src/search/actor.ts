@@ -59,6 +59,9 @@ export async function createActorSearchDoc(actor: Actor): Promise<IActorSearchDo
   const baseStudios = await Actor.getStudioFeatures(actor);
   const studios = [...new Set((await mapAsync(baseStudios, Studio.getParents)).flat())];
 
+  const avgRating = await Actor.getAverageRating(actor);
+  const uniqueViews = await Actor.countUniqueViews(actor);
+
   return {
     id: actor._id,
     addedOn: actor.addedOn,
@@ -68,9 +71,9 @@ export async function createActorSearchDoc(actor: Actor): Promise<IActorSearchDo
     labels: labels.map((l) => l._id),
     numLabels: labels.length,
     labelNames: labels.map((l) => l.name),
-    score: Actor.calculateScore(actor, watches.length, numScenes),
+    score: Actor.calculateScore(actor, uniqueViews, avgRating),
     rating: actor.rating,
-    averageRating: await Actor.getAverageRating(actor),
+    averageRating: avgRating,
     bookmark: actor.bookmark,
     favorite: actor.favorite,
     numViews: watches.length,

@@ -13,6 +13,8 @@ import Image from "./image";
 import Label from "./label";
 import Scene from "./scene";
 
+const MARKER_LOOKAHEAD_SECS = 15;
+
 export default class Marker {
   _id: string;
   name: string;
@@ -40,6 +42,7 @@ export default class Marker {
   static async createMarkerThumbnail(marker: Marker): Promise<void> {
     const scene = await Scene.getById(marker.scene);
     if (!scene || !scene.path) {
+      logger.warn(`Marker has no scene (path) ${marker.scene}`);
       return;
     }
 
@@ -56,8 +59,9 @@ export default class Marker {
     const labels = (await Marker.getLabels(marker)).map((l) => l._id);
     await Image.setLabels(image, labels);
 
-    await singleScreenshot(scene.path, imagePath, marker.time + 15, 480);
+    await singleScreenshot(scene.path, imagePath, marker.time + MARKER_LOOKAHEAD_SECS, 480);
     await collections.images.upsert(image._id, image);
+    await collections.markers.upsert(marker._id, marker);
   }
 
   static async getActors(marker: Marker): Promise<Actor[]> {
