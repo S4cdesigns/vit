@@ -1,7 +1,8 @@
 import { CSSProperties, useState } from "react";
-import Description from "./Description";
 import YAML from "yaml";
+
 import Button from "./Button";
+import Description from "./Description";
 
 type Props<T> = {
   value: T;

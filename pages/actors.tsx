@@ -15,8 +15,8 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
-import Window from "../components/Window";
 import ActorCard from "../components/ActorCard";
+import ActorCreator from "../components/ActorCreator";
 import Button from "../components/Button";
 import { CountrySelector } from "../components/CountrySelector";
 import IconButtonFilter from "../components/IconButtonFilter";
@@ -26,14 +26,14 @@ import ListWrapper from "../components/ListWrapper";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Window from "../components/Window";
 import { fetchActors, useActorList } from "../composables/use_actor_list";
 import useLabelList from "../composables/use_label_list";
 import useUpdateEffect from "../composables/use_update_effect";
+import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
-import { useWindow } from "../composables/use_window";
-import ActorCreator from "../components/ActorCreator";
 
 const queryParser = buildQueryParser({
   q: {

@@ -4,8 +4,8 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { bookmarkActor, favoriteActor, rateActor } from "../../util/mutations/actor";
 
+import { bookmarkActor, favoriteActor, rateActor } from "../../util/mutations/actor";
 import { thumbnailUrl } from "../../util/thumbnail";
 import Flag from "../Flag";
 import Rating from "../Rating";

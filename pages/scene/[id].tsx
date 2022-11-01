@@ -1,6 +1,8 @@
 import axios from "axios";
+import type { FfprobeData } from "fluent-ffmpeg";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
+import CopyIcon from "mdi-react/ContentCopyIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
@@ -9,33 +11,31 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import { useRef, useState } from "react";
-import CopyIcon from "mdi-react/ContentCopyIcon";
 
 import ActorCard from "../../components/ActorCard";
+import Button from "../../components/Button";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
+import Code from "../../components/Code";
 import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import MovieCard from "../../components/MovieCard";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
+import Text from "../../components/Text";
 import VideoPlayer from "../../components/VideoPlayer";
+import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { movieCardFragment } from "../../fragments/movie";
 import { IScene } from "../../types/scene";
+import { gqlIp } from "../../util/ip";
 import { bookmarkScene, favoriteScene, rateScene } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import Text from "../../components/Text";
-import Button from "../../components/Button";
-import { gqlIp } from "../../util/ip";
-import type { FfprobeData } from "fluent-ffmpeg";
-import Window from "../../components/Window";
-import Code from "../../components/Code";
 
 async function runFFprobe(sceneId: string) {
   const res = await axios.post<{
@@ -349,7 +349,9 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                   <div>
                     <Button
                       onClick={() => {
-                        runFFprobe(scene._id).then(setFFprobeData);
+                        runFFprobe(scene._id)
+                          .then(setFFprobeData)
+                          .catch(() => {});
                       }}
                     >
                       Run FFprobe

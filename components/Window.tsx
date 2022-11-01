@@ -1,8 +1,8 @@
+import CloseIcon from "mdi-react/CloseIcon";
 import { ReactNode } from "react";
+
 import Card from "./Card";
 import CardTitle from "./CardTitle";
-
-import CloseIcon from "mdi-react/CloseIcon";
 
 type Props = {
   children: ReactNode;

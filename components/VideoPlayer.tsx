@@ -30,7 +30,7 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
       return;
     }
     if (videoEl.current.paused) {
-      videoEl.current.play();
+      videoEl.current.play().catch(() => {});
     } else {
       videoEl.current.pause();
     }
