@@ -23,6 +23,7 @@ import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
 import { thumbnailUrl } from "../util/thumbnail";
 import PageWrapper from "../components/PageWrapper";
+import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {
@@ -46,9 +47,10 @@ const queryParser = buildQueryParser({
   /* rating: {
     default: 0,
   }, */
-  labels: {
+  /* labels: {
     default: [] as string[],
-  },
+  }, */
+  // TODO: labels
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
@@ -84,7 +86,6 @@ export default function StudioListPage(props: {
   const [bookmark, setBookmark] = useState(parsedQuery.bookmark);
   const [sortBy, setSortBy] = useState(parsedQuery.sortBy);
   const [sortDir, setSortDir] = useState(parsedQuery.sortDir);
-  const [page, setPage] = useState(props.page);
 
   const { studios, loading, numPages, numItems, fetchStudios, editStudio } = useStudioList(
     props.initial,
@@ -96,11 +97,11 @@ export default function StudioListPage(props: {
       sortDir,
     }
   );
-
-  async function onPageChange(x: number): Promise<void> {
-    setPage(x);
-    await fetchStudios(x);
-  }
+  const { page, onPageChange } = usePaginatedList({
+    fetch: fetchStudios,
+    initialPage: props.page,
+    querySettings: [query, favorite, bookmark, sortBy, sortDir],
+  });
 
   async function refresh(): Promise<void> {
     queryParser.store(router, {
@@ -110,14 +111,10 @@ export default function StudioListPage(props: {
       sortBy,
       sortDir,
       page,
-      labels: [], // TODO:
+      // labels: [], // TODO:
     });
     await fetchStudios(page);
   }
-
-  useUpdateEffect(() => {
-    setPage(0);
-  }, [query, favorite, bookmark, sortBy, sortDir]);
 
   return (
     <PageWrapper title={t("foundStudios", { numItems })}>

@@ -23,11 +23,11 @@ import SceneCard from "../components/SceneCard";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import useLabelList from "../composables/use_label_list";
 import { fetchScenes, useSceneList } from "../composables/use_scene_list";
-import useUpdateEffect from "../composables/use_update_effect";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
 import { buildQueryParser } from "../util/query_parser";
 import PageWrapper from "../components/PageWrapper";
+import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {
@@ -88,11 +88,11 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
   const [rating, setRating] = useState(parsedQuery.rating);
   const [sortBy, setSortBy] = useState(parsedQuery.sortBy);
   const [sortDir, setSortDir] = useState(parsedQuery.sortDir);
-  const [page, setPage] = useState(props.page);
 
-  const { labels: labelList, loading: labelLoader } = useLabelList();
   const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
   const [labelQuery, setLabelQuery] = useState("");
+
+  const { labels: labelList, loading: labelLoader } = useLabelList();
 
   const { scenes, editScene, fetchScenes, loading, numItems, numPages } = useSceneList(
     props.initial,
@@ -107,11 +107,11 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
       // TODO: actors
     }
   );
-
-  async function onPageChange(x: number): Promise<void> {
-    setPage(x);
-    await fetchScenes(x);
-  }
+  const { page, onPageChange } = usePaginatedList({
+    fetch: fetchScenes,
+    initialPage: props.page,
+    querySettings: [query, favorite, bookmark, sortBy, sortDir, JSON.stringify(selectedLabels)],
+  });
 
   async function refresh(): Promise<void> {
     queryParser.store(router, {
@@ -126,10 +126,6 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
     });
     await fetchScenes(page);
   }
-
-  useUpdateEffect(() => {
-    setPage(0);
-  }, [query, favorite, bookmark, sortBy, sortDir, JSON.stringify(selectedLabels)]);
 
   const hasNoLabels = !labelLoader && !labelList.length;
 

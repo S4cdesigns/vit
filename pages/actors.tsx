@@ -27,11 +27,11 @@ import Rating from "../components/Rating";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import { fetchActors, useActorList } from "../composables/use_actor_list";
 import useLabelList from "../composables/use_label_list";
-import useUpdateEffect from "../composables/use_update_effect";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import PageWrapper from "../components/PageWrapper";
+import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {
@@ -97,13 +97,13 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   const [rating, setRating] = useState(parsedQuery.rating);
   const [sortBy, setSortBy] = useState(parsedQuery.sortBy);
   const [sortDir, setSortDir] = useState(parsedQuery.sortDir);
-  const [page, setPage] = useState(props.page);
+
+  const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
+  const [labelQuery, setLabelQuery] = useState("");
 
   const [nationality, setNationality] = useState(parsedQuery.nationality);
 
   const { labels: labelList, loading: labelLoader } = useLabelList();
-  const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
-  const [labelQuery, setLabelQuery] = useState("");
 
   const { actors, loading, numPages, numItems, fetchActors, editActor } = useActorList(
     props.initial,
@@ -118,11 +118,20 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       include: selectedLabels,
     }
   );
-
-  async function onPageChange(x: number): Promise<void> {
-    setPage(x);
-    await fetchActors(x);
-  }
+  const { page, onPageChange } = usePaginatedList({
+    fetch: fetchActors,
+    initialPage: props.page,
+    querySettings: [
+      query,
+      favorite,
+      bookmark,
+      nationality,
+      sortBy,
+      sortDir,
+      rating,
+      JSON.stringify(selectedLabels),
+    ],
+  });
 
   async function refresh(): Promise<void> {
     queryParser.store(router, {
@@ -138,19 +147,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
     });
     await fetchActors(page);
   }
-
-  useUpdateEffect(() => {
-    setPage(0);
-  }, [
-    query,
-    favorite,
-    bookmark,
-    nationality,
-    sortBy,
-    sortDir,
-    rating,
-    JSON.stringify(selectedLabels),
-  ]);
 
   const hasNoLabels = !labelLoader && !labelList.length;
 

@@ -18,19 +18,22 @@ import IconButtonFilter from "../components/IconButtonFilter";
 import IconButtonMenu from "../components/IconButtonMenu";
 import ImageCard from "../components/ImageCard";
 import LabelSelector from "../components/LabelSelector";
-import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import { fetchImages, useImageList } from "../composables/use_image_list";
 import useLabelList from "../composables/use_label_list";
-import useUpdateEffect from "../composables/use_update_effect";
 import { useWindowSize } from "../composables/use_window_size";
 import { IImage } from "../types/image";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import { imageUrl, thumbnailUrl } from "../util/thumbnail";
 import PageWrapper from "../components/PageWrapper";
+import ImageUploader from "../components/ImageUploader";
+import ContentWrapper from "../components/ContentWrapper";
+import Paper from "../components/Paper";
+import ListContainer from "../components/ListContainer";
+import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {
@@ -94,26 +97,37 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
   const [rating, setRating] = useState(parsedQuery.rating);
   const [sortBy, setSortBy] = useState(parsedQuery.sortBy);
   const [sortDir, setSortDir] = useState(parsedQuery.sortDir);
-  const [page, setPage] = useState(props.page);
+
+  const [labelQuery, setLabelQuery] = useState("");
+  const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
 
   const { labels: labelList, loading: labelLoader } = useLabelList();
-  const [selectedLabels, setSelectedLabels] = useState(parsedQuery.labels);
-  const [labelQuery, setLabelQuery] = useState("");
 
-  const { images, fetchImages, loading, numItems, numPages } = useImageList(props.initial, {
-    rating,
-    query,
-    favorite,
-    bookmark,
-    sortBy,
-    sortDir,
-    include: selectedLabels,
+  const { images, fetchImages, loading, numItems, numPages, prependImages } = useImageList(
+    props.initial,
+    {
+      rating,
+      query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      include: selectedLabels,
+    }
+  );
+  const { page, onPageChange } = usePaginatedList({
+    fetch: fetchImages,
+    initialPage: props.page,
+    querySettings: [
+      query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      rating,
+      JSON.stringify(selectedLabels),
+    ],
   });
-
-  async function onPageChange(x: number): Promise<void> {
-    setPage(x);
-    await fetchImages(x);
-  }
 
   async function refresh(): Promise<void> {
     queryParser.store(router, {
@@ -129,55 +143,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
     await fetchImages(page);
   }
 
-  useUpdateEffect(() => {
-    setPage(0);
-  }, [query, favorite, bookmark, sortBy, sortDir, JSON.stringify(selectedLabels)]);
-
   const hasNoLabels = !labelLoader && !labelList.length;
-
-  function renderContent() {
-    if (loading) {
-      return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Loader />
-        </div>
-      );
-    }
-
-    if (!images.length) {
-      return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {t("foundImages", { numItems })}
-        </div>
-      );
-    }
-
-    return (
-      <Masonry
-        items={images}
-        rowGutter={0}
-        columnGutter={4}
-        columnCount={(windowWidth || 1080) < 480 ? 2 : undefined}
-        render={({ data, index }) => (
-          <ImageCard
-            // TODO: use a "hasPrevious" prop instead
-            onPrevious={index > 0 ? () => setActive(index - 1) : undefined}
-            onNext={index < images.length - 1 ? () => setActive(index + 1) : undefined}
-            onOpen={() => setActive(index)}
-            onClose={() => setActive(-1)}
-            active={index === activeIndex}
-            favorite={data.favorite}
-            bookmark={data.bookmark}
-            rating={data.rating}
-            key={data._id}
-            fullSrc={imageUrl(data._id)}
-            src={thumbnailUrl(data._id)}
-            alt={data.name}
-          />
-        )}
-      />
-    );
-  }
 
   return (
     <PageWrapper title={t("foundImages", { numItems })}>
@@ -186,6 +152,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
         <div style={{ flexGrow: 1 }}></div>
         <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
       </div>
+      <ImageUploader onUpload={prependImages} />
       <div
         style={{
           marginBottom: 20,
@@ -264,7 +231,42 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
         <div style={{ flexGrow: 1 }}></div>
         <Button onClick={refresh}>{t("refresh")}</Button>
       </div>
-      {renderContent()}
+      <ContentWrapper
+        loader={
+          <ListContainer>
+            {[...new Array(16)].map((_, i) => (
+              <Paper style={{ height: 150 }} key={i} className="skeleton-card"></Paper>
+            ))}
+          </ListContainer>
+        }
+        loading={loading}
+        noResults={!images.length}
+      >
+        <Masonry
+          items={images}
+          rowGutter={0}
+          columnGutter={4}
+          columnCount={(windowWidth || 1080) < 480 ? 2 : undefined}
+          columnWidth={225}
+          render={({ data, index }) => (
+            <ImageCard
+              // TODO: use a "hasPrevious" prop instead
+              onPrevious={index > 0 ? () => setActive(index - 1) : undefined}
+              onNext={index < images.length - 1 ? () => setActive(index + 1) : undefined}
+              onOpen={() => setActive(index)}
+              onClose={() => setActive(-1)}
+              active={index === activeIndex}
+              favorite={data.favorite}
+              bookmark={data.bookmark}
+              rating={data.rating}
+              key={data._id}
+              fullSrc={imageUrl(data._id)}
+              src={thumbnailUrl(data._id)}
+              alt={data.name}
+            />
+          )}
+        />
+      </ContentWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>

@@ -14,11 +14,11 @@ import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import { fetchMovies, useMovieList } from "../composables/use_movie_list";
-import useUpdateEffect from "../composables/use_update_effect";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import PageWrapper from "../components/PageWrapper";
+import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {
@@ -40,6 +40,7 @@ const queryParser = buildQueryParser({
     default: false,
   },
   // TODO: rating
+  // TODO: labels
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
@@ -72,7 +73,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   const [bookmark, setBookmark] = useState(parsedQuery.bookmark);
   const [sortBy, setSortBy] = useState(parsedQuery.sortBy);
   const [sortDir, setSortDir] = useState(parsedQuery.sortDir);
-  const [page, setPage] = useState(props.page);
 
   const { movies, loading, numPages, numItems, fetchMovies, editMovie } = useMovieList(
     props.initial,
@@ -84,11 +84,11 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       sortDir,
     }
   );
-
-  async function onPageChange(x: number): Promise<void> {
-    setPage(x);
-    await fetchMovies(x);
-  }
+  const { page, onPageChange } = usePaginatedList({
+    fetch: fetchMovies,
+    initialPage: props.page,
+    querySettings: [query, favorite, bookmark, sortBy, sortDir],
+  });
 
   async function refresh(): Promise<void> {
     queryParser.store(router, {
@@ -101,10 +101,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
     });
     await fetchMovies(page);
   }
-
-  useUpdateEffect(() => {
-    setPage(0);
-  }, [query, favorite, bookmark, sortBy, sortDir]);
 
   return (
     <PageWrapper title={t("foundMovies", { numItems })}>

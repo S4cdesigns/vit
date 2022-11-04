@@ -61,7 +61,7 @@ export default function Lightbox(props: Props) {
             <img
               onClick={(ev) => ev.stopPropagation()}
               style={{
-                borderRadius: 5,
+                borderRadius: 16,
                 display: "inline-block",
                 objectFit: "contain",
                 maxWidth: "100%",

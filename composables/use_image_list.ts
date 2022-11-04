@@ -34,6 +34,11 @@ export function useImageList(initial: IPaginationResult<IImage>, query: any) {
 
   return {
     images,
+    prependImages: (add: IImage[]) => {
+      setImages((prev) => [...add, ...prev]);
+      setNumItems((prev) => prev + add.length);
+    },
+
     loading,
     error,
     numItems,
