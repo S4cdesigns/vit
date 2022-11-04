@@ -10,7 +10,6 @@ import StarOutline from "mdi-react/StarBorderIcon";
 import StarHalf from "mdi-react/StarHalfFullIcon";
 import Star from "mdi-react/StarIcon";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -34,6 +33,7 @@ import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
+import PageWrapper from "../components/PageWrapper";
 
 const queryParser = buildQueryParser({
   q: {
@@ -157,10 +157,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   const hasNoLabels = !labelLoader && !labelList.length;
 
   return (
-    <div style={{ padding: 10 }}>
-      <Head>
-        <title>{t("foundActors", { numItems })}</title>
-      </Head>
+    <PageWrapper title={t("foundActors", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundActors", { numItems })}</div>
         <div style={{ flexGrow: 1 }}></div>
@@ -295,6 +292,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>
-    </div>
+    </PageWrapper>
   );
 }

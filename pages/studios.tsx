@@ -3,8 +3,6 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -24,6 +22,7 @@ import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
 import { thumbnailUrl } from "../util/thumbnail";
+import PageWrapper from "../components/PageWrapper";
 
 const queryParser = buildQueryParser({
   q: {
@@ -121,10 +120,7 @@ export default function StudioListPage(props: {
   }, [query, favorite, bookmark, sortBy, sortDir]);
 
   return (
-    <div style={{ padding: 10 }}>
-      <Head>
-        <title>{t("foundStudios", { numItems })}</title>
-      </Head>
+    <PageWrapper title={t("foundStudios", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundStudios", { numItems })}</div>
         <div style={{ flexGrow: 1 }}></div>
@@ -206,6 +202,6 @@ export default function StudioListPage(props: {
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>
-    </div>
+    </PageWrapper>
   );
 }

@@ -1,12 +1,13 @@
-/* import { useTranslations } from "next-intl";
- */
+import { useTranslations } from "next-intl";
+
+import PageWrapper from "../components/PageWrapper";
 import { IPaginationResult } from "../types/pagination";
 
 export default function MarkerListPage(props: {
   page: number;
   initial: IPaginationResult<unknown>;
 }) {
-  /* const t = useTranslations(); */
+  const t = useTranslations();
 
-  return <div style={{ padding: 10 }}>content</div>;
+  return <PageWrapper title={t("foundActors", { numItems: 0 })}>content</PageWrapper>;
 }

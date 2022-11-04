@@ -1,9 +1,8 @@
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import ActorProfile from "../../components/actor_details/ActorProfile";
 import ActorStats from "../../components/actor_details/ActorStats";
@@ -19,6 +18,7 @@ import ListContainer from "../../components/ListContainer";
 import { actorCardFragment } from "../../fragments/actor";
 import { IActor } from "../../types/actor";
 import { buildQueryParser } from "../../util/query_parser";
+import PageWrapper from "../../components/PageWrapper";
 
 const queryParser = buildQueryParser({
   q: {
@@ -226,15 +226,11 @@ export default function ActorPage({ actor }: { actor: IActor }) {
   );
 
   return (
-    <div>
-      <Head>
-        <title>{actor.name}</title>
-        {/* {actor.avatar && <link rel="shortcut icon" href={thumbnailUrl(actor.avatar._id)} />} */}
-      </Head>
+    <PageWrapper title={actor.name}>
       <HeroImage imageId={actor.hero?._id} />
-      <div style={{ display: "flex", justifyContent: "center", padding: 10 }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <ComplexGrid negativeTop={!!actor.hero} leftChildren={leftCol} rightChildren={rightCol} />
       </div>
-    </div>
+    </PageWrapper>
   );
 }

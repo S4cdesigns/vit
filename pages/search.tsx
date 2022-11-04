@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import ActorCard from "../components/ActorCard";
 import ListContainer from "../components/ListContainer";
 import MovieCard from "../components/MovieCard";
+import PageWrapper from "../components/PageWrapper";
 import SceneCard from "../components/SceneCard";
 import { actorCardFragment } from "../fragments/actor";
 import { movieCardFragment } from "../fragments/movie";
@@ -98,7 +99,7 @@ export default function SearchPage(props: {
   const { actorResult, movieResult, sceneResult } = props;
 
   return (
-    <div style={{ padding: 10 }}>
+    <PageWrapper title="Search results">
       {/* Actors */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
@@ -144,6 +145,6 @@ export default function SearchPage(props: {
           ))}
         </ListContainer>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

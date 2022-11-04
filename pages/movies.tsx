@@ -3,7 +3,6 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -19,6 +18,7 @@ import useUpdateEffect from "../composables/use_update_effect";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
+import PageWrapper from "../components/PageWrapper";
 
 const queryParser = buildQueryParser({
   q: {
@@ -107,10 +107,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   }, [query, favorite, bookmark, sortBy, sortDir]);
 
   return (
-    <div style={{ padding: 10 }}>
-      <Head>
-        <title>{t("foundMovies", { numItems })}</title>
-      </Head>
+    <PageWrapper title={t("foundMovies", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
         <div style={{ flexGrow: 1 }}></div>
@@ -193,6 +190,6 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>
-    </div>
+    </PageWrapper>
   );
 }

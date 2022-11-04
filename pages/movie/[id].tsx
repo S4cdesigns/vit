@@ -4,7 +4,6 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
@@ -25,6 +24,7 @@ import { sceneCardFragment } from "../../fragments/scene";
 import { IMovie } from "../../types/movie";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+import PageWrapper from "../../components/PageWrapper";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data } = await axios.post<{
@@ -120,17 +120,12 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
   );
 
   return (
-    <>
-      <Head>
-        <title>{movie.name}</title>
-      </Head>
-
+    <PageWrapper title={movie.name}>
       <div
         style={{
           flexWrap: "wrap",
           display: "flex",
           justifyContent: "center",
-          marginTop: 10,
           gap: 5,
         }}
       >
@@ -321,6 +316,6 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
           </ListWrapper>
         </div>
       </div>
-    </>
+    </PageWrapper>
   );
 }

@@ -1,11 +1,11 @@
 import { Masonry } from "masonic";
-import Head from "next/head";
 import { useTranslations } from "next-intl";
 
 import FavoritesCard from "../components/widgets/FavoritesCard";
 import LibraryTimeCard from "../components/widgets/LibraryTimeCard";
 import ScanCard from "../components/widgets/ScanCard";
 import StatsCard from "../components/widgets/StatsCard";
+import PageWrapper from "../components/PageWrapper";
 /* import Window from "../components/Window";
 import { useState } from "react";
 import Button from "../components/Button"; */
@@ -16,10 +16,7 @@ export default function IndexPage() {
   const t = useTranslations();
 
   return (
-    <div style={{ padding: 10 }}>
-      <Head>
-        <title>{t("overview")}</title>
-      </Head>
+    <PageWrapper title={t("overview")}>
       {/*   <div>
         <input
           type="file"
@@ -42,6 +39,6 @@ export default function IndexPage() {
         render={({ data }) => data}
         columnWidth={300}
       />
-    </div>
+    </PageWrapper>
   );
 }

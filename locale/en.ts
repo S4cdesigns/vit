@@ -29,15 +29,15 @@ export default {
   settings: "Settings",
 
   foundScenes:
-    "{numItems, plural, =0 {No scenes found} one {Found 1 scene} other {Found {numItems} scenes} }",
+    "{numItems, plural, =0 {No scenes found} one {1 scene found} other {{numItems} scenes found} }",
   foundActors:
-    "{numItems, plural, =0 {No actors found} one {Found 1 actor} other {{numItems} actors found} }",
+    "{numItems, plural, =0 {No actors found} one {1 actor found} other {{numItems} actors found} }",
   foundMovies:
-    "{numItems, plural, =0 {No movies found} one {Found 1 movie} other {{numItems} movies found} }",
+    "{numItems, plural, =0 {No movies found} one {1 movie found} other {{numItems} movies found} }",
   foundImages:
-    "{numItems, plural, =0 {No images found} one {Found 1 image} other {{numItems} images found} }",
+    "{numItems, plural, =0 {No images found} one {1 image found} other {{numItems} images found} }",
   foundStudios:
-    "{numItems, plural, =0 {No studios found} one {Found 1 studio} other {{numItems} studios found} }",
+    "{numItems, plural, =0 {No studios found} one {1 studio found} other {{numItems} studios found} }",
 
   title: "Title",
   path: "Path",

@@ -6,7 +6,6 @@ import CopyIcon from "mdi-react/ContentCopyIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
@@ -36,6 +35,7 @@ import { gqlIp } from "../../util/ip";
 import { bookmarkScene, favoriteScene, rateScene } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+import PageWrapper from "../../components/PageWrapper";
 
 async function runFFprobe(sceneId: string) {
   const res = await axios.post<{
@@ -195,10 +195,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
   }
 
   return (
-    <div>
-      <Head>
-        <title>{scene.name}</title>
-      </Head>
+    <PageWrapper padless title={scene.name}>
       <VideoPlayer
         duration={scene.meta.duration}
         markers={markers.map((marker) => ({
@@ -480,6 +477,6 @@ export default function ScenePage({ scene }: { scene: IScene }) {
           )}
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
