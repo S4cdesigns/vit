@@ -25,6 +25,7 @@ import { IMovie } from "../../types/movie";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 import PageWrapper from "../../components/PageWrapper";
+import AutoLayout from "../../components/AutoLayout";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data } = await axios.post<{
@@ -155,16 +156,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
           justifyContent: "center",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            maxWidth: 1000,
-            padding: 10,
-            gap: 20,
-            flexDirection: "column",
-          }}
-        >
+        <AutoLayout style={{ width: "100%", maxWidth: 1000, padding: 10 }}>
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div>
@@ -201,14 +193,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                 gap: 20,
               }}
             >
-              <div
-                /* TODO: flex col card body component */
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 20,
-                }}
-              >
+              <AutoLayout>
                 <CardSection title={t("title")}>
                   <div style={{ opacity: 0.5 }}>{movie.name}</div>
                 </CardSection>
@@ -239,8 +224,8 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                 <CardSection title={t("labels", { numItems: 2 })}>
                   <LabelGroup limit={999} labels={movie.labels} />
                 </CardSection>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              </AutoLayout>
+              <AutoLayout>
                 <CardSection title={t("videoDuration")}>
                   <div style={{ opacity: 0.5 }}>{formatDuration(movie.duration)}</div>
                 </CardSection>
@@ -249,7 +234,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     {prettyBytes(movie.size)}
                   </div>
                 </CardSection>
-              </div>
+              </AutoLayout>
             </div>
           </Card>
           <CardTitle>
@@ -314,7 +299,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
               ></ActorCard>
             ))}
           </ListWrapper>
-        </div>
+        </AutoLayout>
       </div>
     </PageWrapper>
   );

@@ -19,6 +19,7 @@ import { actorCardFragment } from "../../fragments/actor";
 import { IActor } from "../../types/actor";
 import { buildQueryParser } from "../../util/query_parser";
 import PageWrapper from "../../components/PageWrapper";
+import AutoLayout from "../../components/AutoLayout";
 /* import Window from "../../components/Window";
 import { AvatarCropper } from "../../components/Cropper";
 import { Crop } from "react-image-crop"; */
@@ -142,25 +143,23 @@ export default function ActorPage({ actor }: { actor: IActor }) {
   const [src, setSrc] = useState<string | null>(null); */
 
   const leftCol = (
-    <div>
-      <Card style={{ padding: "20px 10px" }}>
-        <ActorProfile
-          actorId={actor._id}
-          actorName={actor.name}
-          age={actor.age}
-          bornOn={actor.bornOn}
-          avatarId={actor.avatar?._id}
-          nationality={actor.nationality}
-          rating={actor.rating}
-          favorite={actor.favorite}
-          bookmark={actor.bookmark}
-        />
-      </Card>
-    </div>
+    <Card style={{ padding: "20px 10px" }}>
+      <ActorProfile
+        actorId={actor._id}
+        actorName={actor.name}
+        age={actor.age}
+        bornOn={actor.bornOn}
+        avatarId={actor.avatar?._id}
+        nationality={actor.nationality}
+        rating={actor.rating}
+        favorite={actor.favorite}
+        bookmark={actor.bookmark}
+      />
+    </Card>
   );
 
   const rightCol = (
-    <div style={{ display: "flex", gap: 20, flexDirection: "column" }}>
+    <AutoLayout>
       {/*   <Window isOpen title="Set avatar">
         <div>
           <input
@@ -255,7 +254,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
           initialState={parsedQuery}
         />
       )}
-    </div>
+    </AutoLayout>
   );
 
   return (

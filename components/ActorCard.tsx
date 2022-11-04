@@ -113,7 +113,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           {actor.nationality && (
             <Flag
               name={actor.nationality.alias || actor.nationality.name}
-              size={20}
+              size={16}
               code={actor.nationality.alpha2}
             />
           )}

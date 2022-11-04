@@ -1,52 +1,83 @@
 import clsx from "clsx";
 import ActorIcon from "mdi-react/AccountBoxIcon";
 import StudioIcon from "mdi-react/CameraAltIcon";
+import SettingsIcon from "mdi-react/CogIcon";
 import ImageIcon from "mdi-react/ImageIcon";
 import MarkerIcon from "mdi-react/SkipNextIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
-import MovieIcon from "mdi-react/VideoIcon";
+import MovieIcon from "mdi-react/FilmstripBoxMultipleIcon";
+import LabelsIcon from "mdi-react/LabelIcon";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useContext } from "react";
+import { ReactNode, useContext } from "react";
 
 import { useVersion } from "../../composables/use_version";
 import { ThemeContext } from "../../pages/_app";
 import Button from "../Button";
 import Paper from "../Paper";
-import styles from "./Sidebar.module.scss";
+import Flag from "../Flag";
+import SidebarLink from "./SidebarLink";
 
-const links = [
+const links: (
+  | { divider: true }
+  | { divider: false; text: string; icon: ReactNode; url: string }
+)[] = [
   {
     text: "scene",
     icon: <SceneIcon />,
     url: "/scenes",
+    divider: false,
   },
   {
     text: "actor",
     icon: <ActorIcon />,
     url: "/actors",
+    divider: false,
   },
   {
     text: "movie",
     icon: <MovieIcon />,
     url: "/movies",
+    divider: false,
   },
   {
     text: "studio",
     icon: <StudioIcon />,
     url: "/studios",
+    divider: false,
   },
   {
     text: "image",
     icon: <ImageIcon />,
     url: "/images",
+    divider: false,
   },
   {
     text: "marker",
     icon: <MarkerIcon />,
     url: "/markers",
+    divider: false,
   },
+  { divider: true },
+  {
+    text: "labels",
+    icon: <LabelsIcon />,
+    url: "/labels",
+    divider: false,
+  },
+  {
+    text: "settings",
+    icon: <SettingsIcon />,
+    url: "/settings",
+    divider: false,
+  },
+];
+
+const languages: [string, string, string][] = [
+  ["English", "US", "en"],
+  ["Deutsch", "DE", "de"],
+  /*  ["Francais", "FR", "fr"], */
 ];
 
 type Props = {
@@ -67,21 +98,26 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
 
   const sidebarContent = (
     <>
-      <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div
+        style={{
+          padding: 8,
+          display: "flex",
+          flexDirection: "column",
+          gap: 5,
+          flexGrow: 1,
+          overflowY: "scroll",
+        }}
+      >
         {links.map((link) => (
-          <Link key={link.url} href={link.url} passHref>
-            <a onClick={toggleSidebar}>
-              <div
-                className={clsx(
-                  router.pathname === link.url ? styles.active : "",
-                  styles["sidebar-link"]
-                )}
-              >
-                {link.icon}
-                <div>{t(link.text, { numItems: 2 })}</div>
-              </div>
-            </a>
-          </Link>
+          <>
+            {link.divider ? (
+              <hr style={{ width: "100%", opacity: 0.33 }} />
+            ) : (
+              <SidebarLink icon={link.icon} url={link.url}>
+                {t(link.text, { numItems: 2 })}
+              </SidebarLink>
+            )}
+          </>
         ))}
       </div>
       <div style={{ flexGrow: 1 }}></div>
@@ -90,23 +126,19 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
       </div>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 5 }}>
         <div style={{ marginTop: 4, gap: 8, display: "flex", justifyContent: "center" }}>
-          <img
-            className="hover"
-            onClick={() => switchLocale("en")}
-            src="/assets/flags/us.svg"
-            width="24"
-            height="24"
-          />
-          <img
-            className="hover"
-            onClick={() => switchLocale("de")}
-            src="/assets/flags/de.svg"
-            width="24"
-            height="24"
-          />
+          {languages.map(([name, code, locale]) => (
+            <Flag
+              className="hover"
+              onClick={() => switchLocale(locale)}
+              name={name}
+              code={code}
+              size={24}
+              key={locale}
+            />
+          ))}
         </div>
       </div>
-      <div
+      {/*     <div
         style={{
           marginBottom: 5,
           textAlign: "center",
@@ -116,7 +148,7 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
         }}
       >
         Settings
-      </div>
+      </div> */}
       <div
         style={{
           marginBottom: 5,

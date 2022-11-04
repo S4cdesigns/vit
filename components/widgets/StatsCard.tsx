@@ -46,27 +46,25 @@ export default function StatsCard() {
 
   return (
     <WidgetCard icon={<StatsIcon />} title={t("stats")}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <div>
-          <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numScenes || 0}</span>{" "}
-          <span style={{ opacity: 0.8 }}>{t("scene", { numItems: stats?.numScenes || 0 })}</span>
-        </div>
-        <div>
-          <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numActors || 0}</span>{" "}
-          <span style={{ opacity: 0.8 }}> {t("actor", { numItems: stats?.numActors || 0 })}</span>
-        </div>
-        <div>
-          <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numMovies || 0}</span>{" "}
-          <span style={{ opacity: 0.8 }}> {t("movie", { numItems: stats?.numMovies || 0 })}</span>
-        </div>
-        <div>
-          <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numStudios || 0}</span>{" "}
-          <span style={{ opacity: 0.8 }}> {t("studio", { numItems: stats?.numStudios || 0 })}</span>
-        </div>
-        <div>
-          <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numImages || 0}</span>{" "}
-          <span style={{ opacity: 0.8 }}> {t("image", { numItems: stats?.numImages || 0 })}</span>
-        </div>
+      <div>
+        <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numScenes || 0}</span>{" "}
+        <span style={{ opacity: 0.8 }}>{t("scene", { numItems: stats?.numScenes || 0 })}</span>
+      </div>
+      <div>
+        <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numActors || 0}</span>{" "}
+        <span style={{ opacity: 0.8 }}> {t("actor", { numItems: stats?.numActors || 0 })}</span>
+      </div>
+      <div>
+        <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numMovies || 0}</span>{" "}
+        <span style={{ opacity: 0.8 }}> {t("movie", { numItems: stats?.numMovies || 0 })}</span>
+      </div>
+      <div>
+        <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numStudios || 0}</span>{" "}
+        <span style={{ opacity: 0.8 }}> {t("studio", { numItems: stats?.numStudios || 0 })}</span>
+      </div>
+      <div>
+        <span style={{ fontSize: 32, fontWeight: 400 }}>{stats?.numImages || 0}</span>{" "}
+        <span style={{ opacity: 0.8 }}> {t("image", { numItems: stats?.numImages || 0 })}</span>
       </div>
     </WidgetCard>
   );

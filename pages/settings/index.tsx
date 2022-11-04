@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import useSWR from "swr";
+import AutoLayout from "../../components/AutoLayout";
 
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
@@ -29,13 +30,10 @@ export default function SettingsPage() {
 
   return (
     <PageWrapper title={t("settings")}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <AutoLayout>
         <CardTitle>{t("settings")}</CardTitle>
-        <div
+        <AutoLayout
           style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
             width: "100%",
             maxWidth: 1000,
           }}
@@ -115,8 +113,8 @@ export default function SettingsPage() {
               </table>
             </div>
           </Card>
-        </div>
-      </div>
+        </AutoLayout>
+      </AutoLayout>
     </PageWrapper>
   );
 }

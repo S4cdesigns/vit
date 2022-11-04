@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { CSSProperties, ReactNode } from "react";
+import AutoLayout from "./AutoLayout";
 
 import styles from "./Card.module.scss";
 import Paper from "./Paper";
@@ -13,8 +14,7 @@ type Props = {
 export default function Card({ children, className, style }: Props) {
   return (
     <Paper className={clsx(className, styles.card)} style={{ ...style }}>
-      {/* TODO: card body component (flex col) */}
-      {children}
+      <AutoLayout>{children}</AutoLayout>
     </Paper>
   );
 }

@@ -36,6 +36,7 @@ import { bookmarkScene, favoriteScene, rateScene } from "../../util/mutations/sc
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 import PageWrapper from "../../components/PageWrapper";
+import AutoLayout from "../../components/AutoLayout";
 
 async function runFFprobe(sceneId: string) {
   const res = await axios.post<{
@@ -214,12 +215,9 @@ export default function ScenePage({ scene }: { scene: IScene }) {
       >
         <div
           style={{
-            display: "flex",
             width: "100%",
             maxWidth: 1000,
             padding: 10,
-            gap: 20,
-            flexDirection: "column",
           }}
         >
           <Card>
@@ -270,14 +268,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                 gap: 20,
               }}
             >
-              <div
-                /* TODO: flex col card body component */
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 20,
-                }}
-              >
+              <AutoLayout>
                 <CardSection title={t("title")}>
                   <Text>{scene.name}</Text>
                 </CardSection>
@@ -306,8 +297,8 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                 <CardSection title="Labels">
                   <LabelGroup limit={999} labels={scene.labels} />
                 </CardSection>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              </AutoLayout>
+              <AutoLayout>
                 <CardSection title={t("videoDuration")}>
                   <Text>{formatDuration(scene.meta.duration)}</Text>
                 </CardSection>
@@ -385,7 +376,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                     </Window>
                   </div>
                 </CardSection>
-              </div>
+              </AutoLayout>
             </div>
           </Card>
           {!!actors.length && (
