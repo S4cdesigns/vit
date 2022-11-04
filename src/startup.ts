@@ -33,8 +33,9 @@ function skipImage(image: Image) {
 function imagemagickHelp(cmd: string, path: string) {
   if (platform() !== "win32" && path.endsWith(".exe")) {
     logger.warn(
-      `It looks like you're not running Windows, but your config contains a .exe path.
-Make sure to install imagemagick and set the correct imagemagick path in the config`
+      `It looks like you're not running Windows, but your config contains an .exe path.
+Make sure to install imagemagick and set the correct imagemagick path in the config.
+If you have magick.exe, you may be able to use path/magick.exe ${cmd}`
     );
   }
   if (platform() === "linux") {
