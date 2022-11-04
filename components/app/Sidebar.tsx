@@ -100,7 +100,6 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
     <>
       <div
         style={{
-          padding: 8,
           display: "flex",
           flexDirection: "column",
           gap: 5,
@@ -121,44 +120,34 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
         ))}
       </div>
       <div style={{ flexGrow: 1 }}></div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button onClick={toggleTheme}>Toggle theme</Button>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 5 }}>
-        <div style={{ marginTop: 4, gap: 8, display: "flex", justifyContent: "center" }}>
-          {languages.map(([name, code, locale]) => (
-            <Flag
-              className="hover"
-              onClick={() => switchLocale(locale)}
-              name={name}
-              code={code}
-              size={24}
-              key={locale}
-            />
-          ))}
+      <div style={{ gap: 8, display: "flex", alignItems: "center", flexDirection: "column" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button onClick={toggleTheme}>Toggle theme</Button>
         </div>
-      </div>
-      {/*     <div
-        style={{
-          marginBottom: 5,
-          textAlign: "center",
-          fontSize: 14,
-          fontWeight: "bold",
-          opacity: 0.75,
-        }}
-      >
-        Settings
-      </div> */}
-      <div
-        style={{
-          marginBottom: 5,
-          textAlign: "center",
-          fontSize: 14,
-          fontWeight: "bold",
-          opacity: 0.75,
-        }}
-      >
-        v{version}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ gap: 8, display: "flex", justifyContent: "center" }}>
+            {languages.map(([name, code, locale]) => (
+              <Flag
+                className="hover"
+                onClick={() => switchLocale(locale)}
+                name={name}
+                code={code}
+                size={24}
+                key={locale}
+              />
+            ))}
+          </div>
+        </div>
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: 14,
+            fontWeight: "bold",
+            opacity: 0.75,
+          }}
+        >
+          v{version}
+        </div>
       </div>
     </>
   );

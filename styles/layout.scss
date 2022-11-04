@@ -107,6 +107,7 @@ $topbar-height: 54px;
     position: sticky;
     height: calc(100vh - $topbar-height);
     gap: 4px;
+    padding: 4px 8px;
   }
 }
 
