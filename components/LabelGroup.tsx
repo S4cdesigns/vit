@@ -1,14 +1,15 @@
-import Color from "color";
 import ChevronDownIcon from "mdi-react/ChevronDownIcon";
 import ChevronUpIcon from "mdi-react/ChevronUpIcon";
 import { useState } from "react";
+import Label from "./Label";
 
 type Props = {
   labels: { _id: string; name: string; color?: string }[];
   limit?: number;
+  onAdd?: () => void;
 };
 
-export default function LabelGroup({ labels, limit }: Props): JSX.Element {
+export default function LabelGroup({ labels, limit, onAdd }: Props): JSX.Element {
   const max = limit || 5;
 
   const [expanded, setExpanded] = useState(false);
@@ -18,25 +19,15 @@ export default function LabelGroup({ labels, limit }: Props): JSX.Element {
   return (
     <div>
       {slice.map((label) => (
-        <div
-          style={{
-            fontSize: 11,
-            padding: "3px 8px 3px 8px",
-            borderRadius: 4,
-            display: "inline-block",
-            marginRight: 4,
-            marginTop: 4,
-            background: label.color || "#000000dd",
-            borderColor: "#80808050",
-            borderWidth: 1,
-            borderStyle: "solid",
-            color: new Color(label.color).isLight() ? "black" : "white",
-          }}
-          key={label._id}
-        >
+        <Label key={label._id} color={label.color}>
           {label.name}
-        </div>
+        </Label>
       ))}
+      {onAdd && (
+        <Label className="hover" onClick={onAdd}>
+          + Add
+        </Label>
+      )}
       <div style={{ textAlign: "center" }}>
         {max < labels.length && (
           <div

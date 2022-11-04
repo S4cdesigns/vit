@@ -24,7 +24,7 @@ import MovieCard from "../../components/MovieCard";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
 import Text from "../../components/Text";
-import VideoPlayer from "../../components/VideoPlayer";
+import VideoPlayer from "../../components/scene_details/VideoPlayer";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";

@@ -9,7 +9,7 @@ import { NextIntlProvider } from "next-intl";
 import nprogress from "nprogress";
 import { createContext, useEffect, useState } from "react";
 
-import Layout from "../components/Layout";
+import Layout from "../components/app/Layout";
 import lang from "../locale";
 
 Router.events.on("routeChangeStart", () => nprogress.start());

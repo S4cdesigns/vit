@@ -53,7 +53,7 @@ export default {
   avgRating: "Average rating",
   pvScore: "PV score",
   yearsOld: "{age} years old",
-  aliases: "aliases",
+  aliases: "Aliases",
   description: "Description",
   collabs: "Scene collaborations with...",
 

@@ -10,10 +10,10 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useContext } from "react";
 
-import { useVersion } from "../composables/use_version";
-import { ThemeContext } from "../pages/_app";
-import Button from "./Button";
-import Paper from "./Paper";
+import { useVersion } from "../../composables/use_version";
+import { ThemeContext } from "../../pages/_app";
+import Button from "../Button";
+import Paper from "../Paper";
 import styles from "./Sidebar.module.scss";
 
 const links = [

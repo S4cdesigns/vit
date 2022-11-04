@@ -4,9 +4,9 @@ import PlayIcon from "mdi-react/PlayIcon";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import { useEffect, useRef, useState } from "react";
 
-import { formatDuration } from "../util/string";
-import Loader from "./Loader";
-import Marker from "./Marker";
+import { formatDuration } from "../../util/string";
+import Loader from "../Loader";
+import Marker from "../Marker";
 import styles from "./VideoPlayer.module.scss";
 
 type Props = {
