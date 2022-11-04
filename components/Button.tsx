@@ -21,7 +21,9 @@ export default function Button({ children, onClick, style, className, loading }:
         }
       }}
       style={style || {}}
-      className={clsx(styles.button, className)}
+      className={clsx(styles.button, className, {
+        hover: !loading,
+      })}
     >
       <div
         style={{
