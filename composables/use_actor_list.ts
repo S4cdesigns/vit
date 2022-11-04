@@ -1,10 +1,10 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 import { actorCardFragment } from "../fragments/actor";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 
 export function useActorList(initial: IPaginationResult<IActor>, query: any) {
   const [actors, setActors] = useState<IActor[]>(initial?.items || []);
@@ -56,42 +56,31 @@ export function useActorList(initial: IPaginationResult<IActor>, query: any) {
 }
 
 export async function fetchActors(page = 0, query: any) {
-  const { data } = await axios.post<{
-    data: {
-      getActors: IPaginationResult<IActor>;
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-        query($query: ActorSearchQuery!, $seed: String) {
-          getActors(query: $query, seed: $seed) {
-            items {
-              ...ActorCard
-            }
-            numItems
-            numPages
-          }
-        }
-        ${actorCardFragment}
-      `,
-      variables: {
-        query: {
-          query: "",
-          page,
-          sortBy: "addedOn",
-          sortDir: "desc",
-          ...query,
-        },
-        seed: Math.random().toString(),
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  query($query: ActorSearchQuery!, $seed: String) {
+    getActors(query: $query, seed: $seed) {
+      items {
+        ...ActorCard
+      }
+      numItems
+      numPages
     }
-  );
+  }
+  ${actorCardFragment}
+`;
 
-  return data.data.getActors;
+  const { getActors } = await graphqlQuery<{
+    getActors: IPaginationResult<IActor>;
+  }>(q, {
+    query: {
+      query: "",
+      page,
+      sortBy: "addedOn",
+      sortDir: "desc",
+      ...query,
+    },
+    seed: Math.random().toString(),
+  });
+
+  return getActors;
 }

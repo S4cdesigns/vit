@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import Button from "../components/Button";
-import { IImage } from "../types/image";
+import PageWrapper from "../components/PageWrapper";
 
 async function getRandomImage() {
   const res = await Axios.post<{
@@ -76,12 +76,13 @@ export default function ErrorPage() {
   }, [count]);
 
   return (
-    <div style={{ padding: 10, textAlign: "center" }}>
-      <h2>Error</h2>
-      {img && (
-        <>
-          <div style={{ justifyContent: "center", display: "flex", gap: 10, marginBottom: 10 }}>
-            {/* <div className="hover">
+    <PageWrapper title="Error">
+      <div style={{ textAlign: "center" }}>
+        <h2>Error</h2>
+        {img && (
+          <>
+            <div style={{ justifyContent: "center", display: "flex", gap: 10, marginBottom: 10 }}>
+              {/* <div className="hover">
               {img.favorite ? (
                 <HeartIcon style={{ fontSize: 28, color: "#ff3355" }} />
               ) : (
@@ -95,31 +96,32 @@ export default function ErrorPage() {
                 <BookmarkBorderIcon style={{ fontSize: 28 }} />
               )}
             </div> */}
-          </div>
-          <div className="flex content-center">
-            <div style={{ position: "relative" }}>
-              <img
-                style={{ borderRadius: 10, maxHeight: "50vh" }}
-                src={`/api/media/image/${img._id}`}
-              />
             </div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <h4 style={{ marginBottom: 8 }}>
-              <Link href={`/scene/${img.scene._id}`}>{img.scene.name}</Link>
-            </h4>
-            <div style={{ fontSize: 16, fontStyle: "italic", marginBottom: 16 }}>
-              starring {img.actors.map((a) => a.name).join(", ") || "???"}
+            <div className="flex content-center">
+              <div style={{ position: "relative" }}>
+                <img
+                  style={{ borderRadius: 10, maxHeight: "50vh" }}
+                  src={`/api/media/image/${img._id}`}
+                />
+              </div>
             </div>
-            <Button onClick={() => setCount(count + 1)}>Shuffle</Button>
+            <div style={{ textAlign: "center" }}>
+              <h4 style={{ marginBottom: 8 }}>
+                <Link href={`/scene/${img.scene._id}`}>{img.scene.name}</Link>
+              </h4>
+              <div style={{ fontSize: 16, fontStyle: "italic", marginBottom: 16 }}>
+                starring {img.actors.map((a) => a.name).join(", ") || "???"}
+              </div>
+              <Button onClick={() => setCount(count + 1)}>Shuffle</Button>
+            </div>
+          </>
+        )}
+        {count > 10 && (
+          <div style={{ textAlign: "center", marginTop: 10, opacity: 0.8 }}>
+            <i>Stop shuffling and get back to the real content!</i>
           </div>
-        </>
-      )}
-      {count > 10 && (
-        <div style={{ textAlign: "center", marginTop: 10, opacity: 0.8 }}>
-          <i>Stop shuffling and get back to the real content!</i>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </PageWrapper>
   );
 }

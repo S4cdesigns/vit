@@ -1,31 +1,28 @@
-import Axios from "axios";
 import SettingsIcon from "mdi-react/SettingsIcon";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import useSWR from "swr";
+import { graphqlQuery } from "../../util/gql";
 
 import Loader from "../Loader";
 import WidgetCard from "./WidgetCard";
 
 async function getQueueStats() {
-  const { data } = await Axios.post<{
-    data: {
-      getQueueInfo: {
-        length: number;
-        processing: boolean;
-      };
+  const query = `
+  { 
+    getQueueInfo {    
+      length 
+      processing 
+    }
+  }`;
+
+  const { getQueueInfo } = await graphqlQuery<{
+    getQueueInfo: {
+      length: number;
+      processing: boolean;
     };
-  }>("/api/ql", {
-    query: `
-{ 
-  getQueueInfo {    
-    length 
-    processing 
-  }
-}
-    `,
-  });
-  return data.data.getQueueInfo;
+  }>(query, {});
+
+  return getQueueInfo;
 }
 
 export default function LibraryTimeCard() {

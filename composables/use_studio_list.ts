@@ -1,10 +1,10 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 import { studioCardFragment } from "../fragments/studio";
 import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 
 export function useStudioList(initial: IPaginationResult<IStudio>, query: any) {
   const [studios, setStudios] = useState<IStudio[]>(initial?.items || []);
@@ -56,41 +56,30 @@ export function useStudioList(initial: IPaginationResult<IStudio>, query: any) {
 }
 
 export async function fetchStudios(page = 0, query: any) {
-  const { data } = await axios.post<{
-    data: {
-      getStudios: IPaginationResult<IStudio>;
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-        query($query: StudioSearchQuery!, $seed: String) {
-          getStudios(query: $query, seed: $seed) {
-            items {
-              ...StudioCard
-            }
-            numItems
-            numPages
-          }
-        }
-        ${studioCardFragment}
-      `,
-      variables: {
-        query: {
-          query: "",
-          page,
-          sortBy: "addedOn",
-          sortDir: "desc",
-          ...query,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  query($query: StudioSearchQuery!, $seed: String) {
+    getStudios(query: $query, seed: $seed) {
+      items {
+        ...StudioCard
+      }
+      numItems
+      numPages
     }
-  );
+  }
+  ${studioCardFragment}
+`;
 
-  return data.data.getStudios;
+  const { getStudios } = await graphqlQuery<{
+    getStudios: IPaginationResult<IStudio>;
+  }>(q, {
+    query: {
+      query: "",
+      page,
+      sortBy: "addedOn",
+      sortDir: "desc",
+      ...query,
+    },
+  });
+
+  return getStudios;
 }

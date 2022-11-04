@@ -39,6 +39,7 @@ $topbar-height: 54px;
   z-index: 900;
   border-radius: 0px !important;
   transition: left 0.25s ease-in-out;
+  padding: 8px;
 
   &.active {
     left: 0 !important;

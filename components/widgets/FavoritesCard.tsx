@@ -1,38 +1,36 @@
-import Axios from "axios";
 import HeartIcon from "mdi-react/HeartIcon";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { IActor } from "../../types/actor";
+import { graphqlQuery } from "../../util/gql";
 import ActorGridItem from "../ActorGridItem";
 import Button from "../Button";
 import WidgetCard from "./WidgetCard";
 
 async function getActors(skip = 0): Promise<{ actors: IActor[] }> {
-  const res = await Axios.post<{
-    data: {
-      topActors: IActor[];
-    };
-  }>("/api/ql", {
-    query: `
-      query($skip: Int) {
-        topActors(skip: $skip, take: 4) {
-          _id
-          name
-          thumbnail {
-            _id
-          }
-          favorite
-          bookmark
-        }
+  const query = `
+  query($skip: Int) {
+    topActors(skip: $skip, take: 4) {
+      _id
+      name
+      thumbnail {
+        _id
       }
-    `,
-    variables: {
-      skip,
-    },
+      favorite
+      bookmark
+    }
+  }
+`;
+
+  const { topActors } = await graphqlQuery<{
+    topActors: IActor[];
+  }>(query, {
+    skip,
   });
+
   return {
-    actors: res.data.data.topActors,
+    actors: topActors,
   };
 }
 

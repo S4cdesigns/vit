@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
@@ -20,6 +19,7 @@ import { IActor } from "../../types/actor";
 import { buildQueryParser } from "../../util/query_parser";
 import PageWrapper from "../../components/PageWrapper";
 import AutoLayout from "../../components/AutoLayout";
+import { graphqlQuery } from "../../util/gql";
 /* import Window from "../../components/Window";
 import { AvatarCropper } from "../../components/Cropper";
 import { Crop } from "react-image-crop"; */
@@ -59,70 +59,59 @@ const queryParser = buildQueryParser({
 });
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data } = await axios.post<{
-    data: {
-      getActorById: IActor;
-    };
-  }>(
-    "http://localhost:3000/api/ql",
-    {
-      query: `
-      query ($id: String!) {
-        getActorById(id: $id) {
-          ...ActorCard
-          bornOn
-          aliases
-          averageRating
-          score
-          numScenes
-          labels {
-            _id
-            name
-            color
-          }
-          thumbnail {
-            _id
-            color
-          }
-          altThumbnail {
-            _id
-          }
-          watches
-          hero {
-            _id
-            color
-          }
-          avatar {
-            _id
-            color
-          }
-          resolvedCustomFields {
-            field {
-              _id
-              name
-              type
-              unit
-            }
-            value
-          }
-        }
+  const q = `
+  query ($id: String!) {
+    getActorById(id: $id) {
+      ...ActorCard
+      bornOn
+      aliases
+      averageRating
+      score
+      numScenes
+      labels {
+        _id
+        name
+        color
       }
-      ${actorCardFragment}
-      `,
-      variables: {
-        id: ctx.query.id,
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+      thumbnail {
+        _id
+        color
+      }
+      altThumbnail {
+        _id
+      }
+      watches
+      hero {
+        _id
+        color
+      }
+      avatar {
+        _id
+        color
+      }
+      resolvedCustomFields {
+        field {
+          _id
+          name
+          type
+          unit
+        }
+        value
+      }
     }
-  );
+  }
+  ${actorCardFragment}
+  `;
+
+  const { getActorById } = await graphqlQuery<{
+    getActorById: IActor;
+  }>(q, {
+    id: ctx.query.id,
+  });
 
   return {
     props: {
-      actor: data.data.getActorById,
+      actor: getActorById,
     },
   };
 };

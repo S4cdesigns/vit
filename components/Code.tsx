@@ -25,6 +25,7 @@ export default function Code<T>({ value, style }: Props<T>) {
         backgroundColor: "#000000aa",
         padding: 8,
         borderRadius: 8,
+        overflowY: "hidden",
         ...style,
       }}
     >
@@ -48,6 +49,8 @@ export default function Code<T>({ value, style }: Props<T>) {
           fontFamily: "monospace sans-serif !important",
           opacity: "0.8",
           lineHeight: "150%",
+          overflowY: "scroll",
+          maxHeight: 300,
         }}
       >
         {formatText(value)}

@@ -1,36 +1,24 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 
 import ILabel from "../types/label";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 
 async function fetchLabels() {
-  const { data } = await axios.post<{
-    data: {
-      getLabels: ILabel[];
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-{
-  getLabels {
-    _id
-    name
-    aliases
-    color
-  }
-}
-      `,
-      variables: {},
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  {
+    getLabels {
+      _id
+      name
+      aliases
+      color
     }
-  );
-  return data.data.getLabels;
+  }`;
+
+  const { getLabels } = await graphqlQuery<{
+    getLabels: ILabel[];
+  }>(q, {});
+
+  return getLabels;
 }
 
 export default function useLabelList() {

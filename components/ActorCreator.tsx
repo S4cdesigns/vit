@@ -1,4 +1,3 @@
-import axios from "axios";
 import Color from "color";
 import { useState } from "react";
 import Select from "react-select";
@@ -6,34 +5,25 @@ import useLabelList from "../composables/use_label_list";
 
 import { useWindow } from "../composables/use_window";
 import ILabel from "../types/label";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
 async function createActor(name: string, aliases: string[], labels: string[]) {
-  await axios.post(
-    gqlIp(),
-    {
-      query: `
-mutation ($name: String!, $aliases: [String!]!, $labels: [String!]!) {
-  addActor(name: $name, aliases: $aliases, labels: $labels) {
-    _id
-  }
-}
-      `,
-      variables: {
-        name,
-        aliases,
-        labels,
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const query = `
+  mutation ($name: String!, $aliases: [String!]!, $labels: [String!]!) {
+    addActor(name: $name, aliases: $aliases, labels: $labels) {
+      _id
     }
-  );
+  }
+        `;
+
+  await graphqlQuery(query, {
+    name,
+    aliases,
+    labels,
+  });
 }
 
 type Props = {

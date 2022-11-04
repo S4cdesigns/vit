@@ -18,6 +18,7 @@ export async function fetchCollabs(actorId: string): Promise<IActor[]> {
         collabs {
           _id
           name
+          aliases
           avatar {
             _id
             color

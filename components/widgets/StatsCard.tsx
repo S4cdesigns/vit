@@ -1,36 +1,34 @@
-import Axios from "axios";
 import StatsIcon from "mdi-react/ChartBarStackedIcon";
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
+import { graphqlQuery } from "../../util/gql";
 
 import WidgetCard from "./WidgetCard";
 
 async function getInfo() {
-  const res = await Axios.post<{
-    data: {
-      numScenes: number;
-      numActors: number;
-      numMovies: number;
-      numImages: number;
-      numStudios: number;
-    };
-  }>("/api/ql", {
-    query: `
-    {
-      numScenes
-      numActors
-      numMovies
-      numImages
-      numStudios
-    }
-    `,
-  });
+  const query = `
+  {
+    numScenes
+    numActors
+    numMovies
+    numImages
+    numStudios
+  }`;
+
+  const data = await graphqlQuery<{
+    numScenes: number;
+    numActors: number;
+    numMovies: number;
+    numImages: number;
+    numStudios: number;
+  }>(query, {});
+
   return {
-    numScenes: res.data.data.numScenes,
-    numActors: res.data.data.numActors,
-    numMovies: res.data.data.numMovies,
-    numImages: res.data.data.numImages,
-    numStudios: res.data.data.numStudios,
+    numScenes: data.numScenes,
+    numActors: data.numActors,
+    numMovies: data.numMovies,
+    numImages: data.numImages,
+    numStudios: data.numStudios,
   };
 }
 

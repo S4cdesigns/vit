@@ -5,6 +5,8 @@ import { IActor } from "../types/actor";
 import { thumbnailUrl } from "../util/thumbnail";
 import Paper from "./Paper";
 
+import styles from "./actor_details/ActorProfile.module.scss";
+
 type Props = {
   items: IActor[];
   selected: string[];
@@ -46,13 +48,54 @@ export default function ActorSelector({ items, selected, onChange }: Props) {
               : "white",
           }}
         >
-          <img
+          {/* <img
             style={{ borderRadius: "45%", objectFit: "cover" }}
             width="40"
             height="40"
             src={thumbnailUrl(actor.avatar?._id)}
             alt={actor.name}
-          />
+          /> */}
+          {actor.avatar ? (
+            <img
+              style={{
+                borderColor: "#aaaaaaaa",
+                borderRadius: "40%",
+                borderWidth: 1,
+                borderStyle: "solid",
+                objectFit: "cover",
+                position: "relative",
+              }}
+              width="36"
+              src={thumbnailUrl(actor.avatar._id)}
+            />
+          ) : (
+            <div
+              style={{
+                borderColor: "#aaaaaaaa",
+                borderRadius: "40%",
+                borderWidth: 1,
+                borderStyle: "solid",
+                objectFit: "cover",
+                width: 36,
+                height: 36,
+                aspectRatio: "1",
+                position: "relative",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 24,
+                  opacity: 0.1,
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  position: "absolute",
+                }}
+              >
+                ?
+              </span>
+            </div>
+          )}
           <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500 }}>{actor.name}</div>
         </Paper>
       ))}

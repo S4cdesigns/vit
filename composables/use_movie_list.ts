@@ -1,10 +1,10 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 import { movieCardFragment } from "../fragments/movie";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 
 export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
   const [movies, setMovies] = useState<IMovie[]>(initial?.items || []);
@@ -56,41 +56,30 @@ export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
 }
 
 export async function fetchMovies(page = 0, query: any) {
-  const { data } = await axios.post<{
-    data: {
-      getMovies: IPaginationResult<IMovie>;
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-        query($query: MovieSearchQuery!, $seed: String) {
-          getMovies(query: $query, seed: $seed) {
-            items {
-              ...MovieCard
-            }
-            numItems
-            numPages
-          }
-        }
-        ${movieCardFragment}
-      `,
-      variables: {
-        query: {
-          query: "",
-          page,
-          sortBy: "addedOn",
-          sortDir: "desc",
-          ...query,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  query($query: MovieSearchQuery!, $seed: String) {
+    getMovies(query: $query, seed: $seed) {
+      items {
+        ...MovieCard
+      }
+      numItems
+      numPages
     }
-  );
+  }
+  ${movieCardFragment}
+`;
 
-  return data.data.getMovies;
+  const { getMovies } = await graphqlQuery<{
+    getMovies: IPaginationResult<IMovie>;
+  }>(q, {
+    query: {
+      query: "",
+      page,
+      sortBy: "addedOn",
+      sortDir: "desc",
+      ...query,
+    },
+  });
+
+  return getMovies;
 }

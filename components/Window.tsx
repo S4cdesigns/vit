@@ -41,7 +41,7 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
             style={{
               position: "absolute",
               left: "50%",
-              top: "33%",
+              top: "50%",
               transform: "translate(-50%,-50%)",
               minWidth: 400,
               maxWidth: "95vw",

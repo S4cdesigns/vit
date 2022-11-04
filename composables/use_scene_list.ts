@@ -1,10 +1,10 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 import { sceneCardFragment } from "../fragments/scene";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 
 export function useSceneList(initial: IPaginationResult<IScene>, query: any) {
   const [scenes, setScenes] = useState<IScene[]>(initial?.items || []);
@@ -56,41 +56,30 @@ export function useSceneList(initial: IPaginationResult<IScene>, query: any) {
 }
 
 export async function fetchScenes(page = 0, query: any) {
-  const { data } = await axios.post<{
-    data: {
-      getScenes: IPaginationResult<IScene>;
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-        query($query: SceneSearchQuery!, $seed: String) {
-          getScenes(query: $query, seed: $seed) {
-            items {
-              ...SceneCard
-            }
-            numItems
-            numPages
-          }
-        }
-        ${sceneCardFragment}
-      `,
-      variables: {
-        query: {
-          query: "",
-          page,
-          sortBy: "addedOn",
-          sortDir: "desc",
-          ...query,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  query($query: SceneSearchQuery!, $seed: String) {
+    getScenes(query: $query, seed: $seed) {
+      items {
+        ...SceneCard
+      }
+      numItems
+      numPages
     }
-  );
+  }
+  ${sceneCardFragment}
+`;
 
-  return data.data.getScenes;
+  const { getScenes } = await graphqlQuery<{
+    getScenes: IPaginationResult<IScene>;
+  }>(q, {
+    query: {
+      query: "",
+      page,
+      sortBy: "addedOn",
+      sortDir: "desc",
+      ...query,
+    },
+  });
+
+  return getScenes;
 }

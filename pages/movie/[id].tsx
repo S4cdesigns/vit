@@ -1,4 +1,3 @@
-import axios from "axios";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
@@ -26,75 +25,65 @@ import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 import PageWrapper from "../../components/PageWrapper";
 import AutoLayout from "../../components/AutoLayout";
+import { graphqlQuery } from "../../util/gql";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data } = await axios.post<{
-    data: {
-      getMovieById: IMovie;
-    };
-  }>(
-    "http://localhost:3000/api/ql",
-    {
-      query: `
-      query ($id: String!) {
-        getMovieById(id: $id) {
+  const q = `
+  query ($id: String!) {
+    getMovieById(id: $id) {
+      _id
+      name
+      description
+      releaseDate
+      duration
+      size
+      favorite
+      bookmark
+      rating
+      frontCover {
+        _id
+        color
+      }
+      backCover {
+        _id
+        color
+      }
+      spineCover {
+        _id
+      }
+      actors {
+        ...ActorCard
+      }
+      labels {
+        _id
+        name
+        color
+      }
+      studio {
+        _id
+        name
+        thumbnail {
           _id
-          name
-          description
-          releaseDate
-          duration
-          size
-          favorite
-          bookmark
-          rating
-          frontCover {
-            _id
-            color
-          }
-          backCover {
-            _id
-            color
-          }
-          spineCover {
-            _id
-          }
-          actors {
-            ...ActorCard
-          }
-          labels {
-            _id
-            name
-            color
-          }
-          studio {
-            _id
-            name
-            thumbnail {
-              _id
-            }
-          }
-          scenes {
-            ...SceneCard
-          }
         }
       }
-      ${sceneCardFragment}
-      ${actorCardFragment}
-      `,
-      variables: {
-        id: ctx.query.id,
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+      scenes {
+        ...SceneCard
+      }
     }
-  );
+  }
+  ${sceneCardFragment}
+  ${actorCardFragment}
+  `;
+
+  const { getMovieById } = await graphqlQuery<{
+    getMovieById: IMovie;
+  }>(q, {
+    id: ctx.query.id,
+  });
 
   return {
     props: {
-      movie: data.data.getMovieById,
+      movie: getMovieById,
     },
   };
 };

@@ -121,7 +121,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
   const hasNoLabels = !labelLoader && !labelList.length;
 
   return (
-    <div style={{ padding: 10 }}>
+    <div>
       <CardTitle style={{ marginBottom: 20 }}>
         {sceneLoader ? (
           "Loading..."

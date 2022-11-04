@@ -1,10 +1,10 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 import { imageCardFragment } from "../fragments/image";
 import { IImage } from "../types/image";
 import { IPaginationResult } from "../types/pagination";
-import { gqlIp } from "../util/ip";
+import { graphqlQuery } from "../util/gql";
 
 export function useImageList(initial: IPaginationResult<IImage>, query: any) {
   const [images, setImages] = useState<IImage[]>(initial?.items || []);
@@ -43,41 +43,30 @@ export function useImageList(initial: IPaginationResult<IImage>, query: any) {
 }
 
 export async function fetchImages(page = 0, query: any) {
-  const { data } = await axios.post<{
-    data: {
-      getImages: IPaginationResult<IImage>;
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-        query($query: ImageSearchQuery!, $seed: String) {
-          getImages(query: $query, seed: $seed) {
-            items {
-              ...ImageCard
-            }
-            numItems
-            numPages
-          }
-        }
-        ${imageCardFragment}
-      `,
-      variables: {
-        query: {
-          query: "",
-          page,
-          sortBy: "addedOn",
-          sortDir: "desc",
-          ...query,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  query($query: ImageSearchQuery!, $seed: String) {
+    getImages(query: $query, seed: $seed) {
+      items {
+        ...ImageCard
+      }
+      numItems
+      numPages
     }
-  );
+  }
+  ${imageCardFragment}
+`;
 
-  return data.data.getImages;
+  const { getImages } = await graphqlQuery<{
+    getImages: IPaginationResult<IImage>;
+  }>(q, {
+    query: {
+      query: "",
+      page,
+      sortBy: "addedOn",
+      sortDir: "desc",
+      ...query,
+    },
+  });
+
+  return getImages;
 }

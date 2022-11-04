@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useTranslations } from "next-intl";
 
@@ -14,69 +13,59 @@ import { IActor } from "../types/actor";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
+import { graphqlQuery } from "../util/gql";
 
 async function searchAll(query: string) {
-  const { data } = await axios.post<{
-    data: {
-      getScenes: IScene[];
-      getActors: IActor[];
-      getMovies: IMovie[];
-    };
-  }>(
-    "http://localhost:3000/api/ql",
-    {
-      query: `
-        query($sc: SceneSearchQuery!, $ac: ActorSearchQuery!, $mo: MovieSearchQuery!) {
-          getScenes(query: $sc) {
-            items {
-              ...SceneCard
-            }
-            numItems
-          }
-          getActors(query: $ac) {
-            items {
-              ...ActorCard
-            }
-            numItems
-          }
-          getMovies(query: $mo) {
-            items {
-              ...MovieCard
-            }
-            numItems
-          }
-        }
-
-        ${actorCardFragment}
-        ${sceneCardFragment}
-        ${movieCardFragment}
-      `,
-      variables: {
-        sc: {
-          query,
-          take: 10,
-        },
-        ac: {
-          query,
-          take: 10,
-        },
-        mo: {
-          query,
-          take: 10,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  query($sc: SceneSearchQuery!, $ac: ActorSearchQuery!, $mo: MovieSearchQuery!) {
+    getScenes(query: $sc) {
+      items {
+        ...SceneCard
+      }
+      numItems
     }
-  );
+    getActors(query: $ac) {
+      items {
+        ...ActorCard
+      }
+      numItems
+    }
+    getMovies(query: $mo) {
+      items {
+        ...MovieCard
+      }
+      numItems
+    }
+  }
+
+  ${actorCardFragment}
+  ${sceneCardFragment}
+  ${movieCardFragment}
+`;
+
+  const data = await graphqlQuery<{
+    getScenes: IScene[];
+    getActors: IActor[];
+    getMovies: IMovie[];
+  }>(q, {
+    sc: {
+      query,
+      take: 10,
+    },
+    ac: {
+      query,
+      take: 10,
+    },
+    mo: {
+      query,
+      take: 10,
+    },
+  });
 
   return {
-    sceneResult: data.data.getScenes,
-    actorResult: data.data.getActors,
-    movieResult: data.data.getMovies,
+    sceneResult: data.getScenes,
+    actorResult: data.getActors,
+    movieResult: data.getMovies,
   };
 }
 

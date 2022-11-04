@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { FfprobeData } from "fluent-ffmpeg";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
@@ -31,120 +30,98 @@ import { useMovieList } from "../../composables/use_movie_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { movieCardFragment } from "../../fragments/movie";
 import { IScene } from "../../types/scene";
-import { gqlIp } from "../../util/ip";
 import { bookmarkScene, favoriteScene, rateScene } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
 import PageWrapper from "../../components/PageWrapper";
 import AutoLayout from "../../components/AutoLayout";
+import { graphqlQuery } from "../../util/gql";
 
 async function runFFprobe(sceneId: string) {
-  const res = await axios.post<{
-    data: {
-      runFFProbe: {
-        ffprobe: string;
-      };
-    };
-  }>(
-    gqlIp(),
-    {
-      query: `
-mutation($id: String!) {
-  runFFProbe(id: $id) {
-    ffprobe
-  }
-}
-      `,
-      variables: {
-        id: sceneId,
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const q = `
+  mutation($id: String!) {
+    runFFProbe(id: $id) {
+      ffprobe
     }
-  );
-  return JSON.parse(res.data.data.runFFProbe.ffprobe) as FfprobeData;
+  }`;
+
+  const { runFFProbe } = await graphqlQuery<{
+    runFFProbe: {
+      ffprobe: string;
+    };
+  }>(q, {
+    id: sceneId,
+  });
+
+  return JSON.parse(runFFProbe.ffprobe) as FfprobeData;
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { data } = await axios.post<{
-    data: {
-      getSceneById: IScene;
-    };
-  }>(
-    "http://localhost:3000/api/ql",
-    {
-      query: `
-      query ($id: String!) {
-        getSceneById(id: $id) {
-          _id
-          name
-          favorite
-          bookmark
-          rating
-          description
-          releaseDate
-          labels {
-            _id
-            name
-            color
-          }
-          thumbnail {
-            _id
-          }
-          meta {
-            duration
-            fps
-            size
-            dimensions {
-              width
-              height
-            }
-          }
-          actors {
-            ...ActorCard
-          }
-          movies {
-            ...MovieCard
-          }
-          studio {
-            _id
-            name
-            thumbnail {
-              _id
-            }
-          }
-          path
-          watches
-          markers {
-            _id
-            name
-            time
-            thumbnail {
-              _id
-            }
-          }
+  const q = `
+  query ($id: String!) {
+    getSceneById(id: $id) {
+      _id
+      name
+      favorite
+      bookmark
+      rating
+      description
+      releaseDate
+      labels {
+        _id
+        name
+        color
+      }
+      thumbnail {
+        _id
+      }
+      meta {
+        duration
+        fps
+        size
+        dimensions {
+          width
+          height
         }
       }
-      ${actorCardFragment}
-      ${movieCardFragment}
-      `,
-      variables: {
-        id: ctx.query.id,
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+      actors {
+        ...ActorCard
+      }
+      movies {
+        ...MovieCard
+      }
+      studio {
+        _id
+        name
+        thumbnail {
+          _id
+        }
+      }
+      path
+      watches
+      markers {
+        _id
+        name
+        time
+        thumbnail {
+          _id
+        }
+      }
     }
-  );
+  }
+  ${actorCardFragment}
+  ${movieCardFragment}
+  `;
+
+  const { getSceneById } = await graphqlQuery<{
+    getSceneById: IScene;
+  }>(q, {
+    id: ctx.query.id,
+  });
 
   return {
     props: {
-      scene: data.data.getSceneById,
+      scene: getSceneById,
     },
   };
 };
