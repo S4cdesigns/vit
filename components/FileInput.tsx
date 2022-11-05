@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { randomString } from "../src/utils/hash";
 import Button from "./Button";
@@ -9,11 +10,12 @@ type Props = {
 };
 
 export default function FileInput({ onChange, accept, multiple }: Props) {
+  const t = useTranslations();
   const id = useMemo(randomString, []);
 
   return (
     <>
-      <Button onClick={() => document.getElementById(id)?.click()}>Select files</Button>
+      <Button onClick={() => document.getElementById(id)?.click()}>{t("actions.select")}</Button>
       <input
         id={id}
         multiple={multiple ?? false}

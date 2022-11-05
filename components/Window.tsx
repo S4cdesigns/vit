@@ -1,5 +1,6 @@
 import CloseIcon from "mdi-react/CloseIcon";
 import { ReactNode } from "react";
+import AutoLayout from "./AutoLayout";
 
 import Card from "./Card";
 import CardTitle from "./CardTitle";
@@ -43,8 +44,8 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
               left: "50%",
               top: "50%",
               transform: "translate(-50%,-50%)",
-              minWidth: 400,
-              maxWidth: "95vw",
+              minWidth: 350,
+              maxWidth: "calc(100vw - 10px)",
             }}
           >
             <Card style={{ padding: 20 }}>
@@ -53,11 +54,19 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
                 <div style={{ flexGrow: 1 }}></div>
                 <CloseIcon className="hover" onClick={onClose} />
               </div>
-              <div style={{ padding: 5, display: "flex", gap: 15, flexDirection: "column" }}>
-                {children}
-              </div>
+              <AutoLayout>{children}</AutoLayout>
               {actions && (
-                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>{actions}</div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                >
+                  <div style={{ flexGrow: 1 }}></div>
+                  {actions}
+                </div>
               )}
             </Card>
           </div>

@@ -5,7 +5,7 @@ import { fetchCollabs } from "../util/collabs";
 
 export function useCollabs(actorId: string) {
   const [collabs, setCollabs] = useState<IActor[]>([]);
-  const [loader, setLoader] = useState(true);
+  const [loading, setLoader] = useState(true);
 
   async function loadCollabs() {
     try {
@@ -20,5 +20,5 @@ export function useCollabs(actorId: string) {
     loadCollabs().catch(() => {});
   }, []);
 
-  return { loading: loader, collabs };
+  return { loading, collabs };
 }

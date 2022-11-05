@@ -1,81 +1,84 @@
-import axios from "axios";
+import { graphqlQuery } from "../gql";
 
-import { gqlIp } from "../ip";
+export async function watchScene(sceneId: string): Promise<number[]> {
+  const mutation = `
+mutation($id: String!) {
+  watchScene(id: $id) {
+    watches
+  }
+}`;
+  const {
+    watchScene: { watches },
+  } = await graphqlQuery<{
+    watchScene: {
+      watches: number[];
+    };
+  }>(mutation, {
+    id: sceneId,
+  });
+  return watches;
+}
+
+export async function unwatchScene(sceneId: string): Promise<number[]> {
+  const mutation = `
+mutation($id: String!) {
+  unwatchScene(id: $id) {
+    watches
+  }
+}`;
+  const {
+    unwatchScene: { watches },
+  } = await graphqlQuery<{
+    unwatchScene: {
+      watches: number[];
+    };
+  }>(mutation, {
+    id: sceneId,
+  });
+  return watches;
+}
 
 export async function rateScene(sceneId: string, rating: number): Promise<void> {
-  await axios.post(
-    gqlIp(),
-    {
-      query: `
-mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
-  updateScenes(ids: $ids, opts: $opts) {
-    rating
-  }
-}
-      `,
-      variables: {
-        ids: [sceneId],
-        opts: {
-          rating,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const mutation = `
+  mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
+    updateScenes(ids: $ids, opts: $opts) {
+      rating
     }
-  );
+  }`;
+  await graphqlQuery(mutation, {
+    ids: [sceneId],
+    opts: {
+      rating,
+    },
+  });
 }
 
 export async function favoriteScene(sceneId: string, value: boolean): Promise<void> {
-  await axios.post(
-    gqlIp(),
-    {
-      query: `
-mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
-  updateScenes(ids: $ids, opts: $opts) {
-    favorite
-  }
-}
-      `,
-      variables: {
-        ids: [sceneId],
-        opts: {
-          favorite: value,
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const mutation = `
+  mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
+    updateScenes(ids: $ids, opts: $opts) {
+      favorite
     }
-  );
+  }`;
+  await graphqlQuery(mutation, {
+    ids: [sceneId],
+    opts: {
+      favorite: value,
+    },
+  });
 }
 
 export async function bookmarkScene(sceneId: string, value: Date | null): Promise<void> {
-  await axios.post(
-    gqlIp(),
-    {
-      query: `
-mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
-  updateScenes(ids: $ids, opts: $opts) {
-    bookmark
-  }
-}
-      `,
-      variables: {
-        ids: [sceneId],
-        opts: {
-          bookmark: value && value.valueOf(),
-        },
-      },
-    },
-    {
-      headers: {
-        "x-pass": "xxx",
-      },
+  const mutation = `
+  mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
+    updateScenes(ids: $ids, opts: $opts) {
+      bookmark
     }
-  );
+  }`;
+  await graphqlQuery(mutation, {
+    ids: [sceneId],
+    opts: {
+      bookmark: value && value.valueOf(),
+    },
+  });
 }

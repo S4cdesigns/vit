@@ -16,13 +16,18 @@ Router.events.on("routeChangeStart", () => nprogress.start());
 Router.events.on("routeChangeComplete", () => nprogress.done());
 Router.events.on("routeChangeError", () => nprogress.done());
 
-export const ThemeContext = createContext({
+type Theme = "light" | "dark";
+
+export const ThemeContext = createContext<{
+  theme: Theme;
+  toggleTheme: () => void;
+}>({
   theme: "light",
   toggleTheme: () => {},
 });
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<Theme>("light");
 
   function toggleTheme() {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -41,7 +46,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
   useEffect(() => {
     const themeLocalStorage = localStorage.getItem("theme");
     if (["light", "dark"].includes(themeLocalStorage!)) {
-      setTheme(themeLocalStorage as "light" | "dark");
+      setTheme(themeLocalStorage as Theme);
     }
   }, []);
 

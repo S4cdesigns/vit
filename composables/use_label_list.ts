@@ -23,7 +23,7 @@ async function fetchLabels() {
 
 export default function useLabelList() {
   const [labels, setLabels] = useState<ILabel[]>([]);
-  const [loader, setLoader] = useState(true);
+  const [loading, setLoader] = useState(true);
 
   async function load() {
     try {
@@ -39,6 +39,6 @@ export default function useLabelList() {
 
   return {
     labels,
-    loading: loader,
+    loading,
   };
 }

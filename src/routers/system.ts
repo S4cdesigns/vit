@@ -83,11 +83,11 @@ router.get("/status/full", async (req, res) => {
                 size: 0,
               });
             } else {
-              const stats = await statAsync(path);
+              const { size } = await statAsync(path);
               izzyCollections.push({
                 name,
                 count,
-                size: stats.size,
+                size,
               });
             }
           }

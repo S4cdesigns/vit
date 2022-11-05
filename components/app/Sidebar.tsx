@@ -7,10 +7,9 @@ import MarkerIcon from "mdi-react/SkipNextIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
 import MovieIcon from "mdi-react/FilmstripBoxMultipleIcon";
 import LabelsIcon from "mdi-react/LabelIcon";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { ReactNode, useContext } from "react";
+import { Fragment, ReactNode, useContext } from "react";
 
 import { useVersion } from "../../composables/use_version";
 import { ThemeContext } from "../../pages/_app";
@@ -24,44 +23,44 @@ const links: (
   | { divider: false; text: string; icon: ReactNode; url: string }
 )[] = [
   {
-    text: "scene",
+    text: "heading.scenes",
     icon: <SceneIcon />,
     url: "/scenes",
     divider: false,
   },
   {
-    text: "actor",
+    text: "heading.actors",
     icon: <ActorIcon />,
     url: "/actors",
     divider: false,
   },
   {
-    text: "movie",
+    text: "heading.movies",
     icon: <MovieIcon />,
     url: "/movies",
     divider: false,
   },
   {
-    text: "studio",
+    text: "heading.studios",
     icon: <StudioIcon />,
     url: "/studios",
     divider: false,
   },
   {
-    text: "image",
+    text: "heading.images",
     icon: <ImageIcon />,
     url: "/images",
     divider: false,
   },
   {
-    text: "marker",
+    text: "heading.markers",
     icon: <MarkerIcon />,
     url: "/markers",
     divider: false,
   },
   { divider: true },
   {
-    text: "labels",
+    text: "heading.labels",
     icon: <LabelsIcon />,
     url: "/labels",
     divider: false,
@@ -107,8 +106,8 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
           overflowY: "scroll",
         }}
       >
-        {links.map((link) => (
-          <>
+        {links.map((link, i) => (
+          <Fragment key={i}>
             {link.divider ? (
               <hr style={{ width: "100%", opacity: 0.33 }} />
             ) : (
@@ -116,7 +115,7 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
                 {t(link.text, { numItems: 2 })}
               </SidebarLink>
             )}
-          </>
+          </Fragment>
         ))}
       </div>
       <div style={{ flexGrow: 1 }}></div>

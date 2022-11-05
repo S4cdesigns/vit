@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useWindow } from "../composables/use_window";
 import { imageCardFragment } from "../fragments/image";
 import { IImage } from "../types/image";
 import { gqlIp } from "../util/ip";
 import Button from "./Button";
-import Card from "./Card";
-import CardTitle from "./CardTitle";
+import CloseIcon from "mdi-react/CloseIcon";
 import FileInput from "./FileInput";
+import Window from "./Window";
+import { useTranslations } from "next-intl";
 
 function readImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -22,15 +24,19 @@ function readImage(file: File): Promise<string> {
 
 type Props = {
   onUpload: (img: IImage[]) => void;
+  onDone?: () => void;
   scene?: string;
   actors?: string[];
   labels?: string[];
 };
 
-export default function ImageUploader({ onUpload, ...props }: Props) {
+export default function ImageUploader({ onUpload, onDone, ...props }: Props) {
+  const t = useTranslations();
+  const { isOpen, close, open } = useWindow();
+
   const [uploadItems, setUploadItems] = useState<{ file: File; b64: string; name: string }[]>([]);
   const [uploadQueue, setUploadQueue] = useState<{ file: File; b64: string; name: string }[]>([]);
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoader] = useState(false);
 
   useEffect(() => {
     const item = uploadQueue[0];
@@ -38,6 +44,7 @@ export default function ImageUploader({ onUpload, ...props }: Props) {
       uploadImage(item).catch(() => {});
     } else {
       setLoader(false);
+      onDone?.();
     }
   }, [uploadQueue.length]);
 
@@ -108,41 +115,67 @@ export default function ImageUploader({ onUpload, ...props }: Props) {
     }
   }
 
+  function spliceImage(index: number): void {
+    setUploadItems((prev) => {
+      const copy = [...prev];
+      copy.splice(index, 1);
+      return copy;
+    });
+  }
+
   return (
-    <Card>
-      <CardTitle>Upload image</CardTitle>
-      <div>
-        <FileInput onChange={addFiles} multiple accept={[".png", ".jpg", ".jpeg", ".webp"]} />
-      </div>
-      <div>
-        {uploadItems.map((item, i) => (
-          <div key={item.b64}>
-            {item.name} <img src={item.b64} width="160" />
+    <>
+      <Button onClick={open} style={{ marginRight: 10 }}>
+        {t("actions.upload")}
+      </Button>
+      <Window
+        actions={
+          <>
             <Button
-              onClick={() =>
-                setUploadItems((prev) => {
-                  const copy = [...prev];
-                  const spliced = copy.splice(i, 1);
-                  return copy;
-                })
-              }
+              loading={loading}
+              onClick={() => {
+                setUploadQueue(uploadItems);
+                setUploadItems([]);
+              }}
             >
-              Remove
+              {t("actions.upload")}
             </Button>
-          </div>
-        ))}
-      </div>
-      {loader && <div>Uploading {uploadQueue.length} images</div>}
-      <div>
-        <Button
-          onClick={() => {
-            setUploadQueue(uploadItems);
-            setUploadItems([]);
+          </>
+        }
+        isOpen={isOpen}
+        onClose={close}
+        title={t("actions.uploadImages")}
+      >
+        <div>
+          <FileInput onChange={addFiles} multiple accept={[".png", ".jpg", ".jpeg", ".webp"]} />
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(auto-fill, minmax(${175}px, 1fr))`,
+            gridGap: 2,
+            maxHeight: "50vh",
+            overflowY: "scroll",
           }}
         >
-          Upload
-        </Button>
-      </div>
-    </Card>
+          {uploadItems.map((item, i) => (
+            <div style={{ position: "relative" }}>
+              {/* base64 as key is OK because of addFiles function */}
+              <img src={item.b64} width="100%" height="175" style={{ objectFit: "contain" }} />
+              <div
+                style={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                }}
+              >
+                <CloseIcon onClick={() => spliceImage(i)} className="hover" size={32} />
+              </div>
+            </div>
+          ))}
+        </div>
+        {loading && <div>Uploading {uploadQueue.length} images</div>}
+      </Window>
+    </>
   );
 }

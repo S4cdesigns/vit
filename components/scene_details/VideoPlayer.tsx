@@ -123,6 +123,7 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
           {loading && !paused && <Loader />}
         </div>
         <video
+          id="video-player"
           controls={fullscreen}
           ref={videoEl}
           poster={poster}

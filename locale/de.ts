@@ -2,6 +2,12 @@ export default {
   language: "Sprache",
   currentLanguage: "Deutsch",
 
+  name: "Name",
+  size: "Größe",
+  documentCount: "# Dokumente",
+
+  version: "Version",
+
   random: "Zufällig",
   status: "Status",
   customData: "Metadaten",
@@ -16,6 +22,27 @@ export default {
   percentWatched: "{percent} aller Szenen gesehen",
   contentLeft: "~{years} Jahre an Inhalt übrig",
   runningOut: "Alle Szenen gesehen am {date}",
+
+  heading: {
+    videos: "Videos",
+    scenes: "Szenen",
+    actors: "Darsteller",
+    movies: "Filme",
+    studios: "Studios",
+    images: "Bilder",
+    markers: "Kapitel",
+    views: "Aufrufe",
+    labels: "Labels",
+
+    actions: "Aktionen",
+  },
+
+  actions: {
+    add: "Erstellen",
+    upload: "Hochladen",
+    uploadImages: "Bilder hochladen",
+    select: "Auswählen",
+  },
 
   video: "{numItems, plural, one {Video} other {{numItems} Videos} }",
   scene: "{numItems, plural, one {Szene} other {Szenen} }",
@@ -55,7 +82,7 @@ export default {
   yearsOld: "{age} Jahre alt",
   aliases: "Alt. Namen",
   description: "Beschreibung",
-  collabs: "TODO:...",
+  collabs: "Kollaborationen",
 
   releaseDate: "Veröffentlicht",
   starring: "Darsteller",

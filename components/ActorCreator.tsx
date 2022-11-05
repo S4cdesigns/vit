@@ -1,4 +1,5 @@
 import Color from "color";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Select from "react-select";
 import useLabelList from "../composables/use_label_list";
@@ -31,29 +32,29 @@ type Props = {
 };
 
 export default function ActorCreator({ onCreate }: Props) {
+  const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
   const [name, setName] = useState("");
   const [aliases, setAliases] = useState("");
   const [selectedLabels, setSelectedLabels] = useState<readonly ILabel[]>([]);
 
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoader] = useState(false);
   const { labels } = useLabelList();
 
   return (
     <>
       <Button onClick={open} style={{ marginRight: 10 }}>
-        + Add actor
+        + {t("actions.add")}
       </Button>
       <Window
         onClose={close}
         isOpen={isOpen}
-        title="Add actor"
+        title={t("actions.add")}
         actions={
           <>
-            <div style={{ flexGrow: 1 }}></div>
             <Button
-              loading={loader}
+              loading={loading}
               onClick={async () => {
                 try {
                   setLoader(true);

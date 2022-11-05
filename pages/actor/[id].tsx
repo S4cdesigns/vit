@@ -20,9 +20,6 @@ import { buildQueryParser } from "../../util/query_parser";
 import PageWrapper from "../../components/PageWrapper";
 import AutoLayout from "../../components/AutoLayout";
 import { graphqlQuery } from "../../util/gql";
-/* import Window from "../../components/Window";
-import { AvatarCropper } from "../../components/Cropper";
-import { Crop } from "react-image-crop"; */
 
 const queryParser = buildQueryParser({
   q: {
@@ -193,7 +190,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
             <Description>{actor.description}</Description>
           </CardSection>
         )}
-        <CardSection title={t("labels", { numItems: 2 })}>
+        <CardSection title="Labels">
           <LabelGroup limit={999} labels={actor.labels} />
         </CardSection>
         <CardSection title={t("customData")}>

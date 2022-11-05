@@ -10,6 +10,7 @@ type Props = {
   style?: CSSProperties;
   className?: string;
   loading?: boolean;
+  /* TODO: disabled state */
 };
 
 export default function Button({ children, onClick, style, className, loading }: Props) {

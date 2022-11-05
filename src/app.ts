@@ -107,13 +107,13 @@ export async function createVault(): Promise<Vault> {
   app.use(passwordHandler);
   app.use("/api/system", systemRouter);
   app.use("/api/config", configRouter);
-  app.get("/api/version", (req, res) => {
+  app.get("/api/version", (_req, res) => {
     res.json({
       result: VERSION,
     });
   });
 
-  app.use("/api", (req, res, next) => {
+  app.use("/api", (_req, res, next) => {
     if (vault.serverReady) {
       next();
     } else {

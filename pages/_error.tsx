@@ -79,7 +79,7 @@ export default function ErrorPage() {
     <PageWrapper title="Error">
       <div style={{ textAlign: "center" }}>
         <h2>Error</h2>
-        {img && (
+        {!!img && (
           <>
             <div style={{ justifyContent: "center", display: "flex", gap: 10, marginBottom: 10 }}>
               {/* <div className="hover">
@@ -105,15 +105,21 @@ export default function ErrorPage() {
                 />
               </div>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <h4 style={{ marginBottom: 8 }}>
-                <Link href={`/scene/${img.scene._id}`}>{img.scene.name}</Link>
-              </h4>
-              <div style={{ fontSize: 16, fontStyle: "italic", marginBottom: 16 }}>
-                starring {img.actors.map((a) => a.name).join(", ") || "???"}
+            {!!img.scene && (
+              <div style={{ textAlign: "center" }}>
+                <h4 style={{ marginBottom: 8 }}>
+                  <Link href={`/scene/${img.scene._id}`}>{img.scene.name}</Link>
+                </h4>
+                {!!img.actors.length && (
+                  <div style={{ fontSize: 16, fontStyle: "italic", marginBottom: 16 }}>
+                    starring {img.actors.map((a) => a.name).join(", ") || "???"}
+                  </div>
+                )}
               </div>
-              <Button onClick={() => setCount(count + 1)}>Shuffle</Button>
-            </div>
+            )}
+            <Button style={{ marginTop: 8 }} onClick={() => setCount(count + 1)}>
+              Shuffle
+            </Button>
           </>
         )}
         {count > 10 && (

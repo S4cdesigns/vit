@@ -2,6 +2,12 @@ export default {
   language: "Language",
   currentLanguage: "English",
 
+  name: "Name",
+  size: "Size",
+  documentCount: "Document count",
+
+  version: "Version",
+
   random: "Random",
   status: "Status",
   customData: "Custom data",
@@ -16,6 +22,27 @@ export default {
   percentWatched: "{percent} of scenes watched",
   contentLeft: "~{years} years of content left",
   runningOut: "Running out on {date}",
+
+  heading: {
+    videos: "Videos",
+    scenes: "Scenes",
+    actors: "Actors",
+    movies: "Movies",
+    studios: "Studios",
+    images: "Images",
+    markers: "Markers",
+    views: "Scene views",
+    labels: "Labels",
+
+    actions: "Actions",
+  },
+
+  actions: {
+    add: "Add",
+    upload: "Upload",
+    uploadImages: "Upload images",
+    select: "Select",
+  },
 
   video: "{numItems, plural, one {video} other {{numItems} videos} }",
   scene: "{numItems, plural, one {scene} other {scenes} }",

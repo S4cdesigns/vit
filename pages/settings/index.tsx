@@ -8,6 +8,7 @@ import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
 import Loader from "../../components/Loader";
 import PageWrapper from "../../components/PageWrapper";
+import Text from "../../components/Text";
 import { getFullStatus } from "../../util/status";
 
 export default function SettingsPage() {
@@ -50,14 +51,14 @@ export default function SettingsPage() {
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Size</th>
-                    <th>Document count</th>
+                    <th>{t("name")}</th>
+                    <th>{t("size")}</th>
+                    <th>{t("documentCount")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {status.izzy.collections.map((collection) => (
-                    <tr>
+                    <tr key={collection.name}>
                       <td>{collection.name}</td>
                       <td title={`${collection.size} bytes`}>
                         {prettyBytes(collection.size / 1000)}
@@ -81,16 +82,16 @@ export default function SettingsPage() {
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th>
+                    <th>{t("name")}</th>
                     <th>Health</th>
-                    <th>Status</th>
-                    <th>Size</th>
-                    <th>Document count</th>
+                    <th>{t("status")}</th>
+                    <th>{t("size")}</th>
+                    <th>{t("documentCount")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {status.elasticsearch.indices.map((index) => (
-                    <tr>
+                    <tr key={index.uuid}>
                       <td>{index.index}</td>
                       <td style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <div
@@ -112,6 +113,7 @@ export default function SettingsPage() {
                 </tbody>
               </table>
             </div>
+            <Text>Note: Health "green" and "yellow" are OK</Text>
           </Card>
         </AutoLayout>
       </AutoLayout>
