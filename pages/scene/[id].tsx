@@ -11,6 +11,7 @@ import prettyBytes from "pretty-bytes";
 import { useRef, useState, VideoHTMLAttributes } from "react";
 
 import ActorCard from "../../components/ActorCard";
+import AutoLayout from "../../components/AutoLayout";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
@@ -20,16 +21,19 @@ import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import MovieCard from "../../components/MovieCard";
+import PageWrapper from "../../components/PageWrapper";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
-import Text from "../../components/Text";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
+import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { movieCardFragment } from "../../fragments/movie";
+import Scene from "../../src/types/scene";
 import { IScene } from "../../types/scene";
+import { graphqlQuery } from "../../util/gql";
 import {
   bookmarkScene,
   favoriteScene,
@@ -39,9 +43,6 @@ import {
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import PageWrapper from "../../components/PageWrapper";
-import AutoLayout from "../../components/AutoLayout";
-import { graphqlQuery } from "../../util/gql";
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -143,6 +144,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
+  const [pluginLoader, setPluginLoader] = useState(false);
 
   const { actors, editActor } = useActorList(
     {
@@ -177,6 +179,31 @@ export default function ScenePage({ scene }: { scene: IScene }) {
   async function changeRating(rating: number): Promise<void> {
     await rateScene(scene._id, rating);
     setRating(rating);
+  }
+
+  async function runScenePlugins(sceneId: string) {
+    setPluginLoader(true);
+    const q = `
+  mutation($id: String!) {
+    runScenePlugins(id: $id) {
+      _id
+    }
+  }`;
+
+    try {
+      const { runScenePlugins } = await graphqlQuery<{
+        runScenePlugins: {
+          scene: string;
+        };
+      }>(q, {
+        id: sceneId,
+      });
+
+      return JSON.parse(runScenePlugins.scene) as Scene;
+    } catch (error) {
+      console.error(error);
+    }
+    setPluginLoader(false);
   }
 
   async function _watchScene(): Promise<void> {
@@ -372,6 +399,16 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                           }}
                         >
                           Run FFprobe
+                        </Button>
+                        <Button
+                          loading={pluginLoader}
+                          onClick={() => {
+                            runScenePlugins(scene._id).catch((error) => {
+                              console.error(error);
+                            });
+                          }}
+                        >
+                          Run Plugins
                         </Button>
                         <Window
                           isOpen={!!ffprobeData}
