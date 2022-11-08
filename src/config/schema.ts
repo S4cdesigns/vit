@@ -66,126 +66,153 @@ export const H264Preset = zod.enum([
 
 export const WebmDeadline = zod.enum(["good", "best", "realtime"]);
 
-const configSchema = zod
-  .object({
-    imagemagick: zod.object({
-      convertPath: zod.string(),
-      identifyPath: zod.string(),
-      montagePath: zod.string(),
-    }),
-    search: zod.object({
-      host: zod.string(),
-      version: zod.string(),
-      log: zod.boolean(),
-      auth: zod.string().optional().nullable(),
-    }),
-    import: zod.object({
-      videos: zod.array(zod.string()),
-      images: zod.array(zod.string()),
-    }),
-    scan: zod.object({
-      scanOnStartup: zod.boolean(),
-      interval: zod.number().min(0),
-      excludeFiles: zod.array(zod.string()),
-    }),
-    processing: zod.object({
-      doProcessing: zod.boolean(),
-      generateScreenshots: zod.boolean(),
-      generatePreviews: zod.boolean(),
-      screenshotInterval: zod.number().min(0),
-      readImagesOnImport: zod.boolean(),
-      imageCompressionSize: zod.number().min(60),
-      generateImageThumbnails: zod.boolean(),
-    }),
-    persistence: zod.object({
-      libraryPath: zod.string(),
-      backup: zod.object({
-        enable: zod.boolean(),
-        maxAmount: zod.number().min(0),
-      }),
-    }),
-    binaries: zod.object({
-      ffmpeg: zod.string(),
-      ffprobe: zod.string(),
-      izzyPort: zod.number().min(1).max(65535),
-    }),
-    auth: zod.object({
-      password: zod.string().nullable(),
-    }),
-    server: zod.object({
-      port: zod.number().min(1).max(65535),
-      https: zod.object({
-        enable: zod.boolean(),
-        key: zod.string().nullable(),
-        certificate: zod.string().nullable(),
-      }),
-    }),
-    matching: zod.object({
-      applySceneLabels: zod.boolean(),
-      applyActorLabels: zod.array(ApplyActorLabelsEnum),
-      applyStudioLabels: zod.array(ApplyStudioLabelsEnum),
-      extractSceneActorsFromFilepath: zod.boolean(),
-      extractSceneLabelsFromFilepath: zod.boolean(),
-      extractSceneMoviesFromFilepath: zod.boolean(),
-      extractSceneStudiosFromFilepath: zod.boolean(),
-      matcher: zod.union([StringMatcherSchema, WordMatcherSchema]),
-      matchCreatedActors: zod.boolean(),
-      matchCreatedStudios: zod.boolean(),
-      matchCreatedLabels: zod.boolean(),
-    }),
-    plugins: zod.object({
-      register: zod.record(pluginSchema),
-      // Map event name to plugin sequence
-      events: zod.record(
-        zod.array(
-          zod.union([
-            // Plugin name only
-            zod.string(),
-            // Plugin name + arguments [name, { args }]
-            pluginCallWithArgument,
-          ])
-        )
-      ),
+const SUPPORTED_VIDEO_EXTENSIONS = [
+  ".m4v",
+  ".mp4",
+  ".mov",
+  ".wmv",
+  ".avi",
+  ".mpg",
+  ".mpeg",
+  ".rmvb",
+  ".rm",
+  ".flv",
+  ".asf",
+  ".mkv",
+  ".webm",
+];
 
-      allowSceneThumbnailOverwrite: zod.boolean(),
-      allowActorThumbnailOverwrite: zod.boolean(),
-      allowMovieThumbnailOverwrite: zod.boolean(),
-      allowStudioThumbnailOverwrite: zod.boolean(),
+const SUPPORTED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif"];
 
-      createMissingActors: zod.boolean(),
-      createMissingStudios: zod.boolean(),
-      createMissingLabels: zod.boolean(),
-      createMissingMovies: zod.boolean(),
+const videoImportFolderSchema = zod.object({
+  path: zod.string().min(1),
+  include: zod.array(zod.string().min(1)),
+  exclude: zod.array(zod.string().min(1)),
+  extensions: zod.array(zod.string().refine((x) => SUPPORTED_VIDEO_EXTENSIONS.includes(x))),
+});
 
-      markerDeduplicationThreshold: zod.number(),
+const imageImportFolderSchema = zod.object({
+  path: zod.string().min(1),
+  include: zod.array(zod.string().min(1)),
+  exclude: zod.array(zod.string().min(1)),
+  extensions: zod.array(zod.string().refine((x) => SUPPORTED_IMAGE_EXTENSIONS.includes(x))),
+});
+
+const configSchema = zod.object({
+  imagemagick: zod.object({
+    convertPath: zod.string(),
+    identifyPath: zod.string(),
+    montagePath: zod.string(),
+  }),
+  search: zod.object({
+    host: zod.string(),
+    version: zod.string(),
+    log: zod.boolean(),
+    auth: zod.string().optional().nullable(),
+  }),
+  import: zod.object({
+    videos: zod.array(videoImportFolderSchema),
+    images: zod.array(imageImportFolderSchema),
+    scanOnStartup: zod.boolean(),
+    scanInterval: zod.number().min(0),
+  }),
+  processing: zod.object({
+    doProcessing: zod.boolean(),
+    generateScreenshots: zod.boolean(),
+    generatePreviews: zod.boolean(),
+    screenshotInterval: zod.number().min(0),
+    readImagesOnImport: zod.boolean(),
+    imageCompressionSize: zod.number().min(60),
+    generateImageThumbnails: zod.boolean(),
+  }),
+  persistence: zod.object({
+    libraryPath: zod.string(),
+    backup: zod.object({
+      enable: zod.boolean(),
+      maxAmount: zod.number().min(0),
     }),
-    log: zod.object({
-      level: logLevelType,
-      maxSize: zod.union([zod.number().min(0), zod.string()]),
-      maxFiles: zod.union([zod.number().min(0), zod.string()]),
-      writeFile: zod.array(
-        zod.object({
-          level: logLevelType,
-          prefix: zod.string(),
-          silent: zod.boolean(),
-        })
-      ),
+  }),
+  binaries: zod.object({
+    ffmpeg: zod.string(),
+    ffprobe: zod.string(),
+    izzyPort: zod.number().min(1).max(65535),
+  }),
+  auth: zod.object({
+    password: zod.string().nullable(),
+  }),
+  server: zod.object({
+    port: zod.number().min(1).max(65535),
+    https: zod.object({
+      enable: zod.boolean(),
+      key: zod.string().nullable(),
+      certificate: zod.string().nullable(),
     }),
-    transcode: zod.object({
-      hwaDriver: HardwareAccelerationDriver.nullable(),
-      vaapiDevice: zod.string().nullable(),
-      h264: zod.object({
-        preset: H264Preset,
-        crf: zod.number().min(0).max(51),
-      }),
-      webm: zod.object({
-        deadline: WebmDeadline,
-        cpuUsed: zod.number(),
-        crf: zod.number().min(0).max(63),
-      }),
+  }),
+  matching: zod.object({
+    applySceneLabels: zod.boolean(),
+    applyActorLabels: zod.array(ApplyActorLabelsEnum),
+    applyStudioLabels: zod.array(ApplyStudioLabelsEnum),
+    extractSceneActorsFromFilepath: zod.boolean(),
+    extractSceneLabelsFromFilepath: zod.boolean(),
+    extractSceneMoviesFromFilepath: zod.boolean(),
+    extractSceneStudiosFromFilepath: zod.boolean(),
+    matcher: zod.union([StringMatcherSchema, WordMatcherSchema]),
+    matchCreatedActors: zod.boolean(),
+    matchCreatedStudios: zod.boolean(),
+    matchCreatedLabels: zod.boolean(),
+  }),
+  plugins: zod.object({
+    register: zod.record(pluginSchema),
+    // Map event name to plugin sequence
+    events: zod.record(
+      zod.array(
+        zod.union([
+          // Plugin name only
+          zod.string(),
+          // Plugin name + arguments [name, { args }]
+          pluginCallWithArgument,
+        ])
+      )
+    ),
+
+    allowSceneThumbnailOverwrite: zod.boolean(),
+    allowActorThumbnailOverwrite: zod.boolean(),
+    allowMovieThumbnailOverwrite: zod.boolean(),
+    allowStudioThumbnailOverwrite: zod.boolean(),
+
+    createMissingActors: zod.boolean(),
+    createMissingStudios: zod.boolean(),
+    createMissingLabels: zod.boolean(),
+    createMissingMovies: zod.boolean(),
+
+    markerDeduplicationThreshold: zod.number(),
+  }),
+  log: zod.object({
+    level: logLevelType,
+    maxSize: zod.union([zod.number().min(0), zod.string()]),
+    maxFiles: zod.union([zod.number().min(0), zod.string()]),
+    writeFile: zod.array(
+      zod.object({
+        level: logLevelType,
+        prefix: zod.string(),
+        silent: zod.boolean(),
+      })
+    ),
+  }),
+  transcode: zod.object({
+    hwaDriver: HardwareAccelerationDriver.nullable(),
+    vaapiDevice: zod.string().nullable(),
+    h264: zod.object({
+      preset: H264Preset,
+      crf: zod.number().min(0).max(51),
     }),
-  })
-  .nonstrict();
+    webm: zod.object({
+      deadline: WebmDeadline,
+      cpuUsed: zod.number(),
+      crf: zod.number().min(0).max(63),
+    }),
+  }),
+});
 
 export type IPlugin = zod.TypeOf<typeof pluginSchema>;
 export type IConfig = zod.TypeOf<typeof configSchema>;

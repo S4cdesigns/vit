@@ -92,7 +92,7 @@
     "winston-daily-rotate-file": "^4.5.0",
     "yaml": "^1.10.0",
     "yargs": "^16.2.0",
-    "zod": "^1.11.11"
+    "zod": "^1.11.17"
   },
   "devDependencies": {
     "@types/chai": "^4.2.15",
@@ -140,11 +140,5 @@
     "pkg": "^5.5.2",
     "prettier": "^2.5.1",
     "sinon": "^11.1.0"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "/**/*.db",
-      "/**/config.json"
-    ]
   }
 }

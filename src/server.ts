@@ -137,14 +137,14 @@ export default async (): Promise<Vault> => {
 
   watchConfig();
 
-  if (config.scan.scanOnStartup) {
+  if (config.import.scanOnStartup) {
     // Scan and auto schedule next scans
-    scanFolders(config.scan.interval).catch((err: Error) => {
+    scanFolders(config.import.scanInterval).catch((err: Error) => {
       handleError("Scan error", err);
     });
   } else {
     // Only schedule next scans
-    scheduleNextScan(config.scan.interval);
+    scheduleNextScan(config.import.scanInterval);
 
     logger.warn("Scanning folders is currently disabled.");
     tryStartProcessing().catch((err: Error) => {
