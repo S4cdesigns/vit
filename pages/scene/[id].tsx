@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -93,14 +93,18 @@ export default function ScenePage({ scene }: { scene: IScene }) {
   const [favorite, setFavorite] = useState(scene.favorite);
   const [bookmark, setBookmark] = useState(!!scene.bookmark);
   const [rating, setRating] = useState(scene.rating);
-  const [markers] = useState(scene.markers);
+  const [markers, setMarkers] = useState(scene.markers);
   const [ffprobeData, setFFprobeData] = useState<FfprobeData | null>(null);
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
   const [pluginLoader, setPluginLoader] = useState(false);
 
-  const { actors, editActor } = useActorList(
+  const {
+    actors,
+    editActor,
+    setData: setActors,
+  } = useActorList(
     {
       items: scene.actors,
       numItems: scene.actors.length,
@@ -109,7 +113,11 @@ export default function ScenePage({ scene }: { scene: IScene }) {
     {}
   );
 
-  const { movies, editMovie } = useMovieList(
+  const {
+    movies,
+    editMovie,
+    setData: setMovies,
+  } = useMovieList(
     {
       items: scene.movies,
       numItems: scene.movies.length,
@@ -117,6 +125,24 @@ export default function ScenePage({ scene }: { scene: IScene }) {
     },
     {}
   );
+
+  useEffect(() => {
+    setFavorite(scene.favorite);
+    setBookmark(!!scene.bookmark);
+    setRating(scene.rating);
+    setMarkers(scene.markers);
+    setWatches(scene.watches);
+    setActors({
+      items: scene.actors,
+      numItems: scene.actors.length,
+      numPages: 1,
+    });
+    setMovies({
+      items: scene.movies,
+      numItems: scene.movies.length,
+      numPages: 1,
+    });
+  }, [scene]);
 
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;

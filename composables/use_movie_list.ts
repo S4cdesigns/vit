@@ -44,6 +44,12 @@ export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
     });
   }
 
+  function setData(data: IPaginationResult<IMovie>): void {
+    setMovies(data.items);
+    setNumItems(data.numItems);
+    setNumPages(data.numPages);
+  }
+
   return {
     movies,
     loading,
@@ -52,6 +58,7 @@ export function useMovieList(initial: IPaginationResult<IMovie>, query: any) {
     numPages,
     fetchMovies: _fetchMovies,
     editMovie,
+    setData,
   };
 }
 

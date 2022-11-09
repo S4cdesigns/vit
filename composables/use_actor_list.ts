@@ -44,6 +44,12 @@ export function useActorList(initial: IPaginationResult<IActor>, query: any) {
     });
   }
 
+  function setData(data: IPaginationResult<IActor>): void {
+    setActors(data.items);
+    setNumItems(data.numItems);
+    setNumPages(data.numPages);
+  }
+
   return {
     actors,
     loading,
@@ -52,6 +58,7 @@ export function useActorList(initial: IPaginationResult<IActor>, query: any) {
     numPages,
     fetchActors: _fetchActors,
     editActor,
+    setData,
   };
 }
 
