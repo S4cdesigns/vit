@@ -28,7 +28,7 @@ let exitStub: sinon.SinonStub | null = null;
 
 let stopFileWatcher: (() => Promise<void>) | undefined;
 
-const getFormatter = (targetFile) => {
+const getFormatter = (targetFile: string) => {
   if (targetFile.includes(".json")) {
     return preserve.json;
   } else if (targetFile.includes(".yaml")) {
