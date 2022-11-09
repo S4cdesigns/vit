@@ -15,7 +15,7 @@ import {
   shuffle,
   shuffleSwitch,
 } from "./common";
-import { getClient, indexMap } from "./index";
+import { indexMap } from "./index";
 import { addSearchDocs, buildIndex, indexItems, ProgressCallback } from "./internal/buildIndex";
 
 export interface IMarkerSearchDoc {

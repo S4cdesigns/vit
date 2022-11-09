@@ -1,4 +1,4 @@
-import { getClient, indexMap } from "../search";
+import { indexMap } from "../search";
 import Actor from "../types/actor";
 import { getNationality } from "../types/countries";
 import Scene from "../types/scene";

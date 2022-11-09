@@ -3,7 +3,7 @@ import Scene from "../types/scene";
 import Studio from "../types/studio";
 import SceneView from "../types/watch";
 import { mapAsync } from "../utils/async";
-import { getClient, indexMap } from ".";
+import { indexMap } from ".";
 import {
   arrayFilter,
   bookmark,
