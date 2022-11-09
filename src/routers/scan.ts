@@ -6,6 +6,12 @@ import { handleError } from "../utils/logger";
 
 const router = Router();
 
+router.post("/folders", (req, res) => {
+  res.json({
+    message: "OK",
+  });
+});
+
 router.get("/folders", (req, res) => {
   const { images, videos } = getConfig().import;
   res.json({

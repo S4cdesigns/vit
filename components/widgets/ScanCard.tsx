@@ -47,6 +47,7 @@ export default function LibraryTimeCard() {
           </Text>
         </div>
         {stats?.processing && <Loader />}
+        {/* TODO: scan button */}
       </div>
     </WidgetCard>
   );
