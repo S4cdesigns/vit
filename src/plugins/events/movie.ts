@@ -63,7 +63,7 @@ export async function onMovieCreate(
     (!movie.frontCover || config.plugins.allowMovieThumbnailOverwrite)
   ) {
     const image = await Image.getById(pluginResult.frontCover);
-    if (image && (await Image.addDimensions(image))) {
+    if (image && Image.addDimensions(image)) {
       await collections.images.upsert(image._id, image);
     }
     movie.frontCover = pluginResult.frontCover;
@@ -75,7 +75,7 @@ export async function onMovieCreate(
     (!movie.backCover || config.plugins.allowMovieThumbnailOverwrite)
   ) {
     const image = await Image.getById(pluginResult.backCover);
-    if (image && (await Image.addDimensions(image))) {
+    if (image && Image.addDimensions(image)) {
       await collections.images.upsert(image._id, image);
     }
     movie.backCover = pluginResult.backCover;
@@ -87,7 +87,7 @@ export async function onMovieCreate(
     (!movie.spineCover || config.plugins.allowMovieThumbnailOverwrite)
   ) {
     const image = await Image.getById(pluginResult.spineCover);
-    if (image && (await Image.addDimensions(image))) {
+    if (image && Image.addDimensions(image)) {
       await collections.images.upsert(image._id, image);
     }
     movie.spineCover = pluginResult.spineCover;
@@ -126,7 +126,11 @@ export async function onMovieCreate(
     for (const key in pluginResult.custom) {
       const fields = localExtractFields(key);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      if (fields.length) movie.customFields[fields[0]] = pluginResult.custom[key];
+      if (fields.length) {
+        // TODO:
+        // @ts-ignore
+        movie.customFields[fields[0]] = pluginResult.custom[key];
+      }
     }
   }
 

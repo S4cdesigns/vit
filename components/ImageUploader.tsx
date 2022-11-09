@@ -15,8 +15,11 @@ function readImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      if (reader.result) resolve(reader.result.toString());
-      else reject("File error");
+      if (reader.result) {
+        resolve(reader.result.toString());
+      } else {
+        reject(new Error("File error"));
+      }
     };
     reader.onerror = reject;
     reader.readAsDataURL(file);
@@ -53,7 +56,7 @@ export default function ImageUploader({ onUpload, onDone, ...props }: Props) {
     for (const file of files) {
       const b64 = await readImage(file);
 
-      if (uploadItems.find((i) => i.b64 == b64)) {
+      if (uploadItems.find((i) => i.b64 === b64)) {
         continue;
       }
 

@@ -451,7 +451,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                               ) as HTMLVideoElement | null;
                               if (videoEl) {
                                 videoEl.currentTime = marker.time;
-                                videoEl.play();
+                                videoEl.play().catch(() => {});
                                 window.scrollTo({
                                   left: 0,
                                   top: 0,
