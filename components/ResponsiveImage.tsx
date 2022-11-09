@@ -49,10 +49,10 @@ export default function ResponsiveImage({
 
   const linkContainer = href ? (
     <Link href={href} passHref>
-      <a style={{ display: src ? "flex" : "block" }}>{inner}</a>
+      <a style={{ display: src ? "flex" : "block", overflow: "hidden" }}>{inner}</a>
     </Link>
   ) : (
-    <div>{inner}</div>
+    <div style={{ overflow: "hidden" }}>{inner}</div>
   );
 
   return (

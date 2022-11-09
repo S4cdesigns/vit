@@ -7,13 +7,19 @@ import ImageIcon from "mdi-react/ImageIcon";
 import LabelsIcon from "mdi-react/LabelIcon";
 import MarkerIcon from "mdi-react/SkipNextIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
+
+import DarkThemeIcon from "mdi-react/WeatherNightIcon";
+import LightThemeIcon from "mdi-react/WhiteBalanceSunnyIcon";
+
+import SafeModeIcon from "mdi-react/FlowerIcon";
+import UnsafeModeIcon from "mdi-react/FireIcon";
+
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { Fragment, ReactNode, useContext } from "react";
 
 import { useVersion } from "../../composables/use_version";
-import { ThemeContext } from "../../pages/_app";
-import Button from "../Button";
+import { SafeModeContext, ThemeContext } from "../../pages/_app";
 import Flag from "../Flag";
 import Paper from "../Paper";
 import SidebarLink from "./SidebarLink";
@@ -87,7 +93,8 @@ type Props = {
 export default function Sidebar({ active, toggleSidebar }: Props) {
   const router = useRouter();
   const t = useTranslations();
-  const { toggleTheme } = useContext(ThemeContext);
+  const { enabled: safeMode, toggle: toggleSafeMode } = useContext(SafeModeContext);
+  const { theme, toggle: toggleTheme } = useContext(ThemeContext);
   const { version } = useVersion();
 
   function switchLocale(locale: string): void {
@@ -120,8 +127,17 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
       </div>
       <div style={{ flexGrow: 1 }}></div>
       <div style={{ gap: 8, display: "flex", alignItems: "center", flexDirection: "column" }}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={toggleTheme}>Toggle theme</Button>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 5, gap: 8 }}>
+          {theme === "dark" ? (
+            <DarkThemeIcon className="hover" size={20} onClick={toggleTheme} />
+          ) : (
+            <LightThemeIcon className="hover" size={20} onClick={toggleTheme} />
+          )}
+          {safeMode ? (
+            <SafeModeIcon className="hover" size={20} onClick={toggleSafeMode} />
+          ) : (
+            <UnsafeModeIcon className="hover" size={20} onClick={toggleSafeMode} />
+          )}
         </div>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ gap: 8, display: "flex", justifyContent: "center" }}>

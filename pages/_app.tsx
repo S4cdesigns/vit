@@ -20,19 +20,34 @@ type Theme = "light" | "dark";
 
 export const ThemeContext = createContext<{
   theme: Theme;
-  toggleTheme: () => void;
+  toggle: () => void;
 }>({
   theme: "light",
-  toggleTheme: () => {},
+  toggle: () => {},
+});
+
+export const SafeModeContext = createContext<{
+  enabled: boolean;
+  toggle: () => void;
+}>({
+  enabled: false,
+  toggle: () => {},
 });
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   const [theme, setTheme] = useState<Theme>("light");
+  const [safeMode, setSafeMode] = useState(false);
 
-  function toggleTheme() {
+  function toggleTheme(): void {
     const nextTheme = theme === "light" ? "dark" : "light";
     setTheme(nextTheme);
     localStorage.setItem("theme", nextTheme);
+  }
+
+  function toggleSafeMode(): void {
+    const nextMode = !safeMode;
+    setSafeMode(nextMode);
+    localStorage.setItem("safeMode", String(nextMode));
   }
 
   useEffect(() => {
@@ -48,6 +63,11 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
     if (["light", "dark"].includes(themeLocalStorage!)) {
       setTheme(themeLocalStorage as Theme);
     }
+
+    const safeModeLocalStorage = localStorage.getItem("safeMode");
+    if (["true", "false"].includes(safeModeLocalStorage!)) {
+      setSafeMode(safeModeLocalStorage === "true");
+    }
   }, []);
 
   return (
@@ -61,10 +81,12 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         <title>Porn Vault</title>
       </Head>
       <NextIntlProvider messages={lang[router.locale || "en"]}>
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+        <ThemeContext.Provider value={{ theme, toggle: toggleTheme }}>
+          <SafeModeContext.Provider value={{ enabled: safeMode, toggle: toggleSafeMode }}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SafeModeContext.Provider>
         </ThemeContext.Provider>
       </NextIntlProvider>
     </>

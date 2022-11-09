@@ -5,6 +5,8 @@ import WatchedIcon from "mdi-react/EyeIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import Link from "next/link";
+import { useContext } from "react";
+import { SafeModeContext } from "../pages/_app";
 
 import { IScene } from "../types/scene";
 import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";
@@ -38,6 +40,8 @@ type Props = {
 };
 
 export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
+  const { enabled: safeMode } = useContext(SafeModeContext);
+
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
     await favoriteScene(scene._id, newValue);
@@ -70,6 +74,10 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
         aspectRatio="4 / 3"
         href={`/scene/${scene._id}`}
         src={scene.thumbnail?._id && thumbnailUrl(scene.thumbnail._id)}
+        imgStyle={{
+          transition: "filter 0.15s ease-in-out",
+          filter: safeMode ? "blur(20px)" : undefined,
+        }}
       >
         {!!scene.watches.length && (
           <div

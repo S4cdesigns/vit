@@ -4,7 +4,8 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import { SafeModeContext } from "../pages/_app";
 
 import { IMovie } from "../types/movie";
 import { bookmarkMovie, favoriteMovie } from "../util/mutations/movie";
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export default function MovieCard({ movie, onFav, onBookmark }: Props) {
+  const { enabled: safeMode } = useContext(SafeModeContext);
   const t = useTranslations();
   const [hover, setHover] = useState(false);
 
@@ -57,7 +59,16 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
   return (
     <Paper style={{ position: "relative" }}>
       <div onMouseLeave={() => setHover(false)} onMouseEnter={() => setHover(true)}>
-        <ResponsiveImage aspectRatio="0.71" href={`/movie/${movie._id}`} src={thumbSrc}>
+        <ResponsiveImage
+          aspectRatio="0.71"
+          href={`/movie/${movie._id}`}
+          src={thumbSrc}
+          imgStyle={{
+            transition: "filter 0.15s ease-in-out",
+            filter: safeMode ? "blur(20px)" : undefined,
+            display: "block",
+          }}
+        >
           <div
             style={{
               display: "flex",
@@ -144,7 +155,7 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               overflow: "hidden",
-              title: titleColor,
+              color: titleColor,
             }}
           >
             {movie.name}

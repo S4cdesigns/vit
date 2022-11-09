@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { SafeModeContext } from "../pages/_app";
 import Lightbox from "./Lightbox";
 
 type Props = {
@@ -35,9 +37,24 @@ export default function ImageCard(props: Props) {
     rating,
   } = props;
 
+  const { enabled: safeMode } = useContext(SafeModeContext);
+
   return (
     <>
-      <img className="hover" width="100%" src={src} alt={alt} onClick={() => onOpen?.()} />
+      <div style={{ overflow: "hidden", borderRadius: 8 }}>
+        <img
+          className="hover"
+          width="100%"
+          src={src}
+          alt={alt}
+          onClick={() => onOpen?.()}
+          style={{
+            transition: "filter 0.15s ease-in-out",
+            filter: safeMode ? "blur(20px)" : undefined,
+            display: "block",
+          }}
+        />
+      </div>
       <Lightbox
         rating={rating}
         favorite={favorite}

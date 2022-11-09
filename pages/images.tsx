@@ -247,7 +247,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
       >
         <Masonry
           items={images}
-          rowGutter={0}
+          rowGutter={4}
           columnGutter={4}
           columnCount={(windowWidth || 1080) < 480 ? 2 : undefined}
           columnWidth={225}

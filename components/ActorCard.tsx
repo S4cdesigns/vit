@@ -3,7 +3,8 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import { SafeModeContext } from "../pages/_app";
 
 import { IActor } from "../types/actor";
 import { bookmarkActor, favoriteActor, rateActor } from "../util/mutations/actor";
@@ -34,6 +35,7 @@ type Props = {
 };
 
 export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
+  const { enabled: safeMode } = useContext(SafeModeContext);
   const [hover, setHover] = useState(false);
 
   const thumbSrc = useMemo(() => {
@@ -72,7 +74,15 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
   return (
     <Paper style={{ position: "relative" }}>
       <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-        <ResponsiveImage aspectRatio="3 / 4" href={`/actor/${actor._id}`} src={thumbSrc} />
+        <ResponsiveImage
+          aspectRatio="3 / 4"
+          href={`/actor/${actor._id}`}
+          src={thumbSrc}
+          imgStyle={{
+            transition: "filter 0.15s ease-in-out",
+            filter: safeMode ? "blur(20px)" : undefined,
+          }}
+        />
       </div>
       <div
         style={{
