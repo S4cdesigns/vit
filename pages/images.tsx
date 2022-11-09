@@ -203,6 +203,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
           disabled={hasNoLabels}
         >
           <input
+            type="text"
             style={{ width: "100%", marginBottom: 10 }}
             placeholder={t("findLabels")}
             value={labelQuery}

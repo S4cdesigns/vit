@@ -6,6 +6,7 @@ import { IActor } from "../../types/actor";
 import { graphqlQuery } from "../../util/gql";
 import ActorGridItem from "../ActorGridItem";
 import Button from "../Button";
+import Text from "../Text";
 import WidgetCard from "./WidgetCard";
 
 async function getActors(skip = 0): Promise<{ actors: IActor[] }> {
@@ -50,6 +51,21 @@ export default function FavoritesCard() {
     nextPage().catch(() => {});
   }, []);
 
+  function content() {
+    if (items.length) {
+      return items.map((actor) => (
+        <ActorGridItem
+          id={actor._id}
+          key={actor._id}
+          favorite={actor.favorite}
+          name={actor.name}
+          thumbnailId={actor.thumbnail?._id}
+        />
+      ));
+    }
+    return <Text>No actors (yet)!</Text>;
+  }
+
   return (
     <WidgetCard icon={<HeartIcon />} title={t("yourFavorites")}>
       <div
@@ -60,19 +76,13 @@ export default function FavoritesCard() {
           gridGap: 4,
         }}
       >
-        {items.map((actor) => (
-          <ActorGridItem
-            id={actor._id}
-            key={actor._id}
-            favorite={actor.favorite}
-            name={actor.name}
-            thumbnailId={actor.thumbnail?._id}
-          />
-        ))}
+        {content()}
       </div>
-      <Button style={{ marginTop: 2 }} onClick={nextPage}>
-        {t("showMore")}
-      </Button>
+      {items.length > 0 && (
+        <Button style={{ marginTop: 2 }} onClick={nextPage}>
+          {t("showMore")}
+        </Button>
+      )}
     </WidgetCard>
   );
 }

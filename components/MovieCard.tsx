@@ -1,3 +1,4 @@
+import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
@@ -43,6 +44,15 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
     await bookmarkMovie(movie._id, newValue);
     onBookmark(newValue);
   }
+
+  const titleColor = (() => {
+    if (!movie.frontCover?.color) {
+      return undefined;
+    }
+    let color = new Color(movie.frontCover.color);
+    color = color.hsl(color.hue(), 100, 85);
+    return color.hex();
+  })();
 
   return (
     <Paper style={{ position: "relative" }}>
@@ -134,6 +144,7 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               overflow: "hidden",
+              title: titleColor,
             }}
           >
             {movie.name}

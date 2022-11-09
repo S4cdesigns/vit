@@ -41,10 +41,10 @@ const testConfig: IConfig = {
     ...defaultConfig.processing,
     generatePreviews: false,
   },
-  scan: {
-    ...defaultConfig.scan,
-    interval: 0,
+  import: {
+    ...defaultConfig.import,
     scanOnStartup: false,
+    scanInterval: 0,
   },
   server: {
     ...defaultConfig.server,
@@ -132,7 +132,7 @@ export async function startTestServer(
     await ensureIzzyExists();
     console.log("Downloaded binaries");
 
-    vault = createVault();
+    vault = await createVault();
 
     await vault.startServer(port);
 

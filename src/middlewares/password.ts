@@ -1,5 +1,5 @@
+import { createHash } from "crypto";
 import express from "express";
-import { sha512 } from "js-sha512";
 import path from "path";
 
 import { getConfig } from "../config";
@@ -12,7 +12,7 @@ function validatePassword(input: string | undefined, real: string | null): boole
   if (!input) {
     return false;
   }
-  if (sha512(input) === real) {
+  if (createHash("sha512").update(input).digest("hex") === real) {
     return true;
   }
   return real === input;

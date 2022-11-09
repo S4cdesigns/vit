@@ -4,6 +4,7 @@ import useSWR from "swr";
 
 import { graphqlQuery } from "../../util/gql";
 import Loader from "../Loader";
+import Text from "../Text";
 import WidgetCard from "./WidgetCard";
 
 async function getQueueStats() {
@@ -39,9 +40,11 @@ export default function LibraryTimeCard() {
     <WidgetCard icon={<SettingsIcon />} title={t("videoProcessingQueue")}>
       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
         <div>
-          {t("video", {
-            numItems: stats?.length || 0,
-          })}
+          <Text>
+            {t("video", {
+              numItems: stats?.length || 0,
+            })}
+          </Text>
         </div>
         {stats?.processing && <Loader />}
       </div>

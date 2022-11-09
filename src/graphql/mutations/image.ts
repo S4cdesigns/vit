@@ -238,7 +238,7 @@ export default {
     if (
       config.matching.applyActorLabels.includes(ApplyActorLabelsEnum.enum["event:image:create"])
     ) {
-      logger.verbose("Applying actor labels to image");
+      logger.debug("Applying actor labels to image");
       const actors = await Actor.getBulk(actorIds);
       const actorLabels = (
         await mapAsync(actors, async (actor) => (await Actor.getLabels(actor)).map((l) => l._id))

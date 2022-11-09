@@ -180,6 +180,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
           disabled={hasNoLabels}
         >
           <input
+            type="text"
             style={{ width: "100%", marginBottom: 10 }}
             placeholder={t("findLabels")}
             value={labelQuery}
@@ -206,6 +207,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
           disabled={hasNoCollabs}
         >
           <input
+            type="text"
             style={{ width: "100%", marginBottom: 10 }}
             placeholder={t("findActors")}
             value={actorQuery}

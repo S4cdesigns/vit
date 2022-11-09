@@ -7,9 +7,11 @@ export interface IMovie {
   description?: string;
   frontCover?: {
     _id: string;
+    color?: string;
   };
   backCover?: {
     _id: string;
+    color?: string;
   };
   spineCover?: {
     _id: string;

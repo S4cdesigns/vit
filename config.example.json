@@ -24,7 +24,8 @@
         "path": "/videos",
         "include": [],
         "exclude": [],
-        "extensions": [".mp4"]
+        "extensions": [".mp4"],
+        "enable": true
       }
     ],
     "scanInterval": 10800000,

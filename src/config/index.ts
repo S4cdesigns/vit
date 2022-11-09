@@ -2,6 +2,7 @@ import chokidar from "chokidar";
 import { existsSync, unlinkSync, writeFileSync } from "fs";
 import inquirer from "inquirer";
 import YAML from "yaml";
+import { ZodError } from "zod";
 
 import { DEFAULT_STRING_MATCHER, StringMatcherType } from "../matching/stringMatcher";
 import { DEFAULT_WORD_MATCHER, WordMatcherType } from "../matching/wordMatcher";
@@ -211,14 +212,25 @@ export function writeMergedConfig(config: IConfig): void {
  * @throws
  */
 export function checkConfig(config: IConfig): boolean {
-  const validationError = isValidConfig(config);
-  if (validationError !== true) {
+  const validationResult = isValidConfig(config);
+  if (!validationResult.success) {
     logger.warn(
-      `Invalid config schema in "${validationError.location}". Double check your config has all the configurations listed in the guide (and remove old ones)`
+      `Invalid config schema! Double check your config has all the configurations listed in the guide (and remove old ones).`
     );
-    logger.error(validationError.error.message);
+    logger.error("Found issues:");
+    for (const issue of validationResult.error.issues) {
+      if (issue.code === "invalid_union") {
+        // Resolve union issues
+        for (const unionIssue of issue.unionErrors.flatMap((x) => x.issues)) {
+          logger.error(`${unionIssue.path.join(".")}: ${unionIssue.message}`);
+        }
+      } else {
+        // Regular (non-union) issue
+        logger.error(`${issue.path.join(".")}: ${issue.message}`);
+      }
+    }
     writeMergedConfig(config);
-    throw validationError;
+    throw new Error("Invalid config, see message above");
   }
 
   try {

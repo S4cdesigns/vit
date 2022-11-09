@@ -10,6 +10,21 @@ export type ProgressCallback = (progressCb: {
   totalToIndexCount: number;
 }) => void;
 
+type BulkOperationType = "index" | "create" | "update" | "delete";
+
+interface BulkResponseItem {
+  _id?: string | null;
+  _index: string;
+  error?: {
+    type: string;
+  };
+}
+interface BulkResponse {
+  errors: boolean;
+  items: Partial<Record<BulkOperationType, BulkResponseItem>>[];
+  took: number;
+}
+
 export async function addSearchDocs<IndexItemType extends { id: string }>(
   index: string,
   docs: IndexItemType[]
@@ -19,8 +34,7 @@ export async function addSearchDocs<IndexItemType extends { id: string }>(
   }
 
   logger.debug(`Indexing ${docs.length} items...`);
-  const timeNow = +new Date();
-  await getClient().bulk({
+  const result = (await getClient().bulk({
     body: docs.flatMap((doc) => [
       {
         index: {
@@ -31,8 +45,13 @@ export async function addSearchDocs<IndexItemType extends { id: string }>(
       doc,
     ]),
     refresh: true,
-  });
-  logger.debug(`ES indexing done in ${(Date.now() - timeNow) / 1000}s`);
+  })) as BulkResponse;
+  if (result.errors) {
+    logger.error(`Error during bulk index after ${result.took}ms`);
+    logger.error({ errors: result.errors });
+  } else {
+    logger.debug(`ES indexing successful in ${result.took}ms`);
+  }
 }
 
 export async function indexItems<CollectionType, IndexItemType>(
