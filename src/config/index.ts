@@ -2,7 +2,6 @@ import chokidar from "chokidar";
 import { existsSync, unlinkSync, writeFileSync } from "fs";
 import inquirer from "inquirer";
 import YAML from "yaml";
-import { ZodError } from "zod";
 
 import { DEFAULT_STRING_MATCHER, StringMatcherType } from "../matching/stringMatcher";
 import { DEFAULT_WORD_MATCHER, WordMatcherType } from "../matching/wordMatcher";
