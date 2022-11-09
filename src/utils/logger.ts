@@ -83,10 +83,11 @@ export { logger };
 
 export function createPluginLogger(
   name: string,
-  files: { level: string; prefix: string; silent: boolean }[]
+  files: { level: string; prefix: string; silent: boolean }[],
+  pluginArgs: { log?: { level?: string } }
 ) {
   const config = getConfig();
-  const { level } = config.log;
+  const level = pluginArgs?.log?.level || config.log.level;
 
   logger.debug(`Creating plugin logger: ${name}`);
 

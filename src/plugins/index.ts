@@ -79,7 +79,7 @@ export async function runPlugin(
   const func = getPlugin(pluginName);
 
   const pluginArgs = JSON.parse(JSON.stringify(args || pluginDefinition.args || {}));
-  const pluginLogger = createPluginLogger(pluginName, config.log.writeFile);
+  const pluginLogger = createPluginLogger(pluginName, config.log.writeFile, pluginArgs);
 
   const pluginVersion = func.info?.version ? `v${func.info?.version}` : "unknown version";
   logger.info(`Running plugin ${pluginName} ${pluginVersion}`);
