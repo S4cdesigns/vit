@@ -5,7 +5,7 @@ import * as path from "path";
 
 import { getFFMpegURL, getFFProbeURL } from "./binaries/ffmpeg-download";
 import defaultConfig from "./config/default";
-import { IConfig } from "./config/schema";
+import { IConfig, SUPPORTED_IMAGE_EXTENSIONS, SUPPORTED_VIDEO_EXTENSIONS } from "./config/schema";
 import { downloadFile } from "./utils/download";
 import { logger } from "./utils/logger";
 import { configPath } from "./utils/path";
@@ -50,8 +50,9 @@ export async function setupFunction(): Promise<IConfig> {
     config.import.videos = videoFolders.map((folder) => ({
       exclude: [],
       include: [],
-      extensions: [],
+      extensions: SUPPORTED_VIDEO_EXTENSIONS,
       path: folder,
+      enable: true,
     }));
   }
 
@@ -59,8 +60,9 @@ export async function setupFunction(): Promise<IConfig> {
     config.import.images = imageFolders.map((folder) => ({
       exclude: [],
       include: [],
-      extensions: [],
+      extensions: SUPPORTED_IMAGE_EXTENSIONS,
       path: folder,
+      enable: true,
     }));
   }
 

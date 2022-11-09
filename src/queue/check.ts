@@ -9,7 +9,7 @@ import Scene from "../types/scene";
 import { walk } from "../utils/fs/async";
 import { handleError, logger } from "../utils/logger";
 import { libraryPath } from "../utils/path";
-import ora = require("ora");
+import ora from "ora";
 import execa from "execa";
 
 import { getImageDimensions } from "../binaries/imagemagick";
@@ -21,7 +21,12 @@ export async function checkVideoFolders(): Promise<void> {
 
   const unknownVideos = [] as string[];
 
-  for (const { path, include, exclude, extensions } of config.import.videos) {
+  for (const { path, include, exclude, extensions, enable } of config.import.videos) {
+    if (!enable) {
+      logger.debug(`Video folder ${path} is disabled, skipping...`);
+      continue;
+    }
+
     logger.debug(`Scanning ${path} for videos...`);
     let numFiles = 0;
     const loader = ora(`Scanned ${numFiles} videos`).start();
@@ -123,7 +128,12 @@ export async function checkImageFolders(): Promise<void> {
     logger.verbose("Reading images on import is disabled.");
   }
 
-  for (const { path, include, exclude, extensions } of config.import.images) {
+  for (const { path, include, exclude, extensions, enable } of config.import.images) {
+    if (!enable) {
+      logger.debug(`Video folder ${path} is disabled, skipping...`);
+      continue;
+    }
+
     logger.verbose(`Scanning ${path} for images...`);
     let numFiles = 0;
     const loader = ora(`Scanned ${numFiles} images`).start();

@@ -84,7 +84,7 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
         pathIsExcluded(options.exclude, path) ||
         basename(path).startsWith(".")
       ) {
-        logger.debug(`"${path}" is excluded, skipping`);
+        logger.silly(`"${path}" is excluded, skipping`);
         continue;
       }
 
@@ -105,7 +105,7 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
         const _err = err as Error & { code: string };
         // Check if error was an fs permission error
         if (_err.code && (_err.code === "EACCES" || _err.code === "EPERM")) {
-          logger.error(`"${path}" requires elevated permissions, skipping`);
+          logger.warn(`"${path}" requires elevated permissions, skipping`);
         } else {
           handleError(`Error walking or in callback for "${path}", skipping`, err);
         }

@@ -66,7 +66,7 @@ export const H264Preset = zod.enum([
 
 export const WebmDeadline = zod.enum(["good", "best", "realtime"]);
 
-const SUPPORTED_VIDEO_EXTENSIONS = [
+export const SUPPORTED_VIDEO_EXTENSIONS = [
   ".m4v",
   ".mp4",
   ".mov",
@@ -82,13 +82,14 @@ const SUPPORTED_VIDEO_EXTENSIONS = [
   ".webm",
 ];
 
-const SUPPORTED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif"];
+export const SUPPORTED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif"];
 
 const videoImportFolderSchema = zod.object({
   path: zod.string().min(1),
   include: zod.array(zod.string().min(1)),
   exclude: zod.array(zod.string().min(1)),
   extensions: zod.array(zod.string().refine((x) => SUPPORTED_VIDEO_EXTENSIONS.includes(x))),
+  enable: zod.boolean(),
 });
 
 const imageImportFolderSchema = zod.object({
@@ -96,6 +97,7 @@ const imageImportFolderSchema = zod.object({
   include: zod.array(zod.string().min(1)),
   exclude: zod.array(zod.string().min(1)),
   extensions: zod.array(zod.string().refine((x) => SUPPORTED_IMAGE_EXTENSIONS.includes(x))),
+  enable: zod.boolean(),
 });
 
 const configSchema = zod
@@ -214,42 +216,11 @@ const configSchema = zod
       }),
     }),
   })
-  .nonstrict();
+  .passthrough();
 
 export type IPlugin = zod.TypeOf<typeof pluginSchema>;
 export type IConfig = zod.TypeOf<typeof configSchema>;
 
-export function isValidConfig(val: unknown): true | { location: string; error: Error } {
-  let generalError: Error | null = null;
-
-  try {
-    configSchema.parse(val);
-  } catch (err) {
-    generalError = err as Error;
-  }
-
-  try {
-    const config = val as DeepPartial<IConfig>;
-
-    if (!config?.matching?.matcher?.type) {
-      throw new Error('Missing matcher type: "matching.matcher.type"');
-    }
-    if (!config?.matching?.matcher?.options) {
-      throw new Error('Missing matcher options: "matching.matcher.options"');
-    }
-    if (config?.matching?.matcher?.type === "legacy") {
-      StringMatcherOptionsSchema.parse(config?.matching?.matcher?.options);
-    } else if (config?.matching?.matcher?.type === "word") {
-      WordMatcherOptionsSchema.parse(config?.matching?.matcher?.options);
-    } else {
-      throw new Error('Invalid matcher type: "matching.matcher.type"');
-    }
-  } catch (err) {
-    return {
-      location: "matching.matcher",
-      error: err as Error,
-    };
-  }
-
-  return generalError ? { location: "root", error: generalError } : true;
+export function isValidConfig(val: unknown) {
+  return configSchema.safeParse(val);
 }
