@@ -1,5 +1,8 @@
+import execa from "execa";
+import ora from "ora";
 import { basename } from "path";
 
+import { getImageDimensions } from "../binaries/imagemagick";
 import { getConfig } from "../config";
 import { collections } from "../database";
 import { extractActors, extractLabels, extractScenes } from "../extractor";
@@ -9,10 +12,6 @@ import Scene from "../types/scene";
 import { walk } from "../utils/fs/async";
 import { handleError, logger } from "../utils/logger";
 import { libraryPath } from "../utils/path";
-import ora from "ora";
-import execa from "execa";
-
-import { getImageDimensions } from "../binaries/imagemagick";
 
 export async function checkVideoFolders(): Promise<void> {
   const config = getConfig();

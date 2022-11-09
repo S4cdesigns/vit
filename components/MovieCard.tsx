@@ -5,8 +5,8 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useTranslations } from "next-intl";
 import { useContext, useMemo, useState } from "react";
-import { SafeModeContext } from "../pages/_app";
 
+import { SafeModeContext } from "../pages/_app";
 import { IMovie } from "../types/movie";
 import { bookmarkMovie, favoriteMovie } from "../util/mutations/movie";
 import { formatDuration } from "../util/string";

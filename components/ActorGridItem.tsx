@@ -11,7 +11,7 @@ type Props = {
   id: string;
 };
 
-export default function ActorCard({ id, name, thumbnailId, favorite }: Props) {
+export default function ActorGridItem({ id, name, thumbnailId, favorite }: Props) {
   return (
     <Link href={`/actor/${id}`} passHref>
       <a style={{ display: "block" }} className="hover">
@@ -34,17 +34,17 @@ export default function ActorCard({ id, name, thumbnailId, favorite }: Props) {
           )}
           <div
             style={{
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: 600,
               color: "white",
               background: "#000000bb",
               textAlign: "center",
               position: "absolute",
-              bottom: 10,
+              bottom: 5,
               left: 0,
               right: 0,
-              margin: "0 5px",
-              borderRadius: 8,
+              margin: "0 6px",
+              borderRadius: 4,
               padding: "4px",
               whiteSpace: "nowrap",
               overflow: "hidden",

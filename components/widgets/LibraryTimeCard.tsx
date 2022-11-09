@@ -1,7 +1,7 @@
 import Axios from "axios";
 import TimeIcon from "mdi-react/TimelapseIcon";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 import WidgetCard from "./WidgetCard";
 
@@ -25,51 +25,44 @@ async function getWatchStats() {
 export default function LibraryTimeCard() {
   const t = useTranslations();
 
-  const [numViews, setViews] = useState(0);
-  const [numDays, setDays] = useState(0);
-  const [percent, setPercent] = useState(0);
-  const [years, setYears] = useState(0);
-  const [date, setDate] = useState(new Date());
+  const { data: stats } = useSWR("libraryTimeStats", getWatchStats, {
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    revalidateOnMount: true,
+    refreshInterval: 300_000,
+  });
 
-  useEffect(() => {
-    getWatchStats()
-      .then((data) => {
-        setViews(data.numViews);
-        setDays(+data.currentIntervalDays.toFixed(0));
-        setPercent(data.viewedPercent);
-        setYears(data.remainingYears);
-        setDate(new Date(data.remainingTimestamp));
-      })
-      .catch(() => {});
-  }, []);
+  console.log({ stats });
+
+  if (!stats) {
+    return <></>;
+  }
 
   return (
     <>
-      {!!numViews && (
-        <WidgetCard icon={<TimeIcon />} title={t("libraryTime")}>
-          <div style={{ opacity: 0.8 }}>
-            {t("viewsInDays", {
-              numViews,
-              numDays,
-            })}
-          </div>
-          <div style={{ opacity: 0.8 }}>
-            {t("percentWatched", {
-              percent: `${(percent * 100).toFixed(1)}%`,
-            })}
-          </div>
-          <div style={{ opacity: 0.8 }}>
-            {t("contentLeft", {
-              years: years.toFixed(1),
-            })}
-          </div>
-          <div style={{ opacity: 0.8 }}>
-            {t("runningOut", {
-              date: date.toLocaleDateString(),
-            })}
-          </div>
-        </WidgetCard>
-      )}
+      <WidgetCard icon={<TimeIcon />} title={t("libraryTime")}>
+        <div style={{ opacity: 0.8 }}>
+          {t("viewsInDays", {
+            numViews: stats.numViews,
+            numDays: +stats.currentIntervalDays.toFixed(0),
+          })}
+        </div>
+        <div style={{ opacity: 0.8 }}>
+          {t("percentWatched", {
+            percent: `${(stats.viewedPercent * 100).toFixed(1)}%`,
+          })}
+        </div>
+        <div style={{ opacity: 0.8 }}>
+          {t("contentLeft", {
+            years: stats.remainingYears.toFixed(1),
+          })}
+        </div>
+        <div style={{ opacity: 0.8 }}>
+          {t("runningOut", {
+            date: new Date(stats.remainingTimestamp).toLocaleDateString(),
+          })}
+        </div>
+      </WidgetCard>
     </>
   );
 }

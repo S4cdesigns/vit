@@ -3,7 +3,6 @@ import { useContext } from "react";
 import { ThemeContext } from "../pages/_app";
 import { IActor } from "../types/actor";
 import { thumbnailUrl } from "../util/thumbnail";
-import styles from "./actor_details/ActorProfile.module.scss";
 import Paper from "./Paper";
 
 type Props = {

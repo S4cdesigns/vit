@@ -3,17 +3,14 @@ import ActorIcon from "mdi-react/AccountBoxIcon";
 import StudioIcon from "mdi-react/CameraAltIcon";
 import SettingsIcon from "mdi-react/CogIcon";
 import MovieIcon from "mdi-react/FilmstripBoxMultipleIcon";
+import UnsafeModeIcon from "mdi-react/FireIcon";
+import SafeModeIcon from "mdi-react/FlowerIcon";
 import ImageIcon from "mdi-react/ImageIcon";
 import LabelsIcon from "mdi-react/LabelIcon";
-import MarkerIcon from "mdi-react/SkipNextIcon";
+import MarkerIcon from "mdi-react/PlaylistStarIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
-
 import DarkThemeIcon from "mdi-react/WeatherNightIcon";
 import LightThemeIcon from "mdi-react/WhiteBalanceSunnyIcon";
-
-import SafeModeIcon from "mdi-react/FlowerIcon";
-import UnsafeModeIcon from "mdi-react/FireIcon";
-
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { Fragment, ReactNode, useContext } from "react";

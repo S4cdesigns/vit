@@ -4,6 +4,7 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import CopyIcon from "mdi-react/ContentCopyIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import AddMarkerIcon from "mdi-react/PlaylistAddIcon";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -219,45 +220,39 @@ export default function ScenePage({ scene }: { scene: IScene }) {
             <AutoLayout>
               {/* ACTION BAR */}
               <Card>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <>
                     {favorite ? (
                       <HeartIcon
                         className="hover"
                         onClick={toggleFav}
-                        style={{ fontSize: 32, color: "#ff3355" }}
+                        size={24}
+                        style={{ color: "#ff3355" }}
                       />
                     ) : (
-                      <HeartBorderIcon
-                        className="hover"
-                        onClick={toggleFav}
-                        style={{ fontSize: 32 }}
-                      />
+                      <HeartBorderIcon className="hover" onClick={toggleFav} size={24} />
                     )}
-                  </div>
-                  <div>
+                  </>
+                  <>
                     {bookmark ? (
-                      <BookmarkIcon
-                        onClick={toggleBookmark}
-                        className="hover"
-                        style={{ fontSize: 32 }}
-                      />
+                      <BookmarkIcon onClick={toggleBookmark} className="hover" size={24} />
                     ) : (
-                      <BookmarkBorderIcon
-                        onClick={toggleBookmark}
-                        className="hover"
-                        style={{ fontSize: 32 }}
-                      />
+                      <BookmarkBorderIcon onClick={toggleBookmark} className="hover" size={24} />
                     )}
-                  </div>
+                  </>
+                  {/* TODO: */}
+                  <AddMarkerIcon className="hover" size={24} />
                   <div style={{ flexGrow: 1 }} />
                   {!!scene.studio && (
-                    /* TODO: link */
-                    <img
-                      style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
-                      src={thumbnailUrl(scene.studio.thumbnail?._id)}
-                      alt={`${scene.studio.name} Logo`}
-                    />
+                    <Link href={`/studio/${scene.studio._id}`} passHref>
+                      <a className="hover">
+                        <img
+                          style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
+                          src={thumbnailUrl(scene.studio.thumbnail?._id)}
+                          alt={`${scene.studio.name}`}
+                        />
+                      </a>
+                    </Link>
                   )}
                 </div>
               </Card>
