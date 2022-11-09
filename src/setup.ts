@@ -47,11 +47,21 @@ export async function setupFunction(): Promise<IConfig> {
   }
 
   if (useVideoFolders) {
-    config.import.videos = videoFolders;
+    config.import.videos = videoFolders.map((folder) => ({
+      exclude: [],
+      include: [],
+      extensions: [],
+      path: folder,
+    }));
   }
 
   if (useImageFolders) {
-    config.import.images = imageFolders;
+    config.import.images = imageFolders.map((folder) => ({
+      exclude: [],
+      include: [],
+      extensions: [],
+      path: folder,
+    }));
   }
 
   return config;

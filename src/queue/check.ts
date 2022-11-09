@@ -14,22 +14,6 @@ import execa from "execa";
 
 import { getImageDimensions } from "../binaries/imagemagick";
 
-const VIDEO_EXTENSIONS = [
-  ".m4v",
-  ".mp4",
-  ".mov",
-  ".wmv",
-  ".avi",
-  ".mpg",
-  ".mpeg",
-  ".rmvb",
-  ".rm",
-  ".flv",
-  ".asf",
-  ".mkv",
-  ".webm",
-];
-
 export async function checkVideoFolders(): Promise<void> {
   const config = getConfig();
 
@@ -37,19 +21,16 @@ export async function checkVideoFolders(): Promise<void> {
 
   const unknownVideos = [] as string[];
 
-  if (config.scan.excludeFiles.length) {
-    logger.debug(`Will ignore files: ${JSON.stringify(config.scan.excludeFiles)}.`);
-  }
-
-  for (const folder of config.import.videos) {
-    logger.debug(`Scanning ${folder} for videos...`);
+  for (const { path, include, exclude, extensions } of config.import.videos) {
+    logger.debug(`Scanning ${path} for videos...`);
     let numFiles = 0;
     const loader = ora(`Scanned ${numFiles} videos`).start();
 
     await walk({
-      dir: folder,
-      exclude: config.scan.excludeFiles,
-      extensions: VIDEO_EXTENSIONS,
+      dir: path,
+      include,
+      exclude,
+      extensions,
       cb: async (path) => {
         loader.text = `Scanned ${++numFiles} videos`;
         if (basename(path).startsWith(".")) {
@@ -63,7 +44,7 @@ export async function checkVideoFolders(): Promise<void> {
       },
     });
 
-    loader.succeed(`${folder} done (${numFiles} videos)`);
+    loader.succeed(`${path} done (${numFiles} videos)`);
   }
 
   logger.info(`Found ${unknownVideos.length} new videos.`);
@@ -142,19 +123,16 @@ export async function checkImageFolders(): Promise<void> {
     logger.verbose("Reading images on import is disabled.");
   }
 
-  if (config.scan.excludeFiles.length) {
-    logger.debug(`Will ignore files: ${JSON.stringify(config.scan.excludeFiles)}.`);
-  }
-
-  for (const folder of config.import.images) {
-    logger.verbose(`Scanning ${folder} for images...`);
+  for (const { path, include, exclude, extensions } of config.import.images) {
+    logger.verbose(`Scanning ${path} for images...`);
     let numFiles = 0;
     const loader = ora(`Scanned ${numFiles} images`).start();
 
     await walk({
-      dir: folder,
-      extensions: [".jpg", ".jpeg", ".png", ".gif"],
-      exclude: config.scan.excludeFiles,
+      dir: path,
+      extensions,
+      include,
+      exclude,
       cb: async (path) => {
         loader.text = `Scanned ${++numFiles} images`;
         if (basename(path).startsWith(".")) return;
@@ -173,7 +151,7 @@ export async function checkImageFolders(): Promise<void> {
       },
     });
 
-    loader.succeed(`${folder} done`);
+    loader.succeed(`${path} done`);
   }
 
   logger.info(`Added ${numAddedImages} new images`);

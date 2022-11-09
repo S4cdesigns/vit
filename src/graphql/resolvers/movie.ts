@@ -18,7 +18,7 @@ export default {
     }
 
     // Pre 0.27 compatibility: add image dimensions on demand and save to db
-    if (await Image.addDimensions(image)) {
+    if (Image.addDimensions(image)) {
       await collections.images.upsert(image._id, image);
     }
 
@@ -35,7 +35,7 @@ export default {
     }
 
     // Pre 0.27 compatibility: add image dimensions on demand and save to db
-    if (await Image.addDimensions(image)) {
+    if (Image.addDimensions(image)) {
       await collections.images.upsert(image._id, image);
     }
 
@@ -52,7 +52,7 @@ export default {
     }
 
     // Pre 0.27 compatibility: add image dimensions on demand and save to db
-    if (await Image.addDimensions(image)) {
+    if (Image.addDimensions(image)) {
       await collections.images.upsert(image._id, image);
     }
 

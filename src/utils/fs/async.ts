@@ -21,8 +21,15 @@ export function mkdirpSync(path: string): string {
   return mkdirSync(path, { recursive: true })!;
 }
 
+const pathIsIncluded = (include: string[], path: string) => {
+  if (!include.length) {
+    return true;
+  }
+  return include.some((regStr) => new RegExp(regStr).test(path));
+};
+
 const pathIsExcluded = (exclude: string[], path: string) =>
-  exclude.some((regStr) => new RegExp(regStr, "i").test(path.toLowerCase()));
+  exclude.some((regStr) => new RegExp(regStr).test(path));
 
 const validExtension = (exts: string[], path: string) =>
   exts.includes(getExtension(path).toLowerCase());
@@ -30,12 +37,13 @@ const validExtension = (exts: string[], path: string) =>
 export interface IWalkOptions {
   dir: string;
   extensions: string[];
+  include: string[];
+  exclude: string[];
   /**
    * Return a truthy value to stop the walk. The return value will be the
    * path passed to the callback.
    */
   cb: (file: string) => void | Promise<void | unknown> | unknown;
-  exclude: string[];
 }
 
 /**
@@ -71,7 +79,11 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
     for (const file of filesInDir) {
       const path = join(top, file);
 
-      if (pathIsExcluded(options.exclude, path) || basename(path).startsWith(".")) {
+      if (
+        !pathIsIncluded(options.include, path) ||
+        pathIsExcluded(options.exclude, path) ||
+        basename(path).startsWith(".")
+      ) {
         logger.debug(`"${path}" is excluded, skipping`);
         continue;
       }

@@ -40,6 +40,8 @@ const defaultConfig: IConfig = {
   import: {
     images: [],
     videos: [],
+    scanInterval: 10800000,
+    scanOnStartup: true,
   },
   log: {
     level: "info",
@@ -120,11 +122,6 @@ const defaultConfig: IConfig = {
     readImagesOnImport: false,
     screenshotInterval: 120,
     generateImageThumbnails: true,
-  },
-  scan: {
-    excludeFiles: [],
-    interval: 10800000,
-    scanOnStartup: true,
   },
   server: {
     https: {

@@ -199,7 +199,7 @@ export default class Image {
    * @param overwrite will read the image and apply the dimensions even if both dimensions already exist
    * @returns if added dimensions
    */
-  static async addDimensions(image: Image, overwrite = false) {
+  static  addDimensions(image: Image, overwrite = false) {
     if (
       !image.path ||
       (!overwrite && image.meta.dimensions.height && image.meta.dimensions.width)

@@ -16,7 +16,7 @@ export function validateFFMPEGPaths(config: IConfig): void {
       );
     }
   } else {
-    throw new Error(`No FFMPEG path defined in config.json for "config.binaries.ffmpeg"`);
+    throw new Error(`No FFMPEG path defined in config for "config.binaries.ffmpeg"`);
   }
 
   if (config.binaries.ffprobe) {
@@ -27,7 +27,7 @@ export function validateFFMPEGPaths(config: IConfig): void {
       );
     }
   } else {
-    throw new Error(`No FFPROBE path defined in config.json for "config.binaries.ffprobe"`);
+    throw new Error(`No FFPROBE path defined in config for "config.binaries.ffprobe"`);
   }
 }
 
@@ -46,14 +46,6 @@ export function validateConfigExtra(config: IConfig): void {
   logger.info(`Registered plugins: ${JSON.stringify(Object.keys(config.plugins.register))}`);
   logger.debug("Loaded config:");
   logger.debug(config);
-
-  if (config.scan.excludeFiles && config.scan.excludeFiles.length) {
-    for (const regStr of config.scan.excludeFiles) {
-      if (!isRegExp(regStr)) {
-        throw new Error(`Invalid regex: "${regStr}" at "config.scan.excludeFiles".`);
-      }
-    }
-  }
 
   validateFFMPEGPaths(config);
 
