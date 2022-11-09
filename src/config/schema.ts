@@ -1,13 +1,15 @@
 import * as zod from "zod";
 
-import { StringMatcherOptionsSchema, StringMatcherSchema } from "../matching/stringMatcher";
-import { WordMatcherOptionsSchema, WordMatcherSchema } from "../matching/wordMatcher";
-import { DeepPartial } from "../utils/types";
+import { StringMatcherSchema } from "../matching/stringMatcher";
+import { WordMatcherSchema } from "../matching/wordMatcher";
+
+const logLevelType = zod.enum(["error", "warn", "info", "http", "verbose", "debug", "silly"]);
 
 const pluginArguments = zod.record(zod.unknown());
 
 const pluginSchema = zod.object({
   path: zod.string(),
+  logLevel: logLevelType.optional(),
   args: pluginArguments.optional(),
 });
 
@@ -40,8 +42,6 @@ export const ApplyStudioLabelsEnum = zod.enum([
   "plugin:scene:create",
   "plugin:scene:custom",
 ]);
-
-const logLevelType = zod.enum(["error", "warn", "info", "http", "verbose", "debug", "silly"]);
 
 export const HardwareAccelerationDriver = zod.enum([
   "qsv",
