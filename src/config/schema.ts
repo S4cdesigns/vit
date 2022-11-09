@@ -8,6 +8,7 @@ const pluginArguments = zod.record(zod.unknown());
 
 const pluginSchema = zod.object({
   path: zod.string(),
+  logLevel: zod.string().optional(),
   args: pluginArguments.optional(),
 });
 

@@ -84,12 +84,12 @@ export { logger };
 export function createPluginLogger(
   name: string,
   files: { level: string; prefix: string; silent: boolean }[],
-  pluginArgs: { log?: { level?: string } }
+  logLevel?: string
 ) {
   const config = getConfig();
-  const level = pluginArgs?.log?.level || config.log.level;
+  const level = logLevel || config.log.level;
 
-  logger.debug(`Creating plugin logger: ${name}`);
+  logger.debug(`Creating plugin logger: ${name} with level ${logLevel}`);
 
   return winston.createLogger({
     format: winston.format.combine(
