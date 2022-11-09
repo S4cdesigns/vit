@@ -7,6 +7,7 @@ import {
   includeFilter,
   ISearchResults,
   performSearch,
+  removeSearchDocument,
   searchQuery,
   shuffle,
   shuffleSwitch,
@@ -56,12 +57,7 @@ async function addStudioSearchDocs(docs: IStudioSearchDoc[]) {
 }
 
 export async function removeStudio(studioId: string): Promise<void> {
-  await getClient().delete({
-    index: indexMap.studios,
-    id: studioId,
-    type: "_doc",
-    refresh: "wait_for",
-  });
+  return removeSearchDocument(indexMap.studios, studioId);
 }
 
 export async function removeStudios(studioIds: string[]): Promise<void> {

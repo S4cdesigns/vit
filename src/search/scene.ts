@@ -15,6 +15,7 @@ import {
   ISearchResults,
   performSearch,
   ratingFilter,
+  removeSearchDocument,
   searchQuery,
   shuffle,
   shuffleSwitch,
@@ -106,12 +107,7 @@ export async function indexScenes(scenes: Scene[], progressCb?: ProgressCallback
 }
 
 export async function removeScene(sceneId: string): Promise<void> {
-  await getClient().delete({
-    index: indexMap.scenes,
-    id: sceneId,
-    type: "_doc",
-    refresh: "wait_for",
-  });
+  return removeSearchDocument(indexMap.scenes, sceneId);
 }
 
 export async function removeScenes(sceneIds: string[]): Promise<void> {

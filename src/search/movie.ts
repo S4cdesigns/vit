@@ -12,6 +12,7 @@ import {
   ISearchResults,
   performSearch,
   ratingFilter,
+  removeSearchDocument,
   searchQuery,
   shuffle,
   shuffleSwitch,
@@ -77,12 +78,7 @@ async function addMovieSearchDocs(docs: IMovieSearchDoc[]): Promise<void> {
 }
 
 export async function removeMovie(movieId: string): Promise<void> {
-  await getClient().delete({
-    index: indexMap.movies,
-    id: movieId,
-    type: "_doc",
-    refresh: "wait_for",
-  });
+  return removeSearchDocument(indexMap.movies, movieId);
 }
 
 export async function removeMovies(movieIds: string[]): Promise<void> {

@@ -17,6 +17,7 @@ import {
   normalizeAliases,
   performSearch,
   ratingFilter,
+  removeSearchDocument,
   searchQuery,
   shuffle,
   shuffleSwitch,
@@ -89,12 +90,7 @@ export async function createActorSearchDoc(actor: Actor): Promise<IActorSearchDo
 }
 
 export async function removeActor(actorId: string): Promise<void> {
-  await getClient().delete({
-    index: indexMap.actors,
-    id: actorId,
-    type: "_doc",
-    refresh: "wait_for",
-  });
+  return removeSearchDocument(indexMap.actors, actorId);
 }
 
 export async function removeActors(actorIds: string[]): Promise<void> {

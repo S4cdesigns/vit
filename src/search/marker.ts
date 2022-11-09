@@ -10,6 +10,7 @@ import {
   ISearchResults,
   performSearch,
   ratingFilter,
+  removeSearchDocument,
   searchQuery,
   shuffle,
   shuffleSwitch,
@@ -64,12 +65,7 @@ async function addMarkerSearchDocs(docs: IMarkerSearchDoc[]): Promise<void> {
 }
 
 export async function removeMarker(markerId: string): Promise<void> {
-  await getClient().delete({
-    index: indexMap.markers,
-    id: markerId,
-    type: "_doc",
-    refresh: "wait_for",
-  });
+  return removeSearchDocument(indexMap.markers, markerId);
 }
 
 export async function removeMarkers(markerIds: string[]): Promise<void> {

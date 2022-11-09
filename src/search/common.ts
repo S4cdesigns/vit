@@ -14,6 +14,15 @@ export type CustomFieldFilter = {
   value: unknown;
 };
 
+export async function removeSearchDocument(index: string, id: string): Promise<void> {
+  await getClient().delete({
+    index,
+    id,
+    type: "_doc",
+    refresh: "wait_for",
+  });
+}
+
 export async function performSearch<
   T extends { id: string },
   Q extends Partial<{
