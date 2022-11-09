@@ -25,11 +25,11 @@ const getOutDir = (pkgTarget: string) => {
 };
 
 enum BuildTargets {
-  GENERIC = "node14",
-  WINDOWS = "node14-win-x64",
-  LINUX = "node14-linux-x64",
-  MAC = "node14-macos-x64",
-  ARMV7 = "node14-linux-armv7",
+  GENERIC = "node16",
+  WINDOWS = "node16-win-x64",
+  LINUX = "node16-linux-x64",
+  MAC = "node16-macos-x64",
+  ARMV7 = "node16-linux-armv7",
 }
 
 const BuildTargetNames = {
@@ -47,9 +47,13 @@ function checkVersion() {
   if (!buildVersion) {
     console.log("WARN: did not receive version");
   } else if (buildVersion !== packageVersion) {
-    throw new Error(`argument build version "${buildVersion}" is not the same as the version in package.json: "${packageVersion}"`);
+    throw new Error(
+      `argument build version "${buildVersion}" is not the same as the version in package.json: "${packageVersion}"`
+    );
   } else if (packageVersion !== assetsVersion) {
-    throw new Error(`package.json version "${packageVersion}" is not the same as the version in assets/version.json: "${assetsVersion}"`);
+    throw new Error(
+      `package.json version "${packageVersion}" is not the same as the version in assets/version.json: "${assetsVersion}"`
+    );
   }
 }
 

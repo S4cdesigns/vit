@@ -9,17 +9,6 @@ variables:
   CI: "true"
   DOCKER_TLS_CERTDIR: ""
 
-app:
-  stage: build
-  only:
-    refs:
-      - dev
-      - "merge_requests"
-  script:
-    - npm ci
-    - npm run install:app
-    - npm run build:app
-
 server:
   stage: build
   only:

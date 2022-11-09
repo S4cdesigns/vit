@@ -35,7 +35,7 @@ function imagemagickHelp(cmd: string, path: string) {
     logger.warn(
       `It looks like you're not running Windows, but your config contains an .exe path.
 Make sure to install imagemagick and set the correct imagemagick path in the config.
-If you have magick.exe, you may be able to use path/magick.exe ${cmd}`
+If you have magick.exe, you may be able to use "{path}/magick.exe ${cmd}"`
     );
   }
   if (platform() === "linux") {
