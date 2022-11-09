@@ -35,6 +35,7 @@ export async function performSearch<
 }): Promise<ISearchResults> {
   logger.verbose(`Searching "${index}" for "${options.query?.trim() || "<no query>"}"...`);
 
+  // TODO: probably not needed
   const count = await getCount(index);
   if (count === 0) {
     logger.debug(`No items in ES, returning 0`);

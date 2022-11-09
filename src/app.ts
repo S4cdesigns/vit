@@ -89,7 +89,7 @@ export class Vault {
 
 export async function createVault(): Promise<Vault> {
   const statCache = new LRU({
-    max: 100,
+    max: 10,
     maxAge: 1000 * 60 /* 1 minute */,
   });
 
