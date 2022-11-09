@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
+
 import styles from "./SidebarLink.module.scss";
 
 type Props = {

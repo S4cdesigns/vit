@@ -8,12 +8,14 @@ import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 
 import ActorCard from "../../components/ActorCard";
+import AutoLayout from "../../components/AutoLayout";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
 import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListWrapper from "../../components/ListWrapper";
+import PageWrapper from "../../components/PageWrapper";
 import Rating from "../../components/Rating";
 import SceneCard from "../../components/SceneCard";
 import { useActorList } from "../../composables/use_actor_list";
@@ -21,11 +23,9 @@ import { useSceneList } from "../../composables/use_scene_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { sceneCardFragment } from "../../fragments/scene";
 import { IMovie } from "../../types/movie";
+import { graphqlQuery } from "../../util/gql";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import PageWrapper from "../../components/PageWrapper";
-import AutoLayout from "../../components/AutoLayout";
-import { graphqlQuery } from "../../util/gql";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `

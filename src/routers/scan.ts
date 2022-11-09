@@ -20,7 +20,7 @@ router.post("/", (req, res) => {
     res.status(409).json("Scan already in progress");
   } else {
     const config = getConfig();
-    scanFolders(config.scan.interval).catch((err: Error) => {
+    scanFolders(config.import.scanInterval).catch((err: Error) => {
       handleError("Error starting scan: ", err);
     });
     res.json("Started scan.");

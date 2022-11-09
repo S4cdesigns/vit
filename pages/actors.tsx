@@ -22,16 +22,16 @@ import IconButtonFilter from "../components/IconButtonFilter";
 import IconButtonMenu from "../components/IconButtonMenu";
 import LabelSelector from "../components/LabelSelector";
 import ListWrapper from "../components/ListWrapper";
+import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import { fetchActors, useActorList } from "../composables/use_actor_list";
 import useLabelList from "../composables/use_label_list";
+import { usePaginatedList } from "../composables/use_paginated_list";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
-import PageWrapper from "../components/PageWrapper";
-import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {

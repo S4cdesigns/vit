@@ -17,17 +17,17 @@ import IconButtonFilter from "../components/IconButtonFilter";
 import IconButtonMenu from "../components/IconButtonMenu";
 import LabelSelector from "../components/LabelSelector";
 import ListWrapper from "../components/ListWrapper";
+import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SceneCard from "../components/SceneCard";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import useLabelList from "../composables/use_label_list";
+import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchScenes, useSceneList } from "../composables/use_scene_list";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
 import { buildQueryParser } from "../util/query_parser";
-import PageWrapper from "../components/PageWrapper";
-import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {

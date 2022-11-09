@@ -5,7 +5,6 @@ import path from "path";
 import { IConfig } from "../config/schema";
 import { checkUnusedPlugins, prevalidatePlugins } from "../plugins/validate";
 import { logger } from "../utils/logger";
-import { isRegExp } from "../utils/types";
 
 export function validateFFMPEGPaths(config: IConfig): void {
   if (config.binaries.ffmpeg) {

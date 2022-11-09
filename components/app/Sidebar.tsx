@@ -2,11 +2,11 @@ import clsx from "clsx";
 import ActorIcon from "mdi-react/AccountBoxIcon";
 import StudioIcon from "mdi-react/CameraAltIcon";
 import SettingsIcon from "mdi-react/CogIcon";
+import MovieIcon from "mdi-react/FilmstripBoxMultipleIcon";
 import ImageIcon from "mdi-react/ImageIcon";
+import LabelsIcon from "mdi-react/LabelIcon";
 import MarkerIcon from "mdi-react/SkipNextIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
-import MovieIcon from "mdi-react/FilmstripBoxMultipleIcon";
-import LabelsIcon from "mdi-react/LabelIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { Fragment, ReactNode, useContext } from "react";
@@ -14,8 +14,8 @@ import { Fragment, ReactNode, useContext } from "react";
 import { useVersion } from "../../composables/use_version";
 import { ThemeContext } from "../../pages/_app";
 import Button from "../Button";
-import Paper from "../Paper";
 import Flag from "../Flag";
+import Paper from "../Paper";
 import SidebarLink from "./SidebarLink";
 
 const links: (

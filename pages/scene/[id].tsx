@@ -6,11 +6,13 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useRef, useState, VideoHTMLAttributes } from "react";
+import { useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
+import AutoLayout from "../../components/AutoLayout";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
@@ -20,28 +22,27 @@ import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import MovieCard from "../../components/MovieCard";
+import PageWrapper from "../../components/PageWrapper";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
-import Text from "../../components/Text";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
+import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
-import { actorCardFragment } from "../../fragments/actor";
-import { movieCardFragment } from "../../fragments/movie";
+import { scenePageFragment } from "../../fragments/scene";
 import { IScene } from "../../types/scene";
+import { graphqlQuery } from "../../util/gql";
 import {
   bookmarkScene,
   favoriteScene,
   rateScene,
+  runScenePlugins,
   unwatchScene,
   watchScene,
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import PageWrapper from "../../components/PageWrapper";
-import AutoLayout from "../../components/AutoLayout";
-import { graphqlQuery } from "../../util/gql";
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -66,57 +67,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `
   query ($id: String!) {
     getSceneById(id: $id) {
-      _id
-      name
-      favorite
-      bookmark
-      rating
-      description
-      releaseDate
-      labels {
-        _id
-        name
-        color
-      }
-      thumbnail {
-        _id
-      }
-      meta {
-        duration
-        fps
-        size
-        dimensions {
-          width
-          height
-        }
-      }
-      actors {
-        ...ActorCard
-      }
-      movies {
-        ...MovieCard
-      }
-      studio {
-        _id
-        name
-        thumbnail {
-          _id
-        }
-      }
-      path
-      watches
-      markers {
-        _id
-        name
-        time
-        thumbnail {
-          _id
-        }
-      }
+      ...ScenePage
     }
   }
-  ${actorCardFragment}
-  ${movieCardFragment}
+  ${scenePageFragment}
   `;
 
   const { getSceneById } = await graphqlQuery<{
@@ -133,6 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default function ScenePage({ scene }: { scene: IScene }) {
+  const router = useRouter();
   const t = useTranslations();
 
   const [favorite, setFavorite] = useState(scene.favorite);
@@ -143,6 +98,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
+  const [pluginLoader, setPluginLoader] = useState(false);
 
   const { actors, editActor } = useActorList(
     {
@@ -195,6 +151,17 @@ export default function ScenePage({ scene }: { scene: IScene }) {
       setWatches(watches);
     } catch (error) {}
     setWatchLoader(false);
+  }
+
+  async function handleRunScenePlugins() {
+    setPluginLoader(true);
+    try {
+      await runScenePlugins(scene._id);
+      router.replace(router.asPath).catch(() => {});
+    } catch (error) {
+      console.error(error);
+    }
+    setPluginLoader(false);
   }
 
   return (
@@ -372,6 +339,9 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                           }}
                         >
                           Run FFprobe
+                        </Button>
+                        <Button loading={pluginLoader} onClick={handleRunScenePlugins}>
+                          Run Plugins
                         </Button>
                         <Window
                           isOpen={!!ffprobeData}

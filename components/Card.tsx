@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { CSSProperties, ReactNode } from "react";
-import AutoLayout from "./AutoLayout";
 
+import AutoLayout from "./AutoLayout";
 import styles from "./Card.module.scss";
 import Paper from "./Paper";
 

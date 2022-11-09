@@ -1,8 +1,8 @@
 import StatsIcon from "mdi-react/ChartBarStackedIcon";
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
-import { graphqlQuery } from "../../util/gql";
 
+import { graphqlQuery } from "../../util/gql";
 import WidgetCard from "./WidgetCard";
 
 async function getInfo() {

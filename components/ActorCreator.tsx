@@ -2,8 +2,8 @@ import Color from "color";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Select from "react-select";
-import useLabelList from "../composables/use_label_list";
 
+import useLabelList from "../composables/use_label_list";
 import { useWindow } from "../composables/use_window";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";

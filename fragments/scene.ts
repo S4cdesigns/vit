@@ -1,3 +1,60 @@
+import { actorCardFragment } from "./actor";
+import { movieCardFragment } from "./movie";
+
+export const scenePageFragment = `
+fragment ScenePage on Scene {
+  _id
+  name
+  favorite
+  bookmark
+  rating
+  description
+  releaseDate
+  labels {
+    _id
+    name
+    color
+  }
+  thumbnail {
+    _id
+  }
+  meta {
+    duration
+    fps
+    size
+    dimensions {
+      width
+      height
+    }
+  }
+  actors {
+    ...ActorCard
+  }
+  movies {
+    ...MovieCard
+  }
+  studio {
+    _id
+    name
+    thumbnail {
+      _id
+    }
+  }
+  path
+  watches
+  markers {
+    _id
+    name
+    time
+    thumbnail {
+      _id
+    }
+  }
+}
+${actorCardFragment}
+${movieCardFragment}
+`;
+
 export const sceneCardFragment = `
 fragment SceneCard on Scene {
   _id

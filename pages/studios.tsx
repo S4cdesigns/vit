@@ -11,19 +11,19 @@ import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
 import LabelGroup from "../components/LabelGroup";
 import ListWrapper from "../components/ListWrapper";
+import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import Paper from "../components/Paper";
 import ResponsiveImage from "../components/ResponsiveImage";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import StudioCard from "../components/StudioCard";
+import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchStudios, useStudioList } from "../composables/use_studio_list";
 import useUpdateEffect from "../composables/use_update_effect";
 import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
 import { thumbnailUrl } from "../util/thumbnail";
-import PageWrapper from "../components/PageWrapper";
-import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {

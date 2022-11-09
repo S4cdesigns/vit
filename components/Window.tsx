@@ -1,7 +1,7 @@
 import CloseIcon from "mdi-react/CloseIcon";
 import { ReactNode } from "react";
-import AutoLayout from "./AutoLayout";
 
+import AutoLayout from "./AutoLayout";
 import Card from "./Card";
 import CardTitle from "./CardTitle";
 
