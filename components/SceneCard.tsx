@@ -1,3 +1,4 @@
+import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import WatchedIcon from "mdi-react/EyeIcon";
@@ -53,6 +54,15 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
     await rateScene(scene._id, rating);
     onRate(rating);
   }
+
+  const titleColor = (() => {
+    if (!scene.thumbnail?.color) {
+      return undefined;
+    }
+    let color = new Color(scene.thumbnail.color);
+    color = color.hsl(color.hue(), 100, 85);
+    return color.hex();
+  })();
 
   return (
     <Paper style={{ position: "relative" }}>
@@ -160,6 +170,7 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               overflow: "hidden",
+              color: titleColor,
             }}
           >
             {scene.name}

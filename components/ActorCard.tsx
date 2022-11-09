@@ -1,3 +1,4 @@
+import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
@@ -58,6 +59,15 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
     await rateActor(actor._id, rating);
     onRate(rating);
   }
+
+  const titleColor = (() => {
+    if (!actor.thumbnail?.color) {
+      return undefined;
+    }
+    let color = new Color(actor.thumbnail.color);
+    color = color.hsl(color.hue(), 100, 85);
+    return color.hex();
+  })();
 
   return (
     <Paper style={{ position: "relative" }}>
@@ -122,6 +132,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               overflow: "hidden",
+              color: titleColor,
             }}
           >
             {actor.name}
