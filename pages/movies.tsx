@@ -11,14 +11,14 @@ import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
 import ListWrapper from "../components/ListWrapper";
 import MovieCard from "../components/MovieCard";
+import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import { fetchMovies, useMovieList } from "../composables/use_movie_list";
+import { usePaginatedList } from "../composables/use_paginated_list";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
-import PageWrapper from "../components/PageWrapper";
-import { usePaginatedList } from "../composables/use_paginated_list";
 
 const queryParser = buildQueryParser({
   q: {

@@ -7,6 +7,7 @@ import ActorProfile from "../../components/actor_details/ActorProfile";
 import ActorStats from "../../components/actor_details/ActorStats";
 import HeroImage from "../../components/actor_details/HeroImage";
 import SceneList from "../../components/actor_details/SceneList";
+import AutoLayout from "../../components/AutoLayout";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
@@ -14,12 +15,11 @@ import ComplexGrid from "../../components/ComplexGrid";
 import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
+import PageWrapper from "../../components/PageWrapper";
 import { actorCardFragment } from "../../fragments/actor";
 import { IActor } from "../../types/actor";
-import { buildQueryParser } from "../../util/query_parser";
-import PageWrapper from "../../components/PageWrapper";
-import AutoLayout from "../../components/AutoLayout";
 import { graphqlQuery } from "../../util/gql";
+import { buildQueryParser } from "../../util/query_parser";
 
 const queryParser = buildQueryParser({
   q: {

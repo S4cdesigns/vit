@@ -1,8 +1,8 @@
 import SettingsIcon from "mdi-react/SettingsIcon";
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
-import { graphqlQuery } from "../../util/gql";
 
+import { graphqlQuery } from "../../util/gql";
 import Loader from "../Loader";
 import WidgetCard from "./WidgetCard";
 

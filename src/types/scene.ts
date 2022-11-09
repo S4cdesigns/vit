@@ -202,7 +202,7 @@ export default class Scene {
       videoPath
     );
 
-    logger.verbose(
+    logger.silly(
       `Got ffprobe metadata ${formatMessage(metadata)} with normalized container "${
         scene.meta.container
       }"`

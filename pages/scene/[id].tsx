@@ -6,9 +6,10 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useRef, useState, VideoHTMLAttributes } from "react";
+import { useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -29,15 +30,14 @@ import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
-import { actorCardFragment } from "../../fragments/actor";
-import { movieCardFragment } from "../../fragments/movie";
-import Scene from "../../src/types/scene";
+import { scenePageFragment } from "../../fragments/scene";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
 import {
   bookmarkScene,
   favoriteScene,
   rateScene,
+  runScenePlugins,
   unwatchScene,
   watchScene,
 } from "../../util/mutations/scene";
@@ -67,57 +67,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `
   query ($id: String!) {
     getSceneById(id: $id) {
-      _id
-      name
-      favorite
-      bookmark
-      rating
-      description
-      releaseDate
-      labels {
-        _id
-        name
-        color
-      }
-      thumbnail {
-        _id
-      }
-      meta {
-        duration
-        fps
-        size
-        dimensions {
-          width
-          height
-        }
-      }
-      actors {
-        ...ActorCard
-      }
-      movies {
-        ...MovieCard
-      }
-      studio {
-        _id
-        name
-        thumbnail {
-          _id
-        }
-      }
-      path
-      watches
-      markers {
-        _id
-        name
-        time
-        thumbnail {
-          _id
-        }
-      }
+      ...ScenePage
     }
   }
-  ${actorCardFragment}
-  ${movieCardFragment}
+  ${scenePageFragment}
   `;
 
   const { getSceneById } = await graphqlQuery<{
@@ -134,6 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default function ScenePage({ scene }: { scene: IScene }) {
+  const router = useRouter();
   const t = useTranslations();
 
   const [favorite, setFavorite] = useState(scene.favorite);
@@ -181,31 +135,6 @@ export default function ScenePage({ scene }: { scene: IScene }) {
     setRating(rating);
   }
 
-  async function runScenePlugins(sceneId: string) {
-    setPluginLoader(true);
-    const q = `
-  mutation($id: String!) {
-    runScenePlugins(id: $id) {
-      _id
-    }
-  }`;
-
-    try {
-      const { runScenePlugins } = await graphqlQuery<{
-        runScenePlugins: {
-          scene: string;
-        };
-      }>(q, {
-        id: sceneId,
-      });
-
-      return JSON.parse(runScenePlugins.scene) as Scene;
-    } catch (error) {
-      console.error(error);
-    }
-    setPluginLoader(false);
-  }
-
   async function _watchScene(): Promise<void> {
     setWatchLoader(true);
     try {
@@ -222,6 +151,17 @@ export default function ScenePage({ scene }: { scene: IScene }) {
       setWatches(watches);
     } catch (error) {}
     setWatchLoader(false);
+  }
+
+  async function handleRunScenePlugins() {
+    setPluginLoader(true);
+    try {
+      await runScenePlugins(scene._id);
+      router.replace(router.asPath).catch(() => {});
+    } catch (error) {
+      console.error(error);
+    }
+    setPluginLoader(false);
   }
 
   return (
@@ -400,14 +340,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                         >
                           Run FFprobe
                         </Button>
-                        <Button
-                          loading={pluginLoader}
-                          onClick={() => {
-                            runScenePlugins(scene._id).catch((error) => {
-                              console.error(error);
-                            });
-                          }}
-                        >
+                        <Button loading={pluginLoader} onClick={handleRunScenePlugins}>
                           Run Plugins
                         </Button>
                         <Window

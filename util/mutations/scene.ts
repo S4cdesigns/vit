@@ -1,5 +1,18 @@
 import { graphqlQuery } from "../gql";
 
+export async function runScenePlugins(sceneId: string): Promise<void> {
+  const mutation = `
+mutation($id: String!) {
+  runScenePlugins(id: $id) {
+    _id
+  }
+}
+`;
+  await graphqlQuery(mutation, {
+    id: sceneId,
+  });
+}
+
 export async function watchScene(sceneId: string): Promise<number[]> {
   const mutation = `
 mutation($id: String!) {

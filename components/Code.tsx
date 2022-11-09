@@ -1,7 +1,7 @@
 import { CSSProperties, useContext, useState } from "react";
 import YAML from "yaml";
-import { ThemeContext } from "../pages/_app";
 
+import { ThemeContext } from "../pages/_app";
 import Button from "./Button";
 
 type Props<T> = {

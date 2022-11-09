@@ -1,8 +1,8 @@
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import useSWR from "swr";
-import AutoLayout from "../../components/AutoLayout";
 
+import AutoLayout from "../../components/AutoLayout";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
