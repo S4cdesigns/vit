@@ -1,8 +1,7 @@
 import * as zod from "zod";
 
-import { StringMatcherOptionsSchema, StringMatcherSchema } from "../matching/stringMatcher";
-import { WordMatcherOptionsSchema, WordMatcherSchema } from "../matching/wordMatcher";
-import { DeepPartial } from "../utils/types";
+import { StringMatcherSchema } from "../matching/stringMatcher";
+import { WordMatcherSchema } from "../matching/wordMatcher";
 
 const logLevelType = zod.enum(["error", "warn", "info", "http", "verbose", "debug", "silly"]);
 
