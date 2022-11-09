@@ -1,6 +1,6 @@
+import { createHash } from "crypto";
 import { chmodSync, existsSync } from "fs";
 import inquirer from "inquirer";
-import { sha512 } from "js-sha512";
 import * as path from "path";
 
 import { getFFMpegURL, getFFProbeURL } from "./binaries/ffmpeg-download";
@@ -43,7 +43,7 @@ export async function setupFunction(): Promise<IConfig> {
   }
 
   if (usePassword) {
-    config.auth.password = sha512(password);
+    config.auth.password = createHash("sha512").update(password).digest("hex");
   }
 
   if (useVideoFolders) {
