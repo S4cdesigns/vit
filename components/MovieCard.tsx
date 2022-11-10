@@ -143,20 +143,15 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
         </div>
         <div
           style={{
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            color: titleColor,
             fontWeight: 600,
             fontSize: 16,
           }}
         >
-          <div
-            style={{
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              color: titleColor,
-            }}
-          >
-            {movie.name}
-          </div>
+          {movie.name}
         </div>
 
         {!!movie.actors.length && <ActorList actors={movie.actors} />}

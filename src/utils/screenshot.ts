@@ -1,11 +1,12 @@
 import { randomUUID } from "crypto";
-import asyncPool from "tiny-async-pool";
-import { ThumbnailFile } from "../types/scene";
-import { formatMessage, logger } from "./logger";
 import ffmpeg from "fluent-ffmpeg";
-import { readdirAsync, statAsync } from "./fs/async";
-import { libraryPath } from "./path";
 import { resolve } from "path";
+import asyncPool from "tiny-async-pool";
+
+import { ThumbnailFile } from "../types/scene";
+import { readdirAsync, statAsync } from "./fs/async";
+import { formatMessage, logger } from "./logger";
+import { libraryPath } from "./path";
 
 type ScreenshotOptions = {
   filePrefix?: string;

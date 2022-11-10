@@ -33,6 +33,7 @@ export default {
     markers: "Kapitel",
     views: "Aufrufe",
     labels: "Labels",
+    viewHistory: "Verlauf",
 
     actions: "Aktionen",
   },

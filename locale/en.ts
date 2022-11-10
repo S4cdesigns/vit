@@ -33,6 +33,7 @@ export default {
     markers: "Markers",
     views: "Scene views",
     labels: "Labels",
+    viewHistory: "View history",
 
     actions: "Actions",
   },

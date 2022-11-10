@@ -4,8 +4,8 @@ import ffmpeg from "fluent-ffmpeg";
 import { existsSync } from "fs";
 import LRUCache from "lru-cache";
 import path from "path";
-import { getConfig } from "../config";
 
+import { getConfig } from "../config";
 import { collections } from "../database";
 import { CopyMP4Transcoder } from "../transcode/copyMp4";
 import { MP4Transcoder } from "../transcode/mp4";

@@ -11,6 +11,7 @@ import MarkerIcon from "mdi-react/PlaylistStarIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
 import DarkThemeIcon from "mdi-react/WeatherNightIcon";
 import LightThemeIcon from "mdi-react/WhiteBalanceSunnyIcon";
+import ViewHistoryIcon from "mdi-react/HistoryIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { Fragment, ReactNode, useContext } from "react";
@@ -66,6 +67,12 @@ const links: (
     text: "heading.labels",
     icon: <LabelsIcon />,
     url: "/labels",
+    divider: false,
+  },
+  {
+    text: "heading.viewHistory",
+    icon: <ViewHistoryIcon />,
+    url: "/view-history",
     divider: false,
   },
   {

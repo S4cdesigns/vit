@@ -166,20 +166,15 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
         </div>
         <div
           style={{
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            color: titleColor,
             fontWeight: 600,
             fontSize: 16,
           }}
         >
-          <div
-            style={{
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              color: titleColor,
-            }}
-          >
-            {scene.name}
-          </div>
+          {scene.name}
         </div>
 
         {!!scene.actors.length && <ActorList actors={scene.actors} />}
