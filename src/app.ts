@@ -161,7 +161,9 @@ export async function createVault(): Promise<Vault> {
 
   app.get("/api/remaining-time", async (_req, res) => {
     const views = createObjectSet(await SceneView.getAll(), "scene");
-    if (!views.length) return res.json(null);
+    if (!views.length) {
+      return res.json(null);
+    }
 
     const now = Date.now();
     const numScenes = await collections.scenes.count();

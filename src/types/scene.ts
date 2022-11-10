@@ -2,7 +2,6 @@ import execa from "execa";
 import ffmpeg, { FfprobeData } from "fluent-ffmpeg";
 import { existsSync, statSync } from "fs";
 import path, { basename, resolve } from "path";
-import asyncPool from "tiny-async-pool";
 
 import { getConfig } from "../config";
 import { collections } from "../database";
