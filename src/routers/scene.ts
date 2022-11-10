@@ -1,6 +1,10 @@
+import execa from "execa";
 import { Request, Response, Router } from "express";
 import ffmpeg from "fluent-ffmpeg";
+import { existsSync } from "fs";
+import LRUCache from "lru-cache";
 import path from "path";
+import { getConfig } from "../config";
 
 import { collections } from "../database";
 import { CopyMP4Transcoder } from "../transcode/copyMp4";
@@ -8,7 +12,10 @@ import { MP4Transcoder } from "../transcode/mp4";
 import { SceneStreamTypes, TranscodeOptions } from "../transcode/transcoder";
 import { WebmTranscoder } from "../transcode/webm";
 import Scene from "../types/scene";
+import { mkdirpSync, readFileAsync, rimrafAsync, rmdirAsync, unlinkAsync } from "../utils/fs/async";
 import { handleError, logger } from "../utils/logger";
+import { generateTimestampsAtIntervals } from "../utils/misc";
+import { generateScreenshots } from "../utils/screenshot";
 
 function streamTranscode(
   scene: Scene & { path: string },
@@ -70,6 +77,69 @@ function streamDirect(scene: Scene & { path: string }, _: Request, res: Response
 }
 
 const router = Router();
+
+const gridCache = new LRUCache<string, Buffer>({
+  max: 100,
+});
+
+router.get("/:scene/grid", async (req, res, next) => {
+  const sc = await Scene.getById(req.params.scene);
+  if (!sc?.path) {
+    return next(404);
+  }
+  if (!existsSync(sc.path)) {
+    return next(409);
+  }
+
+  const rows = +(req.query.rows || 6);
+  const cols = +(req.query.cols || 4);
+  const size = +(req.query.size || 240);
+
+  const cacheKey = `${sc._id}-${rows}-${cols}-${size}`;
+
+  const fromCache = gridCache.get(cacheKey);
+  if (fromCache) {
+    return res.status(200).setHeader("content-type", "image/jpg").send(fromCache);
+  }
+
+  const timestamps = generateTimestampsAtIntervals(rows * cols, sc.meta.duration, {
+    startPercentage: 2,
+    endPercentage: 100,
+  });
+
+  const tmpFolder = path.resolve("tmp", "grid", sc._id);
+  if (!existsSync(tmpFolder)) {
+    mkdirpSync(tmpFolder);
+  }
+
+  const files = await generateScreenshots({
+    videoFile: sc.path,
+    outputFolder: tmpFolder,
+    timestamps,
+    filePrefix: sc._id,
+    width: size,
+  });
+
+  const file = path.resolve(tmpFolder, "grid.jpg");
+
+  execa.sync(getConfig().imagemagick.montagePath, [
+    ...files.map((x) => x.path),
+    /*   "-title",
+    sc.name, */
+    "-tile",
+    `${cols}x${rows}`,
+    "-geometry",
+    "+0+0",
+    file,
+  ]);
+
+  const contents = await readFileAsync(file);
+  gridCache.set(cacheKey, contents);
+
+  await rimrafAsync(tmpFolder);
+
+  res.status(200).setHeader("content-type", "image/jpg").send(contents);
+});
 
 router.get("/:scene", async (req, res, next) => {
   const sc = await Scene.getById(req.params.scene);

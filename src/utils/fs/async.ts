@@ -13,9 +13,11 @@ export const writeFileAsync = promisify(writeFile);
 export const copyFileAsync = promisify(copyFile);
 export const rmdirAsync = promisify(rmdir);
 export const mkdirAsync = promisify(mkdir);
+
 export function rimrafAsync(path: string): Promise<void> {
   return rmdirAsync(path, { recursive: true });
 }
+
 export function mkdirpSync(path: string): string {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return mkdirSync(path, { recursive: true })!;

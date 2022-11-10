@@ -19,6 +19,7 @@ import { generateHash } from "../utils/hash";
 import { formatMessage, handleError, logger } from "../utils/logger";
 import { evaluateFps, generateTimestampsAtIntervals } from "../utils/misc";
 import { libraryPath } from "../utils/path";
+import { generateScreenshots } from "../utils/screenshot";
 import { removeExtension } from "../utils/string";
 import { ApplyActorLabelsEnum, ApplyStudioLabelsEnum } from "./../config/schema";
 import { FFProbeAudioCodecs, FFProbeContainers, FFProbeVideoCodecs } from "./../ffmpeg/ffprobe";
@@ -496,88 +497,32 @@ export default class Scene {
         return resolve(null);
       }
 
-      const tmpFolder = path.join("tmp", scene._id);
+      const tmpFolder = path.resolve("tmp", scene._id);
       if (!existsSync(tmpFolder)) {
         mkdirpSync(tmpFolder);
       }
 
-      const options = {
-        file: scene.path,
-        pattern: `${scene._id}-{{index}}.jpg`,
-        count: 100,
-        thumbnailPath: tmpFolder,
-        quality: "60",
-      };
-
-      const timestamps = generateTimestampsAtIntervals(options.count, scene.meta.duration, {
+      const timestamps = generateTimestampsAtIntervals(100, scene.meta.duration, {
         startPercentage: 2,
         endPercentage: 100,
       });
 
-      logger.debug(`Timestamps: ${formatMessage(timestamps)}`);
-      logger.debug(`Creating previews with options: ${formatMessage(options)}`);
+      logger.debug(`Creating 100 small previews for ${scene._id}.`);
 
-      let hadError = false;
-
-      await asyncPool(4, timestamps, (timestamp) => {
-        const index = timestamps.findIndex((s) => s === timestamp);
-        return new Promise<void>((resolve) => {
-          logger.debug(`Creating preview ${index}...`);
-          ffmpeg(options.file)
-            .on("end", () => {
-              logger.verbose(`Created preview ${index}`);
-              resolve();
-            })
-            .on("error", (err: Error) => {
-              logger.error({
-                options,
-                duration: scene.meta.duration,
-                timestamps,
-              });
-              logger.error(err);
-              logger.error(`Preview generation failed for preview ${index}`);
-              hadError = true;
-              resolve();
-            })
-            .screenshots({
-              count: 1,
-              timemarks: [timestamp],
-              // Note: we can't use the FFMPEG index syntax
-              // because we're generating 1 screenshot at a time instead of N
-              filename: options.pattern.replace("{{index}}", index.toString().padStart(3, "0")),
-              folder: options.thumbnailPath,
-              size: "160x?",
-            });
-        });
+      const files = await generateScreenshots({
+        videoFile: scene.path,
+        outputFolder: tmpFolder,
+        timestamps,
+        filePrefix: scene._id,
+        width: 160,
       });
-
-      if (hadError) {
-        logger.error("Failed preview generation");
-        try {
-          await rimrafAsync(tmpFolder);
-        } catch (error) {
-          logger.error("Failed deleting tmp folder");
-        }
-        return resolve(null);
-      }
-
-      logger.debug(`Created 100 small previews for ${scene._id}.`);
-
-      const files = (await readdirAsync(tmpFolder, "utf-8")).map((fileName) =>
-        path.join(tmpFolder, fileName)
-      );
-      logger.debug(files);
-      if (!files.length) {
-        logger.error("Failed preview generation: no images");
-        return resolve(null);
-      }
 
       logger.debug(`Creating preview strip for ${scene._id}`);
 
       const file = path.join(libraryPath("previews/"), `${scene._id}.jpg`);
 
       execa.sync(getConfig().imagemagick.montagePath, [
-        ...files,
+        ...files.map((x) => x.path),
         "-tile",
         "100x1",
         "-geometry",
@@ -703,81 +648,22 @@ export default class Scene {
         amount = 10;
       }
 
-      const filePrefix = `${scene._id}-screenshot-`;
-
-      const options = {
-        file: scene.path,
-        pattern: `${filePrefix}{{index}}.jpg`,
-        count: amount,
-        screenshotPath: libraryPath("thumbnails/"),
-      };
-
       try {
-        const timestamps = generateTimestampsAtIntervals(options.count, scene.meta.duration, {
+        const timestamps = generateTimestampsAtIntervals(amount, scene.meta.duration, {
           startPercentage: 2,
           endPercentage: 100,
         });
 
-        logger.debug(`Timestamps: ${formatMessage(timestamps)}`);
-        logger.debug(`Creating screenshots with options: ${formatMessage(options)}`);
-
-        await asyncPool(4, timestamps, (timestamp) => {
-          const index = timestamps.findIndex((s) => s === timestamp);
-          return new Promise<void>((resolve, reject) => {
-            logger.debug(`Creating screenshot ${index}...`);
-            ffmpeg(options.file)
-              .on("end", () => {
-                logger.verbose(`Created screenshot ${index}`);
-                resolve();
-              })
-              .on("error", (err: Error) => {
-                logger.error(`Screenshot generation failed for screenshot ${index}`);
-                logger.error({
-                  options,
-                  duration: scene.meta.duration,
-                  timestamps,
-                });
-                reject(err);
-              })
-              .screenshots({
-                count: 1,
-                timemarks: [timestamp],
-                // Note: we can't use the FFMPEG index syntax
-                // because we're generating 1 screenshot at a time instead of N
-                filename: options.pattern.replace("{{index}}", index.toString().padStart(3, "0")),
-                folder: options.screenshotPath,
-                size: `${Math.min(
-                  scene.meta.dimensions?.width || config.processing.imageCompressionSize,
-                  config.processing.imageCompressionSize
-                )}x?`,
-              });
-          });
+        return generateScreenshots({
+          videoFile: scene.path,
+          outputFolder: libraryPath("thumbnails/"),
+          timestamps,
+          filePrefix: scene._id,
+          width: Math.min(
+            scene.meta.dimensions?.width || config.processing.imageCompressionSize,
+            config.processing.imageCompressionSize
+          ),
         });
-
-        logger.info("Screenshot generation done.");
-
-        const screenshotFilenames = (await readdirAsync(options.screenshotPath)).filter((name) =>
-          name.startsWith(filePrefix)
-        );
-
-        const screenshotFiles = await Promise.all(
-          screenshotFilenames.map(async (name) => {
-            const filePath = libraryPath(`thumbnails/${name}`);
-            const stats = await statAsync(filePath);
-            return {
-              name,
-              path: filePath,
-              size: stats.size,
-              time: stats.mtime.getTime(),
-            };
-          })
-        );
-
-        screenshotFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-
-        logger.info(`Generated ${screenshotFiles.length} screenshots.`);
-
-        resolve(screenshotFiles);
       } catch (err) {
         logger.error(err);
         reject(err);

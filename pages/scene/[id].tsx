@@ -44,6 +44,7 @@ import {
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+import axios from "axios";
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -99,7 +100,12 @@ export default function ScenePage({ scene }: { scene: IScene }) {
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
+
   const [pluginLoader, setPluginLoader] = useState(false);
+
+  const gridUrl = `/api/media/scene/${scene._id}/grid`;
+  const [showGrid, setGrid] = useState(false);
+  const [gridLoader, setGridLoader] = useState(false);
 
   const {
     actors,
@@ -393,8 +399,26 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                             value={ffprobeData}
                           ></Code>
                         </Window>
+                        <Button
+                          loading={gridLoader}
+                          onClick={async () => {
+                            setGridLoader(true);
+                            try {
+                              const res = await axios.get(gridUrl);
+                              setGrid(true);
+                            } catch (error) {}
+                            setGridLoader(false);
+                          }}
+                        >
+                          Generate grid
+                        </Button>
                       </div>
                     </CardSection>
+                    {showGrid && (
+                      <div>
+                        <img src={gridUrl} width="100%" />
+                      </div>
+                    )}
                   </AutoLayout>
                 </div>
               </Card>
