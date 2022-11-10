@@ -15,7 +15,7 @@ export default function Topbar({ setSidebar }: Props) {
   return (
     <div className="topbar">
       <div style={{ width: "100%", display: "flex", alignItems: "center", padding: 12, gap: 8 }}>
-        <MenuIcon onClick={() => setSidebar(false)} className="mobile-sidebar-toggle" />
+        <MenuIcon onClick={() => setSidebar(true)} className="mobile-sidebar-toggle" />
         <img
           onClick={() => router.push("/")}
           className="hover"
