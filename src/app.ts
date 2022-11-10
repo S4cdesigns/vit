@@ -172,9 +172,10 @@ export async function createVault(): Promise<Vault> {
     const fullTime = currentInterval / viewedPercent;
     const remaining = fullTime - currentInterval;
     const remainingTimestamp = now + remaining;
-    /* TODO: server side cache result
-       clear cache when some scene viewed
-    */
+
+    // TODO: server side cache result
+    // clear cache when some scene viewed
+
     res.json({
       numViews: views.length,
       numScenes,

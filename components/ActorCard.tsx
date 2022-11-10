@@ -120,7 +120,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           )}
         </div>
       </div>
-      <div style={{ margin: "4px 8px 8px 8px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
         <div
           style={{
             display: "flex",
@@ -133,7 +133,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           {actor.nationality && (
             <Flag
               name={actor.nationality.alias || actor.nationality.name}
-              size={16}
+              size={18}
               code={actor.nationality.alpha2}
             />
           )}
@@ -151,11 +151,11 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           <div>{actor.age}</div>
         </div>
 
-        <div style={{ marginTop: 5 }}>
+        <div>
           <Rating onChange={changeRating} value={actor.rating || 0} />
         </div>
 
-        <div style={{ marginTop: 5 }}>
+        <div>
           <LabelGroup labels={actor.labels} />
         </div>
       </div>

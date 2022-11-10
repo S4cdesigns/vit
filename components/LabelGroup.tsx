@@ -34,7 +34,6 @@ export default function LabelGroup({ labels, limit, onAdd }: Props): JSX.Element
           <div
             style={{
               cursor: "pointer",
-              marginTop: 5,
               fontSize: 13,
               fontWeight: "bold",
               opacity: 0.75,

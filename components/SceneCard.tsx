@@ -146,8 +146,8 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
           <BookmarkBorderIcon onClick={toggleBookmark} className="hover" style={{ fontSize: 28 }} />
         )}
       </div>
-      <div style={{ margin: "6px 8px 8px 8px" }}>
-        <div style={{ display: "flex", marginBottom: 5 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
+        <div style={{ display: "flex" }}>
           {scene.studio && (
             <Link href={`/studio/${scene.studio._id}`} passHref>
               <a>
@@ -166,11 +166,8 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
         </div>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
             fontWeight: 600,
             fontSize: 16,
-            gap: 5,
           }}
         >
           <div
@@ -187,11 +184,11 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
 
         {!!scene.actors.length && <ActorList actors={scene.actors} />}
 
-        <div style={{ marginTop: 5 }}>
+        <div>
           <Rating onChange={changeRating} value={scene.rating || 0} />
         </div>
 
-        <div style={{ marginTop: 5 }}>
+        <div>
           <LabelGroup labels={scene.labels} />
         </div>
       </div>

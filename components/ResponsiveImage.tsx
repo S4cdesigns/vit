@@ -11,6 +11,7 @@ type Props = {
   children?: ReactNode;
   objectFit?: "cover" | "contain";
   imgStyle?: CSSProperties;
+  containerStyle?: CSSProperties;
 };
 
 export default function ResponsiveImage({
@@ -20,6 +21,7 @@ export default function ResponsiveImage({
   children,
   objectFit,
   imgStyle,
+  containerStyle,
 }: Props) {
   const { theme } = useContext(ThemeContext);
   const color = useMemo(() => generateThumbnailPlaceholderColor(theme === "dark"), [theme]);
@@ -58,7 +60,7 @@ export default function ResponsiveImage({
   return (
     <div
       suppressHydrationWarning={true}
-      style={{ backgroundColor: src ? undefined : color, position: "relative" }}
+      style={{ backgroundColor: src ? undefined : color, position: "relative", ...containerStyle }}
     >
       {linkContainer}
       {children}

@@ -18,7 +18,7 @@ export default function Label({ className, children, color, onClick }: Props) {
         borderRadius: 4,
         display: "inline-block",
         marginRight: 4,
-        marginTop: 4,
+        marginBottom: 4,
         background: color || "#000000dd",
         borderColor: "#80808050",
         borderWidth: 1,

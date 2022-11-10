@@ -127,8 +127,8 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
           )}
         </div>
       </div>
-      <div style={{ margin: "6px 8px 8px 8px" }}>
-        <div style={{ display: "flex", marginBottom: 5 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
+        <div style={{ display: "flex" }}>
           {movie.studio && (
             <div style={{ textTransform: "uppercase", fontSize: 12, opacity: 0.8 }}>
               {movie.studio.name}
@@ -143,11 +143,8 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
         </div>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
             fontWeight: 600,
             fontSize: 16,
-            gap: 5,
           }}
         >
           <div
@@ -164,11 +161,11 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
 
         {!!movie.actors.length && <ActorList actors={movie.actors} />}
 
-        <div style={{ marginTop: 5 }}>
+        <div>
           <Rating value={movie.rating || 0} readonly />
         </div>
 
-        <div style={{ marginTop: 5 }}>
+        <div>
           <LabelGroup labels={movie.labels} />
         </div>
       </div>

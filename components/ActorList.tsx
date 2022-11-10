@@ -7,7 +7,6 @@ type Props = {
 
 const style = {
   fontSize: 13,
-  marginTop: 5,
   opacity: 0.66,
 };
 

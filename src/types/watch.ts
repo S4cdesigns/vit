@@ -17,7 +17,7 @@ export default class SceneView {
 
   static async getAll(): Promise<SceneView[]> {
     const items = await collections.views.getAll();
-    return items.sort((a, b) => a.date - b.date);
+    return items.sort((a, b) => b.date - a.date);
   }
 
   constructor(sceneId: string, date: number) {
