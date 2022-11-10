@@ -100,7 +100,7 @@ export default function ErrorPage() {
             <div className="flex content-center">
               <div style={{ position: "relative" }}>
                 <img
-                  style={{ borderRadius: 10, maxHeight: "50vh" }}
+                  style={{ maxHeight: "50vh", maxWidth: "100%" }}
                   src={`/api/media/image/${img._id}`}
                 />
               </div>

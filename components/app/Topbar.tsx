@@ -4,10 +4,10 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 type Props = {
-  toggleSidebar: () => void;
+  setSidebar: (x: boolean) => void;
 };
 
-export default function Topbar({ toggleSidebar }: Props) {
+export default function Topbar({ setSidebar }: Props) {
   const router = useRouter();
   const t = useTranslations();
   const [searchText, setSearchText] = useState("");
@@ -15,7 +15,7 @@ export default function Topbar({ toggleSidebar }: Props) {
   return (
     <div className="topbar">
       <div style={{ width: "100%", display: "flex", alignItems: "center", padding: 12, gap: 8 }}>
-        <MenuIcon onClick={toggleSidebar} className="mobile-sidebar-toggle" />
+        <MenuIcon onClick={() => setSidebar(false)} className="mobile-sidebar-toggle" />
         <img
           onClick={() => router.push("/")}
           className="hover"

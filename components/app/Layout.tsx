@@ -10,14 +10,14 @@ type Props = {
 export default function Layout({ children }: Props): JSX.Element {
   const [mobileSidebar, setMobileSidebar] = useState(false);
 
-  function toggleSidebar() {
-    setMobileSidebar(!mobileSidebar);
+  function setSidebar(x: boolean) {
+    setMobileSidebar(x);
   }
 
   return (
     <div className="layout">
-      <Topbar toggleSidebar={toggleSidebar} />
-      <Sidebar active={mobileSidebar} toggleSidebar={toggleSidebar} />
+      <Topbar setSidebar={setSidebar} />
+      <Sidebar active={mobileSidebar} setSidebar={setSidebar} />
       <div className="content">{children}</div>
     </div>
   );

@@ -28,6 +28,7 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
           }}
         >
           <div
+            onClick={onClose}
             style={{
               backdropFilter: "blur(2px)",
               background: "#000000cc",

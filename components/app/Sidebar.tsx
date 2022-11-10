@@ -91,10 +91,10 @@ const languages: [string, string, string][] = [
 
 type Props = {
   active: boolean;
-  toggleSidebar: () => void;
+  setSidebar: (x: boolean) => void;
 };
 
-export default function Sidebar({ active, toggleSidebar }: Props) {
+export default function Sidebar({ active, setSidebar }: Props) {
   const router = useRouter();
   const t = useTranslations();
   const { enabled: safeMode, toggle: toggleSafeMode } = useContext(SafeModeContext);
@@ -122,7 +122,7 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
             {link.divider ? (
               <hr style={{ width: "100%", opacity: 0.33 }} />
             ) : (
-              <SidebarLink icon={link.icon} url={link.url}>
+              <SidebarLink onClick={() => setSidebar(false)} icon={link.icon} url={link.url}>
                 {t(link.text, { numItems: 2 })}
               </SidebarLink>
             )}
@@ -173,7 +173,9 @@ export default function Sidebar({ active, toggleSidebar }: Props) {
 
   return (
     <>
-      {active && <div className="mobile-sidebar-darken" style={{}} onClick={toggleSidebar}></div>}
+      {active && (
+        <div className="mobile-sidebar-darken" style={{}} onClick={() => setSidebar(false)} />
+      )}
       <Paper className={clsx({ active }, "mobile-sidebar")}>
         <div
           style={{
