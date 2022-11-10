@@ -40,6 +40,7 @@ export default {
 
   actions: {
     add: "Erstellen",
+    addMany: "Bulk",
     upload: "Hochladen",
     uploadImages: "Bilder hochladen",
     select: "Auswählen",

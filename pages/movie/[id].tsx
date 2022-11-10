@@ -126,11 +126,13 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
             alt={`${movie.name} DVD spine`}
           />
         )}
-        <img
-          style={{ borderRadius: 5, maxHeight: 450 }}
-          src={movie.frontCover && thumbnailUrl(movie.frontCover._id)}
-          alt={`${movie.name} DVD front cover`}
-        />
+        {movie.frontCover && (
+          <img
+            style={{ borderRadius: 5, maxHeight: 450 }}
+            src={movie.frontCover && thumbnailUrl(movie.frontCover._id)}
+            alt={`${movie.name} DVD front cover`}
+          />
+        )}
         {movie.backCover && (
           <img
             style={{ borderRadius: 5, maxHeight: 450 }}

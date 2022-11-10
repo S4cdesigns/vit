@@ -36,7 +36,7 @@ export default function ActorCreator({ onCreate }: Props) {
   const { isOpen, close, open } = useWindow();
 
   const [name, setName] = useState("");
-  const [aliases, setAliases] = useState("");
+  const [aliasInput, setAliasInput] = useState("");
   const [selectedLabels, setSelectedLabels] = useState<readonly ILabel[]>([]);
 
   const [loading, setLoader] = useState(false);
@@ -60,13 +60,13 @@ export default function ActorCreator({ onCreate }: Props) {
                   setLoader(true);
                   await createActor(
                     name,
-                    aliases.split("\n").map((x) => x.trim()),
+                    aliasInput.split("\n"),
                     selectedLabels.map(({ _id }) => _id)
                   );
                   onCreate();
                   close();
                   setName("");
-                  setAliases("");
+                  setAliasInput("");
                   setSelectedLabels([]);
                 } catch (error) {}
                 setLoader(false);
@@ -84,15 +84,15 @@ export default function ActorCreator({ onCreate }: Props) {
           <input
             value={name}
             onChange={(ev) => setName(ev.target.value)}
-            placeholder="e.g. Sybil Kailena"
+            placeholder="Enter an actor name"
             type="text"
           />
         </div>
         <div>
           <Subheading>Aliases</Subheading>
           <textarea
-            value={aliases}
-            onChange={(ev) => setAliases(ev.target.value)}
+            value={aliasInput}
+            onChange={(ev) => setAliasInput(ev.target.value)}
             placeholder="1 per line"
           />
         </div>

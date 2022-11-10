@@ -73,26 +73,25 @@ export default {
     return labels.sort((a, b) => a.name.localeCompare(b.name));
   },
 
-  async rating(movie: Movie): Promise<number> {
-    return await Movie.getRating(movie);
+  rating(movie: Movie): Promise<number> {
+    return Movie.getRating(movie);
   },
 
-  async duration(movie: Movie): Promise<number | null> {
-    return await Movie.calculateDuration(movie);
+  duration(movie: Movie): Promise<number> {
+    return Movie.calculateDuration(movie);
   },
 
   async size(movie: Movie): Promise<number | null> {
     const scenesWithSource = (await Movie.getScenes(movie)).filter(
       (scene) => scene.meta && scene.path
     );
-
-    if (!scenesWithSource.length) return null;
-
-    return scenesWithSource.reduce((dur, scene) => dur + <number>scene.meta.size, 0);
+    return scenesWithSource.reduce((dur, scene) => dur + (scene.meta?.size || 0), 0);
   },
 
   async studio(movie: Movie): Promise<Studio | null> {
-    if (movie.studio) return Studio.getById(movie.studio);
+    if (movie.studio) {
+      return Studio.getById(movie.studio);
+    }
     return null;
   },
 };

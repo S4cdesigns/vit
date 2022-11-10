@@ -19,6 +19,8 @@ import { usePaginatedList } from "../composables/use_paginated_list";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
+import MovieCreator from "../components/MovieCreator";
+import MovieBulkCreator from "../components/MovieBulkCreator";
 
 const queryParser = buildQueryParser({
   q: {
@@ -110,8 +112,8 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <Button style={{ marginRight: 10 }}>+ Add movie</Button>
-        {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
+        <MovieCreator onCreate={() => onPageChange(0)} />
+        <MovieBulkCreator onCreate={() => onPageChange(0)} />
         {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
       </div>
