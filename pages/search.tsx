@@ -94,7 +94,8 @@ export default function SearchPage(props: {
         <div style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
           {t("foundActors", { numItems: actorResult.numItems })}
         </div>
-        <ListContainer>
+        <ListContainer size={150}>
+          {/* TODO: actions */}
           {actorResult.items.map((actor) => (
             <ActorCard
               onBookmark={() => {}}
@@ -112,6 +113,7 @@ export default function SearchPage(props: {
           {t("foundMovies", { numItems: movieResult.numItems })}
         </div>
         <ListContainer size={250}>
+          {/* TODO: actions */}
           {movieResult.items.map((movie) => (
             <MovieCard onBookmark={() => {}} onFav={() => {}} key={movie._id} movie={movie} />
           ))}
@@ -123,6 +125,7 @@ export default function SearchPage(props: {
           {t("foundScenes", { numItems: sceneResult.numItems })}
         </div>
         <ListContainer size={250}>
+          {/* TODO: actions */}
           {sceneResult.items.map((scene) => (
             <SceneCard
               onBookmark={() => {}}

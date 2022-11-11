@@ -2,6 +2,7 @@ import Axios from "axios";
 import TimeIcon from "mdi-react/TimelapseIcon";
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
+import Text from "../Text";
 
 import WidgetCard from "./WidgetCard";
 
@@ -32,8 +33,6 @@ export default function LibraryTimeCard() {
     refreshInterval: 300_000,
   });
 
-  console.log({ stats });
-
   if (!stats) {
     return <></>;
   }
@@ -41,27 +40,27 @@ export default function LibraryTimeCard() {
   return (
     <>
       <WidgetCard icon={<TimeIcon />} title={t("libraryTime")}>
-        <div style={{ opacity: 0.8 }}>
+        <Text>
           {t("viewsInDays", {
             numViews: stats.numViews,
             numDays: +stats.currentIntervalDays.toFixed(0),
           })}
-        </div>
-        <div style={{ opacity: 0.8 }}>
+        </Text>
+        <Text>
           {t("percentWatched", {
             percent: `${(stats.viewedPercent * 100).toFixed(1)}%`,
           })}
-        </div>
-        <div style={{ opacity: 0.8 }}>
+        </Text>
+        <Text>
           {t("contentLeft", {
             years: stats.remainingYears.toFixed(1),
           })}
-        </div>
-        <div style={{ opacity: 0.8 }}>
+        </Text>
+        <Text>
           {t("runningOut", {
             date: new Date(stats.remainingTimestamp).toLocaleDateString(),
           })}
-        </div>
+        </Text>
       </WidgetCard>
     </>
   );

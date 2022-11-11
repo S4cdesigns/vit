@@ -12,6 +12,7 @@ type Props = {
   objectFit?: "cover" | "contain";
   imgStyle?: CSSProperties;
   containerStyle?: CSSProperties;
+  placeholder?: ReactNode;
 };
 
 export default function ResponsiveImage({
@@ -22,6 +23,7 @@ export default function ResponsiveImage({
   objectFit,
   imgStyle,
   containerStyle,
+  placeholder,
 }: Props) {
   const { theme } = useContext(ThemeContext);
   const color = useMemo(() => generateThumbnailPlaceholderColor(theme === "dark"), [theme]);
@@ -33,7 +35,7 @@ export default function ResponsiveImage({
       src={src}
     />
   ) : (
-    <div style={{ aspectRatio }}>
+    <div style={{ aspectRatio, border: "2px solid #a0a0a020" }}>
       <span
         style={{
           fontSize: 64,
@@ -44,7 +46,7 @@ export default function ResponsiveImage({
           position: "absolute",
         }}
       >
-        ?
+        {placeholder || <>?</>}
       </span>
     </div>
   );
@@ -60,7 +62,18 @@ export default function ResponsiveImage({
   return (
     <div
       suppressHydrationWarning={true}
-      style={{ backgroundColor: src ? undefined : color, position: "relative", ...containerStyle }}
+      style={{
+        backgroundColor: src ? undefined : color,
+        position: "relative",
+        background: `repeating-linear-gradient(
+        45deg,
+        #a0a0a002,
+        #a0a0a002 10px,
+        #a0a0a004 10px,
+        #a0a0a004 20px
+      )`,
+        ...containerStyle,
+      }}
     >
       {linkContainer}
       {children}

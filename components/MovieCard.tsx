@@ -6,7 +6,7 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useTranslations } from "next-intl";
 import { useContext, useMemo, useState } from "react";
 
-import { SafeModeContext } from "../pages/_app";
+import { SafeModeContext, ThemeContext } from "../pages/_app";
 import { IMovie } from "../types/movie";
 import { bookmarkMovie, favoriteMovie } from "../util/mutations/movie";
 import { formatDuration } from "../util/string";
@@ -25,6 +25,7 @@ type Props = {
 
 export default function MovieCard({ movie, onFav, onBookmark }: Props) {
   const { enabled: safeMode } = useContext(SafeModeContext);
+  const { theme } = useContext(ThemeContext);
   const t = useTranslations();
   const [hover, setHover] = useState(false);
 
@@ -52,7 +53,11 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
       return undefined;
     }
     let color = new Color(movie.frontCover.color);
-    color = color.hsl(color.hue(), 100, 85);
+    if (theme === "dark") {
+      color = color.hsl(color.hue(), 100, 85);
+    } else {
+      color = color.hsl(color.hue(), 100, 15);
+    }
     return color.hex();
   })();
 

@@ -7,7 +7,7 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import Link from "next/link";
 import { useContext } from "react";
 
-import { SafeModeContext } from "../pages/_app";
+import { SafeModeContext, ThemeContext } from "../pages/_app";
 import { IScene } from "../types/scene";
 import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";
 import { formatDuration } from "../util/string";
@@ -41,6 +41,7 @@ type Props = {
 
 export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   const { enabled: safeMode } = useContext(SafeModeContext);
+  const { theme } = useContext(ThemeContext);
 
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
@@ -64,7 +65,11 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
       return undefined;
     }
     let color = new Color(scene.thumbnail.color);
-    color = color.hsl(color.hue(), 100, 85);
+    if (theme === "dark") {
+      color = color.hsl(color.hue(), 100, 85);
+    } else {
+      color = color.hsl(color.hue(), 100, 15);
+    }
     return color.hex();
   })();
 

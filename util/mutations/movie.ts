@@ -1,6 +1,85 @@
 import axios from "axios";
+import { graphqlQuery } from "../gql";
 
 import { gqlIp } from "../ip";
+
+export async function setMovieSpine(movieId: string, imageId: string) {
+  await graphqlQuery(
+    `
+mutation ($ids: [String!]!, $opts: MovieUpdateOpts!) {
+  updateMovies(ids: $ids, opts: $opts) {
+    spineCover {
+      _id
+      color
+      meta {
+        dimensions {
+          width
+          height
+        }
+      }
+    }
+  }
+}`,
+    {
+      ids: [movieId],
+      opts: {
+        spineCover: imageId,
+      },
+    }
+  );
+}
+
+export async function setMovieBackCover(movieId: string, imageId: string) {
+  await graphqlQuery(
+    `
+mutation ($ids: [String!]!, $opts: MovieUpdateOpts!) {
+  updateMovies(ids: $ids, opts: $opts) {
+    backCover {
+      _id
+      color
+      meta {
+        dimensions {
+          width
+          height
+        }
+      }
+    }
+  }
+}`,
+    {
+      ids: [movieId],
+      opts: {
+        backCover: imageId,
+      },
+    }
+  );
+}
+
+export async function setMovieFrontCover(movieId: string, imageId: string) {
+  await graphqlQuery(
+    `
+mutation ($ids: [String!]!, $opts: MovieUpdateOpts!) {
+  updateMovies(ids: $ids, opts: $opts) {
+    frontCover {
+      _id
+      color
+      meta {
+        dimensions {
+          width
+          height
+        }
+      }
+    }
+  }
+}`,
+    {
+      ids: [movieId],
+      opts: {
+        frontCover: imageId,
+      },
+    }
+  );
+}
 
 export async function favoriteMovie(movieId: string, value: boolean): Promise<void> {
   await axios.post(

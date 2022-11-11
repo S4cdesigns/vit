@@ -16,9 +16,10 @@ export default {
   overview: "Overview",
   libraryTime: "Remaining library time",
   videoProcessingQueue: "Video processing queue",
+  scanStats: "Scan",
 
   viewsInDays:
-    "{numViews, plural, one {scene view} other {{numViews} scene views} } in {numDays, plural, one {day} other {{numDays} days} }",
+    "{numViews, plural, one {scene view} other {{numViews} scene views} } in {numDays, plural, one {{numDays} day} other {{numDays} days} }",
   percentWatched: "{percent} of scenes watched",
   contentLeft: "~{years} years of content left",
   runningOut: "Running out on {date}",
