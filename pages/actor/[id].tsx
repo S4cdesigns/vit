@@ -74,6 +74,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         _id
         color
       }
+      externalLinks {
+        text
+        url
+      }
       altThumbnail {
         _id
       }
@@ -140,6 +144,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
         rating={actor.rating}
         favorite={actor.favorite}
         bookmark={actor.bookmark}
+        links={actor.externalLinks}
       />
     </Card>
   );

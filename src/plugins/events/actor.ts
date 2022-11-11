@@ -48,6 +48,7 @@ export async function onActorCreate(
 ): Promise<{ actor: Actor; commit: () => Promise<void> }> {
   const config = getConfig();
 
+  console.log("ACTOR UPDATE");
   const createdImages = [] as Image[];
 
   const pluginResult = await runPluginsSerial(config, event, {
@@ -140,6 +141,14 @@ export async function onActorCreate(
     } else if (pluginResult.nationality === null) {
       actor.nationality = pluginResult.nationality;
     }
+  }
+
+  if (pluginResult.externalLinks) {
+    console.log('plugin has externallinks');
+    actor.externalLinks = pluginResult.externalLinks;
+  } else {
+    console.log('no external links');
+    console.log(JSON.stringify(pluginResult, null, 2));
   }
 
   if (pluginResult.labels && Array.isArray(pluginResult.labels)) {

@@ -8,6 +8,11 @@ export default gql`
     alias: String
   }
 
+  type ExternalLink {
+    url: String
+    text: String
+  }
+
   input CustomFieldFilter {
     id: String!
     op: String!
@@ -41,6 +46,7 @@ export default gql`
     hero: Image
     collabs: [Actor!]!
     nationality: Nationality
+    externalLinks: [ExternalLink]
   }
 
   type ActorSearchResults {

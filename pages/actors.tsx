@@ -43,6 +43,9 @@ const queryParser = buildQueryParser({
   nationality: {
     default: "",
   },
+  externalLinks: {
+    default: [],
+  },
   sortBy: {
     default: "addedOn",
   },

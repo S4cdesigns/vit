@@ -203,7 +203,9 @@ export default {
   },
 
   async getActorById(_: unknown, { id }: { id: string }): Promise<Actor | null> {
-    return await Actor.getById(id);
+    const actor = await Actor.getById(id);
+    console.log("get actor by id", actor);
+    return actor;
   },
 
   async getMovieById(_: unknown, { id }: { id: string }): Promise<Movie | null> {

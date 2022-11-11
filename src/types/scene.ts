@@ -13,7 +13,7 @@ import { enqueueScene } from "../queue/processing";
 import { indexActors } from "../search/actor";
 import { indexScenes, searchScenes } from "../search/scene";
 import { mapAsync } from "../utils/async";
-import { mkdirpSync, readdirAsync, rimrafAsync, statAsync, unlinkAsync } from "../utils/fs/async";
+import { mkdirpSync, rimrafAsync, statAsync, unlinkAsync } from "../utils/fs/async";
 import { generateHash } from "../utils/hash";
 import { formatMessage, handleError, logger } from "../utils/logger";
 import { evaluateFps, generateTimestampsAtIntervals } from "../utils/misc";

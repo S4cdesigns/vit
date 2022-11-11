@@ -37,6 +37,7 @@ export interface IActor {
   numScenes: number;
   watches: number[];
   averageRating: number;
+  externalLinks: { url: string; text: string }[];
   score: number;
   resolvedCustomFields: {
     field: { _id: string; name: string; type: string; unit?: string };
