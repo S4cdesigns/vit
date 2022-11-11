@@ -24,6 +24,7 @@ import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
 import { thumbnailUrl } from "../util/thumbnail";
+import Spacer from "../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -120,7 +121,7 @@ export default function StudioListPage(props: {
     <PageWrapper title={t("foundStudios", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundStudios", { numItems })}</div>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
@@ -171,7 +172,7 @@ export default function StudioListPage(props: {
           value={sortDir}
           onChange={setSortDir}
         />
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Button loading={loading} onClick={refresh}>
           {t("refresh")}
         </Button>

@@ -128,7 +128,7 @@ export default function Lightbox(props: Props) {
           </div>
           {/*  <Paper className={styles.sidebar}>
             <div style={{ display: "flex" }}>
-              <div style={{ flexGrow: 1 }} />
+              <Spacer/>
               <div onClick={onClose} className="hover">
                 <CloseIcon />
               </div>

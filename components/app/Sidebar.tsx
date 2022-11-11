@@ -21,6 +21,7 @@ import { SafeModeContext, ThemeContext } from "../../pages/_app";
 import Flag from "../Flag";
 import Paper from "../Paper";
 import SidebarLink from "./SidebarLink";
+import Spacer from "../Spacer";
 
 const links: (
   | { divider: true }
@@ -129,7 +130,7 @@ export default function Sidebar({ active, setSidebar }: Props) {
           </Fragment>
         ))}
       </div>
-      <div style={{ flexGrow: 1 }}></div>
+      <Spacer />
       <div style={{ gap: 10, display: "flex", alignItems: "center", flexDirection: "column" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 5, gap: 8 }}>
           {theme === "dark" ? (

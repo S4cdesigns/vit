@@ -9,11 +9,13 @@ import { SafeModeContext, ThemeContext } from "../pages/_app";
 import { IActor } from "../types/actor";
 import { bookmarkActor, favoriteActor, rateActor } from "../util/mutations/actor";
 import { thumbnailUrl } from "../util/thumbnail";
+import AutoLayout from "./AutoLayout";
 import Flag from "./Flag";
 import LabelGroup from "./LabelGroup";
 import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
+import Spacer from "./Spacer";
 
 type Props = {
   actor: Pick<
@@ -89,10 +91,11 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           }}
         />
       </div>
-      <div
+      <AutoLayout
+        gap={5}
+        layout="h"
         style={{
           color: "white",
-          display: "flex",
           alignItems: "center",
           background: "#000000bb",
           borderRadius: 5,
@@ -102,34 +105,25 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           top: 1,
         }}
       >
-        <div className="hover">
-          {actor.favorite ? (
-            <HeartIcon
-              className="hover"
-              onClick={toggleFav}
-              style={{ fontSize: 28, color: "#ff3355" }}
-            />
-          ) : (
-            <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 28 }} />
-          )}
-        </div>
-        <div className="hover">
-          {actor.bookmark ? (
-            <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
-          ) : (
-            <BookmarkBorderIcon
-              className="hover"
-              onClick={toggleBookmark}
-              style={{ fontSize: 28 }}
-            />
-          )}
-        </div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
-        <div
+        {actor.favorite ? (
+          <HeartIcon
+            className="hover"
+            onClick={toggleFav}
+            style={{ fontSize: 28, color: "#ff3355" }}
+          />
+        ) : (
+          <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 28 }} />
+        )}
+        {actor.bookmark ? (
+          <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
+        ) : (
+          <BookmarkBorderIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
+        )}
+      </AutoLayout>
+      <AutoLayout gap={5} style={{ padding: "6px 8px 8px 8px" }}>
+        <AutoLayout
+          layout="h"
           style={{
-            display: "flex",
-            alignItems: "center",
             fontWeight: 600,
             fontSize: 16,
             gap: 5,
@@ -152,9 +146,9 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
           >
             {actor.name}
           </div>
-          <div style={{ flexGrow: 1 }}></div>
+          <Spacer />
           <div>{actor.age}</div>
-        </div>
+        </AutoLayout>
 
         <div>
           <Rating onChange={changeRating} value={actor.rating || 0} />
@@ -163,7 +157,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
         <div>
           <LabelGroup labels={actor.labels} />
         </div>
-      </div>
+      </AutoLayout>
     </Paper>
   );
 }

@@ -283,7 +283,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     <BookmarkBorderIcon className="hover" style={{ fontSize: 32 }} />
                   )}
                 </div>
-                <div style={{ flexGrow: 1 }} />
+                <Spacer />
                 {!!movie.studio && (
                   /* TODO: link */
                   <img

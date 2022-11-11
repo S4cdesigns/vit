@@ -26,6 +26,7 @@ import ListWrapper from "../ListWrapper";
 import Pagination from "../Pagination";
 import Rating from "../Rating";
 import SceneCard from "../SceneCard";
+import Spacer from "../Spacer";
 
 type QueryState = {
   q: string;
@@ -225,7 +226,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
             onChange={setSelectedActors}
           />
         </IconButtonMenu>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Button loading={sceneLoader} onClick={refreshScenes}>
           {t("refresh")}
         </Button>

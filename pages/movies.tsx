@@ -21,6 +21,7 @@ import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import MovieCreator from "../components/MovieCreator";
 import MovieBulkCreator from "../components/MovieBulkCreator";
+import Spacer from "../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -108,7 +109,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
     <PageWrapper title={t("foundMovies", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
@@ -160,7 +161,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           value={sortDir}
           onChange={setSortDir}
         />
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Button loading={loading} onClick={refresh}>
           {t("refresh")}
         </Button>

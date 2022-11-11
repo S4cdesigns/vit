@@ -11,12 +11,6 @@ mutation ($ids: [String!]!, $opts: MovieUpdateOpts!) {
     spineCover {
       _id
       color
-      meta {
-        dimensions {
-          width
-          height
-        }
-      }
     }
   }
 }`,
@@ -37,12 +31,6 @@ mutation ($ids: [String!]!, $opts: MovieUpdateOpts!) {
     backCover {
       _id
       color
-      meta {
-        dimensions {
-          width
-          height
-        }
-      }
     }
   }
 }`,
@@ -63,12 +51,6 @@ mutation ($ids: [String!]!, $opts: MovieUpdateOpts!) {
     frontCover {
       _id
       color
-      meta {
-        dimensions {
-          width
-          height
-        }
-      }
     }
   }
 }`,
