@@ -21,6 +21,7 @@ import { SafeModeContext, ThemeContext } from "../../pages/_app";
 import Flag from "../Flag";
 import Paper from "../Paper";
 import SidebarLink from "./SidebarLink";
+import Spacer from "../Spacer";
 
 const links: (
   | { divider: true }
@@ -129,18 +130,18 @@ export default function Sidebar({ active, setSidebar }: Props) {
           </Fragment>
         ))}
       </div>
-      <div style={{ flexGrow: 1 }}></div>
-      <div style={{ gap: 8, display: "flex", alignItems: "center", flexDirection: "column" }}>
+      <Spacer />
+      <div style={{ gap: 10, display: "flex", alignItems: "center", flexDirection: "column" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 5, gap: 8 }}>
           {theme === "dark" ? (
-            <DarkThemeIcon className="hover" size={20} onClick={toggleTheme} />
+            <DarkThemeIcon className="hover" size={24} onClick={toggleTheme} />
           ) : (
-            <LightThemeIcon className="hover" size={20} onClick={toggleTheme} />
+            <LightThemeIcon className="hover" size={24} onClick={toggleTheme} />
           )}
           {safeMode ? (
-            <SafeModeIcon className="hover" size={20} onClick={toggleSafeMode} />
+            <SafeModeIcon className="hover" size={24} onClick={toggleSafeMode} />
           ) : (
-            <UnsafeModeIcon className="hover" size={20} onClick={toggleSafeMode} />
+            <UnsafeModeIcon className="hover" size={24} onClick={toggleSafeMode} />
           )}
         </div>
         <div style={{ display: "flex", justifyContent: "center" }}>

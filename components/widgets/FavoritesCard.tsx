@@ -40,11 +40,15 @@ export default function FavoritesCard() {
 
   const [skip, setSkip] = useState(0);
   const [items, setItems] = useState<IActor[]>([]);
+  const [done, setDone] = useState(false);
 
   async function nextPage() {
     const { actors } = await getActors(skip);
     setSkip(skip + 4);
     setItems((prev) => [...prev, ...actors]);
+    if (!actors.length) {
+      setDone(true);
+    }
   }
 
   useEffect(() => {
@@ -78,7 +82,7 @@ export default function FavoritesCard() {
       >
         {content()}
       </div>
-      {items.length > 0 && (
+      {items.length > 0 && !done && (
         <Button style={{ marginTop: 2 }} onClick={nextPage}>
           {t("showMore")}
         </Button>

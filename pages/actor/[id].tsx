@@ -3,6 +3,9 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
+import EditIcon from "mdi-react/PencilIcon";
+import DeleteIcon from "mdi-react/DeleteIcon";
+
 import ActorProfile from "../../components/actor_details/ActorProfile";
 import ActorStats from "../../components/actor_details/ActorStats";
 import HeroImage from "../../components/actor_details/HeroImage";
@@ -20,6 +23,7 @@ import { actorCardFragment } from "../../fragments/actor";
 import { IActor } from "../../types/actor";
 import { graphqlQuery } from "../../util/gql";
 import { buildQueryParser } from "../../util/query_parser";
+import Spacer from "../../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -37,6 +41,9 @@ const queryParser = buildQueryParser({
   }, */
   favorite: {
     default: false,
+  },
+  externalLinks: {
+    default: [],
   },
   bookmark: {
     default: false,
@@ -90,6 +97,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         _id
         color
       }
+      externalLinks {
+        url
+        text
+      }
       resolvedCustomFields {
         field {
           _id
@@ -133,20 +144,30 @@ export default function ActorPage({ actor }: { actor: IActor }) {
   const [src, setSrc] = useState<string | null>(null); */
 
   const leftCol = (
-    <Card style={{ padding: "20px 10px" }}>
-      <ActorProfile
-        actorId={actor._id}
-        actorName={actor.name}
-        age={actor.age}
-        bornOn={actor.bornOn}
-        avatarId={actor.avatar?._id}
-        nationality={actor.nationality}
-        rating={actor.rating}
-        favorite={actor.favorite}
-        bookmark={actor.bookmark}
-        links={actor.externalLinks}
-      />
-    </Card>
+    <AutoLayout gap={10}>
+      {/* ACTION BAR */}
+      <Card>
+        <AutoLayout gap={10} layout="h">
+          <Spacer />
+          <EditIcon />
+          <DeleteIcon />
+        </AutoLayout>
+      </Card>
+      <Card style={{ padding: "20px 10px" }}>
+        <ActorProfile
+          actorId={actor._id}
+          actorName={actor.name}
+          age={actor.age}
+          bornOn={actor.bornOn}
+          avatarId={actor.avatar?._id}
+          nationality={actor.nationality}
+          rating={actor.rating}
+          favorite={actor.favorite}
+          bookmark={actor.bookmark}
+          links={actor.externalLinks}
+        />
+      </Card>
+    </AutoLayout>
   );
 
   const rightCol = (

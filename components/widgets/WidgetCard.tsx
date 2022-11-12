@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import AutoLayout from "../AutoLayout";
 
 import Card from "../Card";
 
@@ -10,11 +11,13 @@ type Props = {
 
 export default function WidgetCard({ children, icon, title }: Props) {
   return (
-    <Card style={{ marginBottom: 10 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {icon} <span style={{ fontSize: 18 }}>{title}</span>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>
+    <Card>
+      <AutoLayout>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {icon} <span style={{ fontSize: 18 }}>{title}</span>
+        </div>
+        <AutoLayout gap={10}>{children}</AutoLayout>
+      </AutoLayout>
     </Card>
   );
 }

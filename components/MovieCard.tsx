@@ -6,16 +6,18 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useTranslations } from "next-intl";
 import { useContext, useMemo, useState } from "react";
 
-import { SafeModeContext } from "../pages/_app";
+import { SafeModeContext, ThemeContext } from "../pages/_app";
 import { IMovie } from "../types/movie";
 import { bookmarkMovie, favoriteMovie } from "../util/mutations/movie";
 import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
+import AutoLayout from "./AutoLayout";
 import LabelGroup from "./LabelGroup";
 import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
+import Spacer from "./Spacer";
 
 type Props = {
   movie: IMovie;
@@ -25,6 +27,7 @@ type Props = {
 
 export default function MovieCard({ movie, onFav, onBookmark }: Props) {
   const { enabled: safeMode } = useContext(SafeModeContext);
+  const { theme } = useContext(ThemeContext);
   const t = useTranslations();
   const [hover, setHover] = useState(false);
 
@@ -52,7 +55,11 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
       return undefined;
     }
     let color = new Color(movie.frontCover.color);
-    color = color.hsl(color.hue(), 100, 85);
+    if (theme === "dark") {
+      color = color.hsl(color.hue(), 100, 85);
+    } else {
+      color = color.hsl(color.hue(), 100, 15);
+    }
     return color.hex();
   })();
 
@@ -69,10 +76,10 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
             display: "block",
           }}
         >
-          <div
+          <AutoLayout
+            layout="h"
+            gap={2}
             style={{
-              display: "flex",
-              gap: 2,
               fontSize: 14,
               color: "white",
               position: "absolute",
@@ -83,19 +90,19 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
             <div style={{ borderRadius: 4, padding: "2px 5px", background: "#000000dd" }}>
               <b>{movie.scenes.length}</b> {t("scene", { numItems: movie.scenes.length })}
             </div>
-            {movie.duration && (
+            {!!movie.duration && (
               <div style={{ borderRadius: 4, padding: "2px 5px", background: "#000000dd" }}>
                 <b>{formatDuration(movie.duration)}</b>
               </div>
             )}
-          </div>
+          </AutoLayout>
         </ResponsiveImage>
       </div>
-      <div
+      <AutoLayout
+        gap={5}
+        layout="h"
         style={{
           color: "white",
-          display: "flex",
-          alignItems: "center",
           background: "#000000bb",
           borderRadius: 5,
           padding: 3,
@@ -104,37 +111,29 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
           top: 1,
         }}
       >
-        <div className="hover">
-          {movie.favorite ? (
-            <HeartIcon
-              className="hover"
-              onClick={toggleFav}
-              style={{ fontSize: 28, color: "#ff3355" }}
-            />
-          ) : (
-            <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 28 }} />
-          )}
-        </div>
-        <div className="hover">
-          {movie.bookmark ? (
-            <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
-          ) : (
-            <BookmarkBorderIcon
-              className="hover"
-              onClick={toggleBookmark}
-              style={{ fontSize: 28 }}
-            />
-          )}
-        </div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
+        {movie.favorite ? (
+          <HeartIcon
+            className="hover"
+            onClick={toggleFav}
+            style={{ fontSize: 28, color: "#ff3355" }}
+          />
+        ) : (
+          <HeartBorderIcon className="hover" onClick={toggleFav} style={{ fontSize: 28 }} />
+        )}
+        {movie.bookmark ? (
+          <BookmarkIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
+        ) : (
+          <BookmarkBorderIcon className="hover" onClick={toggleBookmark} style={{ fontSize: 28 }} />
+        )}
+      </AutoLayout>
+      <AutoLayout gap={5} style={{ padding: "6px 8px 8px 8px" }}>
         <div style={{ display: "flex" }}>
           {movie.studio && (
             <div style={{ textTransform: "uppercase", fontSize: 12, opacity: 0.8 }}>
               {movie.studio.name}
             </div>
           )}
-          <div style={{ flexGrow: 1 }}></div>
+          <Spacer />
           {movie.releaseDate && (
             <div style={{ fontSize: 13, opacity: 0.75 }}>
               {new Date(movie.releaseDate).toLocaleDateString()}
@@ -163,7 +162,7 @@ export default function MovieCard({ movie, onFav, onBookmark }: Props) {
         <div>
           <LabelGroup labels={movie.labels} />
         </div>
-      </div>
+      </AutoLayout>
     </Paper>
   );
 }

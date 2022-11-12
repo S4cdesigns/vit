@@ -2,6 +2,7 @@ import { CSSProperties, useContext, useState } from "react";
 import YAML from "yaml";
 
 import { ThemeContext } from "../pages/_app";
+import AutoLayout from "./AutoLayout";
 import Button from "./Button";
 
 type Props<T> = {
@@ -36,7 +37,7 @@ export default function Code<T>({ value, style }: Props<T>) {
         ...style,
       }}
     >
-      <div style={{ display: "flex", gap: 5, alignItems: "center", padding: 2, marginBottom: 10 }}>
+      <AutoLayout layout="h" gap={5} style={{ padding: 2, marginBottom: 10 }}>
         <Button
           style={{
             color: formatter === "json" ? selectedTextColor : unselectedTextColor,
@@ -55,7 +56,7 @@ export default function Code<T>({ value, style }: Props<T>) {
         >
           YAML
         </Button>
-      </div>
+      </AutoLayout>
       <pre
         style={{
           margin: 0,

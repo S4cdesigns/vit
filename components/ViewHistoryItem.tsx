@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { SafeModeContext } from "../pages/_app";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
+import AutoLayout from "./AutoLayout";
 import LabelGroup from "./LabelGroup";
 import ResponsiveImage from "./ResponsiveImage";
 
@@ -35,12 +36,7 @@ export default function ViewHistoryItem({ date, scene }: Props) {
   const { enabled: safeMode } = useContext(SafeModeContext);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 10,
-      }}
-    >
+    <AutoLayout layout="h" gap={10}>
       <div style={{ flexShrink: 0 }}>
         <ResponsiveImage
           aspectRatio="4 / 3"
@@ -57,8 +53,8 @@ export default function ViewHistoryItem({ date, scene }: Props) {
           }}
         />
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
-        <div style={{ display: "flex" }}>
+      <AutoLayout gap={5} style={{ padding: "6px 8px 8px 8px" }}>
+        <div>
           {scene.studio && (
             <Link href={`/studio/${scene.studio._id}`} passHref>
               <a>
@@ -103,7 +99,7 @@ export default function ViewHistoryItem({ date, scene }: Props) {
         <div style={{ marginTop: 5 }}>
           <LabelGroup labels={scene.labels} />
         </div>
-      </div>
-    </div>
+      </AutoLayout>
+    </AutoLayout>
   );
 }

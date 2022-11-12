@@ -2,6 +2,7 @@ import MenuIcon from "mdi-react/HamburgerMenuIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import Spacer from "../Spacer";
 
 type Props = {
   setSidebar: (x: boolean) => void;
@@ -23,7 +24,7 @@ export default function Topbar({ setSidebar }: Props) {
           height={36}
           src="/assets/favicon.png"
         />
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <input
           type="text"
           placeholder={t("findContent")}

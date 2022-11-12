@@ -4,10 +4,17 @@ import { useTranslations } from "next-intl";
 import PageWrapper from "../components/PageWrapper";
 import FavoritesCard from "../components/widgets/FavoritesCard";
 import LibraryTimeCard from "../components/widgets/LibraryTimeCard";
+import ProcessingCard from "../components/widgets/ProcessingCard";
 import ScanCard from "../components/widgets/ScanCard";
 import StatsCard from "../components/widgets/StatsCard";
 
-const widgets = [<StatsCard />, <FavoritesCard />, <ScanCard />, <LibraryTimeCard />];
+const widgets = [
+  <StatsCard />,
+  <ProcessingCard />,
+  <ScanCard />,
+  <LibraryTimeCard />,
+  <FavoritesCard />,
+];
 
 export default function IndexPage() {
   const t = useTranslations();
@@ -16,8 +23,8 @@ export default function IndexPage() {
     <PageWrapper title={t("overview")}>
       <Masonry
         items={widgets}
-        rowGutter={1}
-        columnGutter={4}
+        rowGutter={10}
+        columnGutter={10}
         render={({ data }) => data}
         columnWidth={300}
       />

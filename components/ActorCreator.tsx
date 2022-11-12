@@ -134,24 +134,6 @@ export default function ActorCreator({ onCreate }: Props) {
             getOptionValue={(label) => label._id}
           />
         </div>
-        {/*  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <div className="hover">
-              {true ? (
-                <HeartIcon className="hover" style={{ fontSize: 28, color: "#ff3355" }} />
-              ) : (
-                <HeartBorderIcon className="hover" style={{ fontSize: 28 }} />
-              )}
-            </div>
-            <div className="hover">
-              {true ? (
-                <BookmarkIcon className="hover" style={{ fontSize: 28 }} />
-              ) : (
-                <BookmarkBorderIcon className="hover" style={{ fontSize: 28 }} />
-              )}
-            </div>
-          </div> */}
-        {/*   <div style={{ fontSize: 14, opacity: 0.66, marginBottom: 3 }}>Labels</div> */}
-        {/*    <LabelSelector selected={[]} items={labelList} /> */}
       </Window>
     </>
   );

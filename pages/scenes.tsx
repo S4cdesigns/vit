@@ -28,6 +28,7 @@ import { fetchScenes, useSceneList } from "../composables/use_scene_list";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
 import { buildQueryParser } from "../util/query_parser";
+import Spacer from "../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -133,7 +134,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
     <PageWrapper title={t("foundScenes", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundScenes", { numItems })}</div>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
       </div>
       <div
@@ -212,7 +213,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
           value={sortDir}
           onChange={setSortDir}
         />
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Button onClick={refresh}>{t("refresh")}</Button>
       </div>
       <ListWrapper loading={loading} noResults={!numItems}>

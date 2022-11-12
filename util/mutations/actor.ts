@@ -3,6 +3,78 @@ import axios from "axios";
 import { graphqlQuery } from "../gql";
 import { gqlIp } from "../ip";
 
+export async function setActorThumbnail(actorId: string, imageId: string) {
+  await graphqlQuery(
+    `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
+      updateActors(ids: $ids, opts: $opts) {
+        thumbnail {
+          _id
+        }
+      }
+    }`,
+    {
+      ids: [actorId],
+      opts: {
+        thumbnail: imageId,
+      },
+    }
+  );
+}
+
+export async function setActorAltThumbnail(actorId: string, imageId: string) {
+  await graphqlQuery(
+    `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
+      updateActors(ids: $ids, opts: $opts) {
+        altThumbnail {
+          _id
+        }
+      }
+    }`,
+    {
+      ids: [actorId],
+      opts: {
+        altThumbnail: imageId,
+      },
+    }
+  );
+}
+
+export async function setActorAvatar(actorId: string, imageId: string) {
+  await graphqlQuery(
+    `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
+      updateActors(ids: $ids, opts: $opts) {
+        avatar {
+          _id
+        }
+      }
+    }`,
+    {
+      ids: [actorId],
+      opts: {
+        avatar: imageId,
+      },
+    }
+  );
+}
+
+export async function setActorHero(actorId: string, imageId: string) {
+  await graphqlQuery(
+    `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
+      updateActors(ids: $ids, opts: $opts) {
+        hero {
+          _id
+        }
+      }
+    }`,
+    {
+      ids: [actorId],
+      opts: {
+        hero: imageId,
+      },
+    }
+  );
+}
+
 export async function runActorPlugins(actorId: string): Promise<void> {
   const mutation = `
 mutation($id: String!) {

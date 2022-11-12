@@ -7,6 +7,7 @@ import { useWindow } from "../composables/use_window";
 import { imageCardFragment } from "../fragments/image";
 import { IImage } from "../types/image";
 import { gqlIp } from "../util/ip";
+import { uploadImage } from "../util/mutations/image";
 import Button from "./Button";
 import FileInput from "./FileInput";
 import Window from "./Window";
@@ -45,7 +46,7 @@ export default function ImageUploader({ onUpload, onDone, ...props }: Props) {
   useEffect(() => {
     const item = uploadQueue[0];
     if (item) {
-      uploadImage(item).catch(() => {});
+      handleUpload(item).catch(() => {});
     } else {
       setLoader(false);
       onDone?.();
@@ -69,50 +70,12 @@ export default function ImageUploader({ onUpload, onDone, ...props }: Props) {
     }
   }
 
-  async function uploadImage(image: { file: File; b64: string; name: string }) {
+  async function handleUpload(image: { file: File; b64: string; name: string }) {
     setLoader(true);
     try {
-      const query = `
-      mutation (
-        $file: Upload!
-        $name: String
-        $scene: String
-        $actors: [String!]
-        $labels: [String!]
-      ) {
-        uploadImage(file: $file, name: $name, scene: $scene, actors: $actors, labels: $labels) {
-          ...ImageCard
-        }
-      }
-      ${imageCardFragment}
-    `;
-      const variables = {
-        name: image.name,
-        scene: props.scene,
-        actors: props.actors,
-        labels: props.labels,
-      };
-      const formData = new FormData();
-
-      const operations = JSON.stringify({ query, variables });
-      formData.append("operations", operations);
-
-      const map = {
-        "0": ["variables.file"],
-      };
-      formData.append("map", JSON.stringify(map));
-
-      const file = uploadQueue[0].file;
-      formData.append("0", file);
-
-      const { data } = await axios.post<{
-        data: {
-          uploadImage: IImage;
-        };
-        errors: { message: string }[];
-      }>(gqlIp(), formData);
+      const img = await uploadImage(image);
       setUploadQueue(([_, ...rest]) => rest);
-      onUpload([data.data.uploadImage]);
+      onUpload([img]);
     } catch (error) {
       setUploadQueue([]);
       setUploadItems((prev) => [...prev, ...uploadQueue]);

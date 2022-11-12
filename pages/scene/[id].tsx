@@ -45,6 +45,7 @@ import {
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+import Spacer from "../../components/Spacer";
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -248,7 +249,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                   </>
                   {/* TODO: */}
                   <AddMarkerIcon className="hover" size={24} />
-                  <div style={{ flexGrow: 1 }} />
+                  <Spacer />
                   {!!scene.studio && (
                     <Link href={`/studio/${scene.studio._id}`} passHref>
                       <a className="hover">

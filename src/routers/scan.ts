@@ -6,18 +6,10 @@ import { handleError } from "../utils/logger";
 
 const router = Router();
 
+// TODO:
 router.post("/folders", (req, res) => {
   res.json({
     message: "OK",
-  });
-});
-
-router.get("/folders", (req, res) => {
-  const { images, videos } = getConfig().import;
-  res.json({
-    images,
-    videos,
-    amount: images.length + videos.length,
   });
 });
 
@@ -33,8 +25,15 @@ router.post("/", (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
+router.get(["/", "/status"], (req, res) => {
+  const { images, videos } = getConfig().import;
+
   res.json({
+    folders: {
+      images,
+      videos,
+      amount: images.length + videos.length,
+    },
     isScanning,
     nextScanDate: nextScanTimestamp ? new Date(nextScanTimestamp).toLocaleString() : null,
     nextScanTimestamp,

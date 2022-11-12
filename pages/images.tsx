@@ -34,6 +34,7 @@ import { IImage } from "../types/image";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import { imageUrl, thumbnailUrl } from "../util/thumbnail";
+import Spacer from "../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -149,7 +150,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
     <PageWrapper title={t("foundImages", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundImages", { numItems })}</div>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
@@ -231,7 +232,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
           value={sortDir}
           onChange={setSortDir}
         />
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Button onClick={refresh}>{t("refresh")}</Button>
       </div>
       <ContentWrapper

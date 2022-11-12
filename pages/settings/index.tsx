@@ -7,9 +7,9 @@ import AutoLayout from "../../components/AutoLayout";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
-import Loader from "../../components/Loader";
 import PageWrapper from "../../components/PageWrapper";
 import Text from "../../components/Text";
+import { useScanStatus } from "../../composables/use_scan_status";
 import { getFullStatus, StatusData } from "../../util/status";
 
 function StatusSection({ status }: { status: StatusData }) {
@@ -95,29 +95,9 @@ function StatusSection({ status }: { status: StatusData }) {
   );
 }
 
-async function getScanFolders(): Promise<{
-  videos: {
-    path: string;
-    include: string[];
-    exclude: string[];
-    extensions: string[];
-    enable: boolean;
-  }[];
-  images: {
-    path: string;
-    include: string[];
-    exclude: string[];
-    extensions: string[];
-    enable: boolean;
-  }[];
-}> {
-  const { data } = await axios.get("/api/scan/folders");
-  return data;
-}
-
 export default function SettingsPage() {
-  // /api/scan/folders
   const t = useTranslations();
+
   const { data: status } = useSWR(
     "settings:status",
     () => getFullStatus().then((res) => res.data),
@@ -128,45 +108,43 @@ export default function SettingsPage() {
       refreshInterval: 15_000,
     }
   );
-  const { data: scanFolders } = useSWR("settings:scan-folders", getScanFolders, {
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-    revalidateOnMount: true,
-    refreshInterval: 15_000,
-  });
+
+  const { scanStatus } = useScanStatus();
 
   return (
     <PageWrapper title={t("settings")}>
-      <AutoLayout>
-        <CardTitle>{t("settings")}</CardTitle>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <AutoLayout
           style={{
             width: "100%",
-            maxWidth: 1000,
+            maxWidth: 900,
           }}
         >
-          {!!scanFolders && (
-            <Card>
-              <CardTitle>Scan folders</CardTitle>
-              <CardSection title={t("heading.videos")}>
-                <ul>
-                  {scanFolders.videos.map((folder) => (
-                    <li>{folder.path}</li>
-                  ))}
-                </ul>
-              </CardSection>
-              <CardSection title={t("heading.images")}>
-                <ul>
-                  {scanFolders.images.map((folder) => (
-                    <li>{folder.path}</li>
-                  ))}
-                </ul>
-              </CardSection>
-            </Card>
-          )}
-          {!!status && <StatusSection status={status} />}
+          <CardTitle>{t("settings")}</CardTitle>
+          <AutoLayout>
+            {!!scanStatus && (
+              <Card>
+                <CardTitle>Scan folders</CardTitle>
+                <CardSection title={t("heading.videos")}>
+                  <ul>
+                    {scanStatus.folders.videos.map((folder) => (
+                      <li>{folder.path}</li>
+                    ))}
+                  </ul>
+                </CardSection>
+                <CardSection title={t("heading.images")}>
+                  <ul>
+                    {scanStatus.folders.images.map((folder) => (
+                      <li>{folder.path}</li>
+                    ))}
+                  </ul>
+                </CardSection>
+              </Card>
+            )}
+            {!!status && <StatusSection status={status} />}
+          </AutoLayout>
         </AutoLayout>
-      </AutoLayout>
+      </div>
     </PageWrapper>
   );
 }

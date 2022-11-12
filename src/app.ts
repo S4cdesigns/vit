@@ -21,30 +21,6 @@ import { handleError, httpLog, logger } from "./utils/logger";
 import { createObjectSet } from "./utils/misc";
 import VERSION from "./version";
 
-/* const isProduction = process.env.NODE_ENV !== "development"; */
-
-/* const locales = ['en', 'de', 'fr'];
-const localeDefault = locales[0];
-
-function extractLocale(url: string) {
-  const urlPaths = url.split('/');
-
-  let locale;
-  let urlWithoutLocale;
-  
-  // We remove the URL locale, for example `/de/about` => `/about`
-  const firstPath = urlPaths[1];
-  if (locales.filter((locale) => locale !== localeDefault).includes(firstPath)) {
-    locale = firstPath;
-    urlWithoutLocale = '/' + urlPaths.slice(2).join('/');
-  } else {
-    locale = localeDefault;
-    urlWithoutLocale = url;
-  }
-
-  return { locale, urlWithoutLocale };
-} */
-
 export class Vault {
   private app: express.Application;
   private _close: (() => void) | null = null;
@@ -150,10 +126,6 @@ export async function createVault(): Promise<Vault> {
   });
 
   app.use("/api/media", mediaRouter);
-
-  /* app.get("/log", (req, res) => {
-    res.json(getLog());
-  }); */
 
   mountApolloServer(app);
 

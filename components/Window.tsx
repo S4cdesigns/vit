@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import AutoLayout from "./AutoLayout";
 import Card from "./Card";
 import CardTitle from "./CardTitle";
+import Spacer from "./Spacer";
 
 type Props = {
   children: ReactNode;
@@ -50,24 +51,17 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
             }}
           >
             <Card style={{ padding: 20 }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <AutoLayout layout="h">
                 <CardTitle>{title}</CardTitle>
-                <div style={{ flexGrow: 1 }}></div>
+                <Spacer />
                 <CloseIcon className="hover" onClick={onClose} />
-              </div>
+              </AutoLayout>
               <AutoLayout>{children}</AutoLayout>
               {actions && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
-                >
-                  <div style={{ flexGrow: 1 }}></div>
+                <AutoLayout layout="h" gap={5}>
+                  <Spacer />
                   {actions}
-                </div>
+                </AutoLayout>
               )}
             </Card>
           </div>

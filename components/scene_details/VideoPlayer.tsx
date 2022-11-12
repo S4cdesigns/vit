@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
 import Marker from "../Marker";
+import Spacer from "../Spacer";
 import styles from "./VideoPlayer.module.scss";
 
 type Props = {
@@ -189,7 +190,7 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
             <span style={{ fontSize: 14, fontWeight: 500, opacity: 0.8 }}>
               {formatDuration(duration * progress)} / {formatDuration(duration)}
             </span>
-            <div style={{ flexGrow: 1 }} />
+            <Spacer />
             <FullscreenIcon
               onClick={() => {
                 videoEl.current?.requestFullscreen().catch(() => {});

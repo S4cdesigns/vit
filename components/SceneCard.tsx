@@ -7,16 +7,18 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import Link from "next/link";
 import { useContext } from "react";
 
-import { SafeModeContext } from "../pages/_app";
+import { SafeModeContext, ThemeContext } from "../pages/_app";
 import { IScene } from "../types/scene";
 import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";
 import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
+import AutoLayout from "./AutoLayout";
 import LabelGroup from "./LabelGroup";
 import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
+import Spacer from "./Spacer";
 
 type Props = {
   scene: Pick<
@@ -41,6 +43,7 @@ type Props = {
 
 export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   const { enabled: safeMode } = useContext(SafeModeContext);
+  const { theme } = useContext(ThemeContext);
 
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
@@ -64,7 +67,11 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
       return undefined;
     }
     let color = new Color(scene.thumbnail.color);
-    color = color.hsl(color.hue(), 100, 85);
+    if (theme === "dark") {
+      color = color.hsl(color.hue(), 100, 85);
+    } else {
+      color = color.hsl(color.hue(), 100, 15);
+    }
     return color.hex();
   })();
 
@@ -80,11 +87,11 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
         }}
       >
         {!!scene.watches.length && (
-          <div
+          <AutoLayout
+            layout="h"
+            gap={5}
             style={{
               color: "white",
-              display: "flex",
-              alignItems: "center",
               background: "#000000bb",
               borderRadius: 5,
               padding: 3,
@@ -92,20 +99,17 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
               left: 1,
               bottom: 1,
               fontSize: 12,
-              gap: 5,
             }}
           >
             <WatchedIcon size={18} />
             <span>
               <b>Watched ({scene.watches.length}x)</b>
             </span>
-          </div>
+          </AutoLayout>
         )}
         <div
           style={{
-            display: "flex",
-            gap: 2,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: "bold",
             color: "white",
             position: "absolute",
@@ -118,11 +122,11 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
           </div>
         </div>
       </ResponsiveImage>
-      <div
+      <AutoLayout
+        gap={5}
+        layout="h"
         style={{
           color: "white",
-          display: "flex",
-          alignItems: "center",
           background: "#000000bb",
           borderRadius: 5,
           padding: 3,
@@ -145,8 +149,8 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
         ) : (
           <BookmarkBorderIcon onClick={toggleBookmark} className="hover" style={{ fontSize: 28 }} />
         )}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "6px 8px 8px 8px" }}>
+      </AutoLayout>
+      <AutoLayout gap={5} style={{ padding: "6px 8px 8px 8px" }}>
         <div style={{ display: "flex" }}>
           {scene.studio && (
             <Link href={`/studio/${scene.studio._id}`} passHref>
@@ -157,7 +161,7 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
               </a>
             </Link>
           )}
-          <div style={{ flexGrow: 1 }}></div>
+          <Spacer />
           {scene.releaseDate && (
             <div style={{ fontSize: 13, opacity: 0.75 }}>
               {new Date(scene.releaseDate).toLocaleDateString()}
@@ -186,7 +190,7 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
         <div>
           <LabelGroup labels={scene.labels} />
         </div>
-      </div>
+      </AutoLayout>
     </Paper>
   );
 }

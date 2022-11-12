@@ -16,9 +16,10 @@ export default {
   overview: "Übersicht",
   libraryTime: "Gesehene Videos",
   videoProcessingQueue: "Videoverarbeitung",
+  scanStats: "Scan",
 
   viewsInDays:
-    "{numViews, plural, one {gesehene Szene} other {{numViews} gesehene Szenen} } in {numDays, plural, one {Tag} other {{numDays} Tagen} }",
+    "{numViews, plural, one {gesehene Szene} other {{numViews} gesehene Szenen} } in {numDays, plural, one {{numDays} Tag} other {{numDays} Tagen} }",
   percentWatched: "{percent} aller Szenen gesehen",
   contentLeft: "~{years} Jahre an Inhalt übrig",
   runningOut: "Alle Szenen gesehen am {date}",

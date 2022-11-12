@@ -32,6 +32,7 @@ import { usePaginatedList } from "../composables/use_paginated_list";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
+import Spacer from "../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -157,7 +158,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
     <PageWrapper title={t("foundActors", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundActors", { numItems })}</div>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
@@ -255,7 +256,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
             onChange={setSortDir}
           />
         </div>
-        <div style={{ flexGrow: 1 }}></div>
+        <Spacer />
         <Button loading={loading} onClick={refresh}>
           {t("refresh")}
         </Button>
