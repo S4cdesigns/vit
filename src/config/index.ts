@@ -93,12 +93,12 @@ export async function findAndLoadConfig(): Promise<boolean> {
   let writeNewConfig = false;
   try {
     if (existsSync(configJSONFilename)) {
-      logger.info(`Loading "${configJSONFilename}"...`);
+      logger.info(`Loading "${configJSONFilename}"`);
       loadedConfig = JSON.parse(await readFileAsync(configJSONFilename, "utf-8")) as IConfig;
       configFile = configJSONFilename;
       return false;
     } else if (existsSync(configYAMLFilename)) {
-      logger.info(`Loading "${configYAMLFilename}"...`);
+      logger.info(`Loading "${configYAMLFilename}"`);
       loadedConfig = YAML.parse(await readFileAsync(configYAMLFilename, "utf-8")) as IConfig;
       configFile = configYAMLFilename;
       return false;
@@ -221,11 +221,11 @@ export function checkConfig(config: IConfig): boolean {
       if (issue.code === "invalid_union") {
         // Resolve union issues
         for (const unionIssue of issue.unionErrors.flatMap((x) => x.issues)) {
-          logger.error(`${unionIssue.path.join(".")}: ${unionIssue.message}`);
+          logger.error(`-> ${unionIssue.path.join(".")}: ${unionIssue.message}`);
         }
       } else {
         // Regular (non-union) issue
-        logger.error(`${issue.path.join(".")}: ${issue.message}`);
+        logger.error(`-> ${issue.path.join(".")}: ${issue.message}`);
       }
     }
     writeMergedConfig(config);

@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
+import { ReactNode } from "react";
 import useSWR from "swr";
 
 import AutoLayout from "../../components/AutoLayout";
@@ -12,18 +12,26 @@ import Text from "../../components/Text";
 import { useScanStatus } from "../../composables/use_scan_status";
 import { getFullStatus, StatusData } from "../../util/status";
 
+function SettingsSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <AutoLayout gap={10}>
+      <CardTitle>{title}</CardTitle>
+      <Card>{children}</Card>
+    </AutoLayout>
+  );
+}
+
 function StatusSection({ status }: { status: StatusData }) {
   const t = useTranslations();
 
   return (
     <>
-      <Card>
-        <CardTitle>Izzy (database)</CardTitle>
+      <SettingsSection title="Izzy (database)">
         <CardSection title={t("status")}>
-          <div style={{ opacity: 0.66 }}>{status.izzy.status}</div>
+          <Text>{status.izzy.status}</Text>
         </CardSection>
         <CardSection title={t("version")}>
-          <div style={{ opacity: 0.66 }}>{status.izzy.version}</div>
+          <Text>{status.izzy.version}</Text>
         </CardSection>
         <div>
           <table>
@@ -45,14 +53,13 @@ function StatusSection({ status }: { status: StatusData }) {
             </tbody>
           </table>
         </div>
-      </Card>
-      <Card>
-        <CardTitle>Elasticsearch</CardTitle>
+      </SettingsSection>
+      <SettingsSection title="Elasticsearch">
         <CardSection title={t("status")}>
-          <div style={{ opacity: 0.66 }}>{status.elasticsearch.status}</div>
+          <Text>{status.elasticsearch.status}</Text>
         </CardSection>
         <CardSection title={t("version")}>
-          <div style={{ opacity: 0.66 }}>{status.elasticsearch.version}</div>
+          <Text>{status.elasticsearch.version}</Text>
         </CardSection>
         <div>
           <table>
@@ -90,7 +97,7 @@ function StatusSection({ status }: { status: StatusData }) {
           </table>
         </div>
         <Text>Note: Health "green" and "yellow" are OK</Text>
-      </Card>
+      </SettingsSection>
     </>
   );
 }
@@ -120,11 +127,9 @@ export default function SettingsPage() {
             maxWidth: 900,
           }}
         >
-          <CardTitle>{t("settings")}</CardTitle>
           <AutoLayout>
             {!!scanStatus && (
-              <Card>
-                <CardTitle>Scan folders</CardTitle>
+              <SettingsSection title="Scan folders">
                 <CardSection title={t("heading.videos")}>
                   <ul>
                     {scanStatus.folders.videos.map((folder) => (
@@ -139,7 +144,7 @@ export default function SettingsPage() {
                     ))}
                   </ul>
                 </CardSection>
-              </Card>
+              </SettingsSection>
             )}
             {!!status && <StatusSection status={status} />}
           </AutoLayout>

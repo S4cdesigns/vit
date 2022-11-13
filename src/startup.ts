@@ -54,12 +54,13 @@ If you have magick.exe, you may be able to use "{path}/magick.exe ${cmd}"`
 }
 
 export async function startup() {
+  logger.debug("Startup");
+
   loadEnv();
 
-  logger.debug("Startup...");
   logger.debug(args);
 
-  printMaxMemory();
+  // printMaxMemory();
 
   let config: IConfig;
 
