@@ -12,7 +12,7 @@ import { MP4Transcoder } from "../transcode/mp4";
 import { SceneStreamTypes, TranscodeOptions } from "../transcode/transcoder";
 import { WebmTranscoder } from "../transcode/webm";
 import Scene from "../types/scene";
-import { mkdirpSync, readFileAsync, rimrafAsync, rmdirAsync, unlinkAsync } from "../utils/fs/async";
+import { mkdirpSync, readFileAsync, rimrafAsync } from "../utils/fs/async";
 import { handleError, logger } from "../utils/logger";
 import { generateTimestampsAtIntervals } from "../utils/misc";
 import { generateScreenshots } from "../utils/screenshot";

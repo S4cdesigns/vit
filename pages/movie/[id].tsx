@@ -32,6 +32,7 @@ import { useRouter } from "next/router";
 import { uploadImage } from "../../util/mutations/image";
 import { setMovieBackCover, setMovieFrontCover, setMovieSpine } from "../../util/mutations/movie";
 import ResponsiveImage from "../../components/ResponsiveImage";
+import Spacer from "../../components/Spacer";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `
@@ -163,6 +164,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
               >
                 <FileInput
                   onChange={async ([file]) => {
+                    /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieSpine(movie._id, img._id);
                     router.replace(router.asPath);
@@ -201,6 +203,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
               >
                 <FileInput
                   onChange={async ([file]) => {
+                    /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieFrontCover(movie._id, img._id);
                     router.replace(router.asPath);
@@ -246,6 +249,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
               >
                 <FileInput
                   onChange={async ([file]) => {
+                    /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieBackCover(movie._id, img._id);
                     router.replace(router.asPath);

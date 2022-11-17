@@ -6,7 +6,6 @@ import asyncPool from "tiny-async-pool";
 import { ThumbnailFile } from "../types/scene";
 import { readdirAsync, statAsync } from "./fs/async";
 import { formatMessage, logger } from "./logger";
-import { libraryPath } from "./path";
 
 type ScreenshotOptions = {
   filePrefix?: string;

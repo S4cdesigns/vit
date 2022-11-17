@@ -9,7 +9,11 @@ import { logger } from "../utils/logger";
  * @param name - name of what is being iterated for logs
  */
 export async function iterate<T extends { _id: string }>(
-  search: ({ page: number }, _: string, extraFilter: unknown[]) => Promise<{ items: string[] }>,
+  search: (
+    { page }: { page: number },
+    _: string,
+    extraFilter: unknown[]
+  ) => Promise<{ items: string[] }>,
   getBulk: (ids: string[]) => Promise<T[]>,
   itemCb: (item: T) => void | unknown | Promise<void> | Promise<unknown>,
   name: string,

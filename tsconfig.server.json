@@ -15,6 +15,7 @@
     "util"
   ],
   "compilerOptions": {
+    "incremental": true,
     "resolveJsonModule": true,
     /* Basic Options */
     "target": "es6",

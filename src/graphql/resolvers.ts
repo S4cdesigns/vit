@@ -1,4 +1,5 @@
 import GraphQLJSON, { GraphQLJSONObject } from "graphql-type-json";
+// @ts-ignore
 import GraphQLLong from "graphql-type-long";
 import { GraphQLUpload } from "graphql-upload";
 

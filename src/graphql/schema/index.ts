@@ -1,6 +1,4 @@
-import { gql } from "apollo-server-express";
-
-export default gql`
+export default `
   scalar Long
   scalar Object
   scalar Upload

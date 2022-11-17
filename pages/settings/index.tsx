@@ -7,6 +7,7 @@ import AutoLayout from "../../components/AutoLayout";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
+import Credits from "../../components/Credits";
 import PageWrapper from "../../components/PageWrapper";
 import Text from "../../components/Text";
 import { useScanStatus } from "../../composables/use_scan_status";
@@ -147,6 +148,9 @@ export default function SettingsPage() {
               </SettingsSection>
             )}
             {!!status && <StatusSection status={status} />}
+            <SettingsSection title="Credits">
+              <Credits />
+            </SettingsSection>
           </AutoLayout>
         </AutoLayout>
       </div>

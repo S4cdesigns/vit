@@ -1,6 +1,4 @@
-import { gql } from "apollo-server-express";
-
-export default gql`
+export default `
   type Image {
     _id: String!
     name: String!
