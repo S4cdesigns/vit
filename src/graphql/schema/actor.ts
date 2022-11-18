@@ -1,6 +1,4 @@
-import { gql } from "apollo-server-express";
-
-export default gql`
+export default `
   type Nationality {
     name: String!
     alpha2: String!

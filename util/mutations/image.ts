@@ -43,7 +43,11 @@ export async function uploadImage(image: { file: File; name: string }) {
       uploadImage: IImage;
     };
     errors: { message: string }[];
-  }>(gqlIp(), formData);
+  }>(gqlIp(), formData, {
+    headers: {
+      "apollo-require-preflight": "true",
+    },
+  });
 
   return data.data.uploadImage;
 }

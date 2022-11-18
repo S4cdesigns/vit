@@ -127,7 +127,7 @@ export async function createVault(): Promise<Vault> {
 
   app.use("/api/media", mediaRouter);
 
-  mountApolloServer(app);
+  await mountApolloServer(app);
 
   app.use("/api/queue", queueRouter);
 

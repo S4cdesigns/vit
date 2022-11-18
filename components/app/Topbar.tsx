@@ -1,8 +1,11 @@
 import MenuIcon from "mdi-react/HamburgerMenuIcon";
+import PatreonIcon from "mdi-react/PatreonIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+
 import Spacer from "../Spacer";
+import Link from "next/link";
 
 type Props = {
   setSidebar: (x: boolean) => void;
@@ -15,7 +18,7 @@ export default function Topbar({ setSidebar }: Props) {
 
   return (
     <div className="topbar">
-      <div style={{ width: "100%", display: "flex", alignItems: "center", padding: 12, gap: 8 }}>
+      <div style={{ width: "100%", display: "flex", alignItems: "center", padding: 12, gap: 10 }}>
         <MenuIcon onClick={() => setSidebar(true)} className="mobile-sidebar-toggle" />
         <img
           onClick={() => router.push("/")}
@@ -24,6 +27,13 @@ export default function Topbar({ setSidebar }: Props) {
           height={36}
           src="/assets/favicon.png"
         />
+        <a
+          href="https://www.patreon.com/pornvault"
+          target="_blank"
+          style={{ display: "flex", alignItems: "center", opacity: 0.66 }}
+        >
+          <PatreonIcon size={20} />
+        </a>
         <Spacer />
         <input
           type="text"

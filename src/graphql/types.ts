@@ -1,4 +1,4 @@
-import { makeExecutableSchema } from "graphql-tools";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 
 import RootResolver from "./resolvers";
 import actorSchema from "./schema/actor";

@@ -146,7 +146,7 @@ export default async (): Promise<Vault> => {
     // Only schedule next scans
     scheduleNextScan(config.import.scanInterval);
 
-    logger.warn("Scanning folders is currently disabled.");
+    logger.info("Scanning folders is currently disabled.");
     tryStartProcessing().catch((err: Error) => {
       handleError("Couldn't start processing", err);
     });

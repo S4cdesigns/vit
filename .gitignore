@@ -3,6 +3,8 @@ logs
 *.log
 npm-debug.log*
 
+*.tsbuildinfo
+
 # Runtime data
 pids
 *.pid

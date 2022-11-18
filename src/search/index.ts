@@ -114,7 +114,7 @@ async function ensureIndexExists(name: string): Promise<boolean> {
             char_filter: {
               pv_filter: {
                 type: "pattern_replace",
-                pattern: "[_]",
+                pattern: "[_.]",
                 replacement: " ",
               },
             },

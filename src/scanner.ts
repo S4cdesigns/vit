@@ -67,7 +67,7 @@ export function scheduleNextScan(nextScanMs: number): void {
 
   const nextScanDate = new Date(Date.now() + nextScanMs);
   nextScanTimestamp = nextScanDate.valueOf();
-  logger.warn(`Next scan at ${nextScanDate.toLocaleString()}`);
+  logger.info(`Next scan at ${nextScanDate.toLocaleString()}`);
 
   nextScanTimeout = global.setTimeout(() => {
     scanFolders(nextScanMs).catch((err: Error) => {

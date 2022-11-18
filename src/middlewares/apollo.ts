@@ -1,12 +1,14 @@
-import { ApolloServer } from "apollo-server-express";
-import { ApolloServerPlugin, GraphQLRequestListener } from "apollo-server-plugin-base";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
+import http from "http";
 
 import schema from "../graphql/types";
-import { formatMessage, logger } from "../utils/logger";
+import cors from "./cors";
 
-const apolloLogger: ApolloServerPlugin = {
+/* const apolloLogger: ApolloServerPlugin = {
   requestDidStart(_requestContext): GraphQLRequestListener {
     return {
       didEncounterErrors(requestContext) {
@@ -14,10 +16,10 @@ const apolloLogger: ApolloServerPlugin = {
       },
     };
   },
-};
+}; */
 
-export function mountApolloServer(app: express.Application): void {
-  const server = new ApolloServer({
+export async function mountApolloServer(app: express.Application): Promise<void> {
+  /*   const server = new ApolloServer({
     schema,
     context: ({ req }) => ({
       req,
@@ -29,5 +31,16 @@ export function mountApolloServer(app: express.Application): void {
     plugins: [apolloLogger],
   });
   app.use(graphqlUploadExpress());
-  server.applyMiddleware({ app, path: "/api/ql" });
+  server.applyMiddleware({ app, path: "/api/ql" }); */
+
+  const httpServer = http.createServer(app);
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    introspection: true,
+  });
+  await server.start();
+
+  app.use("/api/ql", graphqlUploadExpress(), cors, express.json(), expressMiddleware(server));
 }

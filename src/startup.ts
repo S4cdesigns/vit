@@ -13,7 +13,6 @@ import { isBlacklisted } from "./search/image";
 import startServer from "./server";
 import Image from "./types/image";
 import { handleError, logger } from "./utils/logger";
-import { printMaxMemory } from "./utils/mem";
 import { libraryPath } from "./utils/path";
 
 function skipImage(image: Image) {
