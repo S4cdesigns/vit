@@ -23,6 +23,7 @@ server:
       variables:
         ES_JAVA_OPTS: "-Xms200m -Xmx400m"
   script:
+    - npm i -g pnpm
     - pnpm install
     - pnpm run transpile:prod
     - apt-get install -y imagemagick
