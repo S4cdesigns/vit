@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import { ignoreSingleNames, isSingleWord } from "./matcher";
 
-describe("matcher", () => {
+describe("matching", () => {
   describe("isSingleWord", () => {
     for (const word of ["test", "", "1234", "numbermix1234"])
       it("Should be a seen as a single word", () => {
