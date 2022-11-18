@@ -5,6 +5,7 @@ Manage your ever-growing porn collection
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/pornvault)
 ![Discord](https://img.shields.io/discord/652499331265331245)
 ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/porn_vault?style=social)
+[![Latest Release](https://gitlab.com/porn-vault/porn-vault/-/badges/release.svg)](https://gitlab.com/porn-vault/porn-vault/-/releases)
 
 There's a Discord channel! Join in to the discussion: [Discord](https://discord.gg/QfeHYtKGEa)
 
