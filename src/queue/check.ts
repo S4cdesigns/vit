@@ -9,7 +9,7 @@ import { extractActors, extractLabels, extractScenes } from "../extractor";
 import { indexImages } from "../search/image";
 import Image from "../types/image";
 import Scene from "../types/scene";
-import { walk } from "../utils/fs/async";
+import { walk } from "../utils/fs/walk";
 import { handleError, logger } from "../utils/logger";
 import { libraryPath } from "../utils/path";
 
