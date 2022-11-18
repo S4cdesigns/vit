@@ -7,9 +7,9 @@ WORKDIR /app
 ADD . /app
 
 RUN cd /app && \
-    npm ci && \
-    npm run install:app && \
-    npm run build:generic
+    pnpm ci && \
+    pnpm run install:app && \
+    pnpm run build:generic
 
 FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
 

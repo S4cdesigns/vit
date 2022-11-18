@@ -1,10 +1,11 @@
-import { StringMatcher, stripStr } from "../../src/matching/stringMatcher";
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
-import stripStrFixtures from "./fixtures/strip_string.fixture";
-import matchingActorFixtures from "./fixtures/matching_actor.fixture";
-import matchingLabelFixtures from "./fixtures/matching_label.fixture";
-import filterFixtures from "./fixtures/string_filter.fixture";
+import stripStrFixtures from "./__fixture/stringMatcher/strip_string.fixture";
+import filterFixtures from "./__fixture/stringMatcher/filter_items.fixture";
+import matchingActorFixtures from "./__fixture/stringMatcher/matching_actor.fixture";
+import matchingLabelFixtures from "./__fixture/stringMatcher/matching_label.fixture";
+
+import { StringMatcher, stripStr } from "./stringMatcher";
 
 describe("matcher", () => {
   describe("String matcher", () => {

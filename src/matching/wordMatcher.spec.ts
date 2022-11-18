@@ -1,12 +1,11 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
-import defaultConfig from "../../src/config/default";
-import { WordMatcher, WordMatcherOptions } from "../../src/matching/wordMatcher";
-import {
-  filterFixtures,
-  matchingActorFixtures,
-  matchingLabelFixtures,
-} from "./fixtures/wordMatcher.fixtures";
+import defaultConfig from "../config/default";
+import { WordMatcher, WordMatcherOptions } from "./wordMatcher";
+
+import { filterFixtures } from "./__fixture/wordMatcher/filter_items.fixture";
+import { matchingActorFixtures } from "./__fixture/wordMatcher/matching_actor.fixture";
+import { matchingLabelFixtures } from "./__fixture/wordMatcher/matching_label.fixture";
 
 describe("matcher", () => {
   describe("Word matcher", () => {

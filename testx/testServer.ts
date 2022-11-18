@@ -56,7 +56,7 @@ const testConfig: IConfig = {
   },
   search: {
     ...defaultConfig.search,
-    host: "http://elasticsearch:9200",
+    host: process.env.ES_TEST_URL || "http://elasticsearch:9200",
   },
 };
 refreshClient(testConfig);
@@ -128,9 +128,9 @@ export async function startTestServer(
 
     if (!existsSync(path.basename(getFFMpegURL())) || !path.basename(getFFProbeURL())) {
       await downloadFFLibs(config);
+      console.log("Downloaded binaries");
     }
     await ensureIzzyExists();
-    console.log("Downloaded binaries");
 
     vault = await createVault();
 

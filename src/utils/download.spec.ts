@@ -1,8 +1,10 @@
-import { expect } from "chai";
-import { existsSync, readFileSync, unlinkSync } from "fs";
-import { downloadFile } from "../../src/utils/download";
+import { describe, it, expect } from "vitest";
 
-describe("Download file", () => {
+import { existsSync, readFileSync, unlinkSync } from "fs";
+
+import { downloadFile } from "./download";
+
+describe("utils", () => {
   it("Should download file to disk", async () => {
     const file = "download-test.json";
     if (existsSync(file)) {

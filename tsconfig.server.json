@@ -12,10 +12,14 @@
     "gulpfile.ts",
     "fragments",
     "locale",
-    "util"
+    "util",
+    "__fixture",
+    "*.spec.ts",
+    "*.test.ts"
   ],
   "compilerOptions": {
     "incremental": true,
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     /* Basic Options */
     "target": "es6",

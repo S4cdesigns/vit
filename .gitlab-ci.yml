@@ -23,10 +23,11 @@ server:
       variables:
         ES_JAVA_OPTS: "-Xms200m -Xmx400m"
   script:
-    - npm install
-    - npm run transpile:prod
+    - npm i -g pnpm
+    - pnpm install
+    - pnpm run transpile:prod
     - apt-get install -y imagemagick
-    - npm run coverage:silent
+    - pnpm run test
   #after_script:
   #    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f ./coverage/coverage-final.json
 
