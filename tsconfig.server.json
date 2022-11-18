@@ -12,7 +12,10 @@
     "gulpfile.ts",
     "fragments",
     "locale",
-    "util"
+    "util",
+    "__fixture",
+    "*.spec.ts",
+    "*.test.ts"
   ],
   "compilerOptions": {
     "incremental": true,

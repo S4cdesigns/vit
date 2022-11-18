@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { chmodSync, existsSync } from "fs";
 import inquirer from "inquirer";
 import * as path from "path";
+import { resolve } from "path";
 
 import { getFFMpegURL, getFFProbeURL } from "./binaries/ffmpeg-download";
 import defaultConfig from "./config/default";
@@ -35,7 +36,9 @@ export async function setupFunction(): Promise<IConfig> {
 
   if (downloadFFMPEG) {
     try {
-      await downloadFFLibs(config);
+      const { ffmpegPath, ffprobePath } = await downloadFFLibs(configPath());
+      config.binaries.ffmpeg = ffmpegPath;
+      config.binaries.ffprobe = ffprobePath;
     } catch (err) {
       logger.error("Error downloading ffmpeg, ffprobe");
       throw err;
@@ -218,12 +221,14 @@ async function promptSetup() {
  * @returns the paths where they were downloaded
  * @throws if one of the downloads failed
  */
-export async function downloadFFLibs(config: IConfig): Promise<void> {
+export async function downloadFFLibs(
+  destFolder: string
+): Promise<{ ffmpegPath: string; ffprobePath: string }> {
   const ffmpegURL = getFFMpegURL();
   const ffprobeURL = getFFProbeURL();
 
-  const ffmpegPath = configPath(path.basename(ffmpegURL));
-  const ffprobePath = configPath(path.basename(ffprobeURL));
+  const ffmpegPath = resolve(destFolder, path.basename(ffmpegURL));
+  const ffprobePath = resolve(destFolder, path.basename(ffprobeURL));
 
   await downloadFile(ffmpegURL, ffmpegPath);
   await downloadFile(ffprobeURL, ffprobePath);
@@ -236,6 +241,5 @@ export async function downloadFFLibs(config: IConfig): Promise<void> {
     logger.error("Could not make FFMPEG binaries executable");
   }
 
-  config.binaries.ffmpeg = ffmpegPath;
-  config.binaries.ffprobe = ffprobePath;
+  return { ffmpegPath, ffprobePath };
 }

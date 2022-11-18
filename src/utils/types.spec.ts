@@ -1,7 +1,8 @@
-import { expect } from "chai";
-import { isBoolean, isNumber } from "../../src/utils/types";
+import { describe, it, expect } from "vitest";
 
-describe("Type utils", () => {
+import { isBoolean, isNumber } from "./types";
+
+describe("utils", () => {
   it("isNumber", async () => {
     expect(isNumber(5)).to.be.true;
     expect(isNumber(true)).to.be.false;

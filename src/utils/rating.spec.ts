@@ -1,7 +1,8 @@
-import { expect } from "chai";
-import { validRating } from "../../src/utils/misc";
+import { describe, it, expect } from "vitest";
 
-describe("Misc", () => {
+import { validRating } from "./misc";
+
+describe("utils", () => {
   it("validRating", async () => {
     expect(validRating(5)).to.be.true;
     expect(validRating(true)).to.be.false;

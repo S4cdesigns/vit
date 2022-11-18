@@ -1,6 +1,6 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
-import { ignoreSingleNames, isSingleWord } from "../../src/matching/matcher";
+import { ignoreSingleNames, isSingleWord } from "./matcher";
 
 describe("matcher", () => {
   describe("isSingleWord", () => {

@@ -1,12 +1,12 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
-import { arrayDiff, filterInvalidAliases, generateTimestampsAtIntervals, isArrayEq } from "../../src/utils/misc";
-import * as arrayDiffFixtures from "./fixtures/array_diff.fixtures";
-import * as generateTimestampsFixtures from "./fixtures/generate_timestamps.fixtures";
-import * as isArrayEqFixtures from "./fixtures/is_array_eq.fixtures";
-import * as filterInvalidAliasesFixtures from "./fixtures/filter_invalid_aliases.fixtures";
+import { arrayDiff, filterInvalidAliases, generateTimestampsAtIntervals, isArrayEq } from "./misc";
+import * as arrayDiffFixtures from "./__fixture/array_diff.fixtures";
+import * as generateTimestampsFixtures from "./__fixture/generate_timestamps.fixtures";
+import * as isArrayEqFixtures from "./__fixture/is_array_eq.fixtures";
+import * as filterInvalidAliasesFixtures from "./__fixture/filter_invalid_aliases.fixtures";
 
-describe("utils/misc", () => {
+describe("utils", () => {
   describe("generateTimestampsAtIntervals", () => {
     for (const fixture of generateTimestampsFixtures.generateTimestampsAtIntervals) {
       it("generates correct timestamps", () => {
@@ -42,7 +42,7 @@ describe("utils/misc", () => {
     for (const fixture of filterInvalidAliasesFixtures.fixtures) {
       it(`filter: ${fixture.aliases}`, () => {
         const res = filterInvalidAliases(fixture.aliases);
-        expect(res).to.deep.equal(fixture.expected)
+        expect(res).to.deep.equal(fixture.expected);
       });
     }
   });

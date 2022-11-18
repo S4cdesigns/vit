@@ -1,7 +1,8 @@
-import { expect } from "chai";
-import { randomString } from "../../src/utils/hash";
+import { describe, it, expect } from "vitest";
 
-describe("Hash gen", () => {
+import { randomString } from "./hash";
+
+describe("utils", () => {
   it("randomString", () => {
     expect(randomString()).to.be.a("string").with.length(8);
     expect(randomString(35)).to.be.a("string").with.length(35);

@@ -41,12 +41,16 @@ const configFilename = process.env.NODE_ENV === "test" ? "config.test" : "config
 const configJSONFilename = configPath(`${configFilename}.json`);
 const configYAMLFilename = configPath(`${configFilename}.yaml`);
 
-export async function loadTestConfig(): Promise<void> {
-  const file = "config.testenv.json";
+export async function setConfig(newConfig: IConfig): Promise<void> {
+  loadedConfig = newConfig;
+}
+
+/* export async function loadTestConfig(): Promise<void> {
+  const file = ".test/config.json";
   logger.info(`Loading ${file}...`);
   loadedConfig = JSON.parse(await readFileAsync(file, "utf-8")) as IConfig;
   configFile = file;
-}
+} */
 
 /**
  * @throws

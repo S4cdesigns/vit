@@ -2,7 +2,7 @@ import yargs from "yargs";
 
 import VERSION from "./version";
 
-const argv = yargs
+const argv = yargs()
   .version(VERSION)
   .option("process-queue", {
     type: "boolean",
