@@ -2,7 +2,7 @@ import yargs from "yargs";
 
 import VERSION from "./version";
 
-const argv = yargs()
+let argv = yargs()
   .version(VERSION)
   .option("process-queue", {
     type: "boolean",
@@ -35,4 +35,4 @@ const argv = yargs()
     default: false,
   }).argv;
 
-export default argv;
+export default argv as Awaited<typeof argv>;
