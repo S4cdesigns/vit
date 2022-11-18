@@ -1,4 +1,4 @@
-import { existsSync, rmSync } from "fs";
+import { existsSync, mkdirSync, rmSync } from "fs";
 import { basename } from "path";
 
 import { getFFMpegURL, getFFProbeURL } from "../src/binaries/ffmpeg-download";
@@ -17,6 +17,7 @@ function cleanupFiles() {
   if (existsSync(TEST_FOLDER)) {
     rmSync(TEST_FOLDER, { recursive: true });
   }
+  mkdirSync(TEST_FOLDER, { recursive: true });
 
   // Do not delete binaries, so the next run will be faster
 }
