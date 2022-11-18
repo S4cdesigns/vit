@@ -27,7 +27,7 @@ server:
     - pnpm install
     - pnpm run transpile:prod
     - apt-get install -y imagemagick
-    - pnpm run coverage:silent
+    - pnpm run test
   #after_script:
   #    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f ./coverage/coverage-final.json
 
