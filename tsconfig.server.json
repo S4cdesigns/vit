@@ -15,7 +15,9 @@
     "util",
     "__fixture",
     "*.spec.ts",
-    "*.test.ts"
+    "*.test.ts",
+    "testx",
+    "vitest.config.ts"
   ],
   "compilerOptions": {
     "incremental": true,

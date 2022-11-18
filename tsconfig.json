@@ -4,11 +4,7 @@
     "module": "ES2020",
     "moduleResolution": "Node",
     "target": "ES2017",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowJs": true,
@@ -25,12 +21,6 @@
       "module": "CommonJS"
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "__fixture", "*.spec.ts", "*.test.ts", "testx", "vitest.config.ts"]
 }
