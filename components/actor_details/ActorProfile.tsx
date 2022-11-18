@@ -3,6 +3,7 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import ExternalLinkIcon from "mdi-react/ExternalLinkIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -33,6 +34,7 @@ type Props = {
 
 export default function ActorProfile(props: Props) {
   const t = useTranslations();
+  const router = useRouter();
 
   const [favorite, setFavorite] = useState(props.favorite);
   const [bookmark, setBookmark] = useState(props.bookmark);
@@ -51,6 +53,10 @@ export default function ActorProfile(props: Props) {
     setRating(props.rating);
   }, [props.rating]);
 
+  async function refreshData() {
+    await router.replace(router.asPath);
+  }
+
   async function changeRating(rating: number): Promise<void> {
     await rateActor(props.actorId, rating);
     setRating(rating);
@@ -59,10 +65,7 @@ export default function ActorProfile(props: Props) {
   function triggerPlugins() {
     setPluginLoader(true);
     runActorPlugins(props.actorId)
-      .then((result) => {
-        console.log("runActorPlugins done");
-        console.log(result);
-      })
+      .then(refreshData)
       .catch((error) => {
         console.error(error);
       })
