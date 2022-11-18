@@ -42,9 +42,6 @@ const queryParser = buildQueryParser({
   favorite: {
     default: false,
   },
-  externalLinks: {
-    default: [],
-  },
   bookmark: {
     default: false,
   },
@@ -96,10 +93,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       avatar {
         _id
         color
-      }
-      externalLinks {
-        url
-        text
       }
       resolvedCustomFields {
         field {

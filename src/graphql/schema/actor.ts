@@ -98,6 +98,7 @@ export default `
     bornOn: Long
     customFields: Object
     nationality: String
+    externalLinks: [ExternalLink]
   }
 
   extend type Mutation {
