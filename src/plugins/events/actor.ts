@@ -47,8 +47,6 @@ export async function onActorCreate(
   event: "actorCreated" | "actorCustom" = "actorCreated"
 ): Promise<{ actor: Actor; commit: () => Promise<void> }> {
   const config = getConfig();
-
-  console.log("ACTOR UPDATE");
   const createdImages = [] as Image[];
 
   const pluginResult = await runPluginsSerial(config, event, {

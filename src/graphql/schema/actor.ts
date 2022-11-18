@@ -44,7 +44,7 @@ export default `
     hero: Image
     collabs: [Actor!]!
     nationality: Nationality
-    externalLinks: [ExternalLink]
+    externalLinks: [ExternalLink!]!
   }
 
   type ActorSearchResults {
@@ -98,7 +98,7 @@ export default `
     bornOn: Long
     customFields: Object
     nationality: String
-    externalLinks: [ExternalLink]
+    externalLinks: [ExternalLink!]
   }
 
   extend type Mutation {
