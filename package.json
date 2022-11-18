@@ -69,6 +69,7 @@
     "lru-cache": "^6.0.0",
     "masonic": "^3.6.4",
     "mdi-react": "^8.3.1",
+    "moment": "latest",
     "next": "^12.3.3",
     "next-intl": "^2.4.0",
     "node-fetch": "^2.6.1",
