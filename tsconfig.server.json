@@ -16,6 +16,7 @@
   ],
   "compilerOptions": {
     "incremental": true,
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     /* Basic Options */
     "target": "es6",

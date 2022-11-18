@@ -7,6 +7,7 @@
     "config.json",
     "logs/*",
     "pages",
-    "renderer"
+    "renderer",
+    "logs/*"
   ]
 }
