@@ -7,7 +7,7 @@ import matchingLabelFixtures from "./__fixture/stringMatcher/matching_label.fixt
 
 import { StringMatcher, stripStr } from "./stringMatcher";
 
-describe("matcher", () => {
+describe("matching", () => {
   describe("String matcher", () => {
     describe("Strip string", () => {
       for (const test of stripStrFixtures) {

@@ -15,9 +15,13 @@ export namespace Izzy {
   // Represents a collection ("table")
   export class Collection<T extends { _id: string }> {
     name: string;
+    file?: string | null;
+    indexes: IIndexCreation<T>[];
 
-    constructor(name: string) {
+    constructor(name: string, file?: string | null, indexes = [] as IIndexCreation<T>[]) {
       this.name = name;
+      this.file = file;
+      this.indexes = indexes;
     }
 
     // Returns amount of items in collection
@@ -45,6 +49,12 @@ export namespace Izzy {
         obj
       );
       return res.data;
+    }
+
+    async clear(): Promise<void> {
+      logger.silly(`Clear: ${this.name}`);
+      await Axios.delete<T>(`http://localhost:${getConfig().binaries.izzyPort}/collection`);
+      await createCollection(this.name, this.file, this.indexes);
     }
 
     // Removes item

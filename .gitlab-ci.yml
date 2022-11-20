@@ -13,7 +13,6 @@ server:
   stage: build
   only:
     refs:
-      - dev
       - "merge_requests"
   services:
     - name: "docker.elastic.co/elasticsearch/elasticsearch:7.17.0"
@@ -27,7 +26,7 @@ server:
     - pnpm install
     - pnpm run transpile:prod
     - apt-get install -y imagemagick
-    - pnpm run test
+    - pnpm run coverage
   #after_script:
   #    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f ./coverage/coverage-final.json
 

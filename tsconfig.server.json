@@ -14,7 +14,7 @@
     "locale",
     "util",
     "__fixture",
-    "*.spec.ts",
+    "**/*.spec.ts",
     "*.test.ts",
     "testx",
     "vitest.config.ts"

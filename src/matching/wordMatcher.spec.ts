@@ -7,7 +7,7 @@ import { filterFixtures } from "./__fixture/wordMatcher/filter_items.fixture";
 import { matchingActorFixtures } from "./__fixture/wordMatcher/matching_actor.fixture";
 import { matchingLabelFixtures } from "./__fixture/wordMatcher/matching_label.fixture";
 
-describe("matcher", () => {
+describe("matching", () => {
   describe("Word matcher", () => {
     describe("filterMatchingItems", () => {
       filterFixtures.forEach((fixture, fixtureIndex) => {

@@ -1,6 +1,10 @@
+import { resolve } from "path";
+
+const path = resolve(__dirname, "files");
+
 export default [
   {
-    path: "test/fixtures/files",
+    path,
     exclude: [],
     extensions: [".jpg"],
     expected: {
@@ -8,7 +12,7 @@ export default [
     },
   },
   {
-    path: "test/fixtures/files",
+    path,
     exclude: [],
     extensions: [".mp4"],
     expected: {
@@ -16,7 +20,7 @@ export default [
     },
   },
   {
-    path: "test/fixtures/files",
+    path,
     exclude: [],
     extensions: [".jpg", ".mp4"],
     expected: {
@@ -24,7 +28,7 @@ export default [
     },
   },
   {
-    path: "test/fixtures/files",
+    path,
     exclude: ["some_"],
     extensions: [".jpg"],
     expected: {

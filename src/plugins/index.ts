@@ -3,7 +3,7 @@ import { inspect } from "util";
 
 import { IConfig } from "../config/schema";
 import { getMatcher, getMatcherByType } from "../matching/matcher";
-import { walk } from "../utils/fs/async";
+import { walk } from "../utils/fs/walk";
 import { createPluginLogger, formatMessage, handleError, logger } from "../utils/logger";
 import { libraryPath } from "../utils/path";
 import { Dictionary } from "../utils/types";

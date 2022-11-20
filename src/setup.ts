@@ -214,10 +214,8 @@ async function promptSetup() {
 }
 
 /**
- * Downloads ffmpeg & ffprobe & sets their downloaded paths
- * in the config
+ * Downloads ffmpeg & ffprobe into the given folder
  *
- * @param config - the config to update
  * @returns the paths where they were downloaded
  * @throws if one of the downloads failed
  */
