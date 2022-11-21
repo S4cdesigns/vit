@@ -87,7 +87,7 @@ export default function ViewHistoryPage() {
   return (
     <PageWrapper title="View history">
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <AutoLayout style={{ maxWidth: 600, width: "100%" }}>
+        <AutoLayout style={{ maxWidth: 600, width: "100%", overflow: "hidden" }}>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination
               onChange={setPage}

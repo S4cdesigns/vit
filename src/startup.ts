@@ -57,10 +57,6 @@ export async function startup() {
 
   loadEnv();
 
-  logger.debug(args);
-
-  // printMaxMemory();
-
   let config: IConfig;
 
   try {
@@ -74,6 +70,8 @@ export async function startup() {
   } catch (err) {
     return handleError(`Error during startup`, err, true);
   }
+
+  logger.debug(args);
 
   const magickBins = ["convert", "montage", "identify"];
 

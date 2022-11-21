@@ -1,4 +1,5 @@
 import moment from "moment";
+import ora from "ora";
 
 import { getConfig } from "../config";
 import { collections } from "../database";
@@ -17,7 +18,6 @@ import Movie from "./movie";
 import Scene, { getAverageRating } from "./scene";
 import Studio from "./studio";
 import SceneView from "./watch";
-import ora = require("ora");
 
 export default class Actor {
   _id: string;

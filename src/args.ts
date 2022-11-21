@@ -1,8 +1,9 @@
 import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
 import VERSION from "./version";
 
-let argv = yargs()
+const argv = yargs(hideBin(process.argv))
   .version(VERSION)
   .option("process-queue", {
     type: "boolean",
@@ -33,6 +34,7 @@ let argv = yargs()
     type: "boolean",
     description: "Reload database from files",
     default: false,
-  }).argv;
+  })
+  .parse();
 
 export default argv as Awaited<typeof argv>;

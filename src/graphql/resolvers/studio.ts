@@ -37,7 +37,9 @@ export default {
     return Studio.getMovies(studio);
   },
   async parent(studio: Studio): Promise<Studio | null> {
-    if (studio.parent) return await Studio.getById(studio.parent);
+    if (studio.parent) {
+      return await Studio.getById(studio.parent);
+    }
     return null;
   },
   async substudios(studio: Studio): Promise<Studio[]> {

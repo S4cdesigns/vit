@@ -18,6 +18,10 @@ fragment StudioCard on Studio {
   parent {
     _id
     name
+    thumbnail {
+      _id
+      color
+    }
   }
 }
 `;

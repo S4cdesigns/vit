@@ -1,3 +1,5 @@
+import ora from "ora";
+
 import { getConfig } from "../config";
 import { collections } from "../database";
 import { buildExtractor } from "../extractor";
@@ -13,8 +15,6 @@ import { iterate } from "./common";
 import Label from "./label";
 import Movie from "./movie";
 import Scene, { getAverageRating } from "./scene";
-
-import ora = require("ora");
 
 export default class Studio {
   _id: string;

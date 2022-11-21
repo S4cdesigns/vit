@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 
-import Rating from "../Rating";
 import StatCard from "./StatCard";
 
 type Props = {
@@ -8,6 +7,7 @@ type Props = {
   numWatches: number;
   averageRating: number;
   score: number;
+  percentWatched: number;
 };
 
 export default function ActorStats(props: Props) {
@@ -32,6 +32,7 @@ export default function ActorStats(props: Props) {
           {(props.averageRating / 2).toFixed(1)}
         </span>
       </StatCard>
+      <StatCard title="scenes watched">{Math.round(props.percentWatched * 100)}%</StatCard>
       <StatCard title={t("pvScore", { numItems: 2 })}>{props.score}</StatCard>
     </div>
   );

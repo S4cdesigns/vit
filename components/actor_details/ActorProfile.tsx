@@ -23,7 +23,7 @@ import styles from "./ActorProfile.module.scss";
 type Props = {
   actorId: string;
   avatarId?: string;
-  nationality?: { name: string; alias?: string; alpha2: string };
+  nationality?: { name: string; alias?: string; alpha2: string; nationality: string };
   actorName: string;
   age?: number;
   bornOn?: number;
@@ -128,10 +128,7 @@ export default function ActorProfile(props: Props) {
               bottom: 0,
             }}
           >
-            <Flag
-              name={props.nationality.alias || props.nationality.name}
-              code={props.nationality.alpha2}
-            />
+            <Flag name={props.nationality.nationality} code={props.nationality.alpha2} />
           </div>
         )}
       </div>

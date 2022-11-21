@@ -45,8 +45,7 @@ export default [
     expected: false,
   },
   {
-    str:
-      "Jill And Gina In A Sloppy Gargling Suck Party - Gina Valentina & Jill Kassidy - Swallowed",
+    str: "Jill And Gina In A Sloppy Gargling Suck Party - Gina Valentina & Jill Kassidy - Swallowed",
     actor: {
       _id: "test",
       name: "Gina Valentina",
@@ -55,8 +54,7 @@ export default [
     expected: true,
   },
   {
-    str:
-      "Jill And Gina In A Sloppy Gargling Suck Party - Gina Valentina & Jill KaSSidy - Swallowed",
+    str: "Jill And Gina In A Sloppy Gargling Suck Party - Gina Valentina & Jill KaSSidy - Swallowed",
     actor: {
       _id: "test",
       name: "Jill Kassidy",
@@ -119,8 +117,7 @@ export default [
     expected: false,
   },
   {
-    str:
-      "Jill.And.Gina.In.A.Sloppy.Gargling.Suck.Party.Gina.Valentina.&.Jill.Kassidy.Swallowed.mp4",
+    str: "Jill.And.Gina.In.A.Sloppy.Gargling.Suck.Party.Gina.Valentina.&.Jill.Kassidy.Swallowed.mp4",
     actor: {
       _id: "test",
       name: "Gina Valentina",

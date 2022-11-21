@@ -30,6 +30,7 @@ export default `
     customFields: Object
 
     # Resolvers
+    percentWatched: Float!
     score: Float!
     averageRating: Float!
     age: Int
@@ -55,6 +56,7 @@ export default `
 
   input ActorSearchQuery {
     query: String
+    letter: String
     favorite: Boolean
     bookmark: Boolean
     rating: Int

@@ -66,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       bornOn
       aliases
       averageRating
+      percentWatched
       score
       numScenes
       labels {
@@ -188,6 +189,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
       <Card>
         <div style={{ fontSize: 20 }}>{t("stats")}</div>
         <ActorStats
+          percentWatched={actor.percentWatched}
           numScenes={actor.numScenes}
           numWatches={actor.watches.length}
           averageRating={actor.averageRating}

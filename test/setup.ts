@@ -2,7 +2,13 @@ import { existsSync, mkdirSync, rmSync } from "fs";
 import { basename } from "path";
 
 import { getFFMpegURL, getFFProbeURL } from "../src/binaries/ffmpeg-download";
-import { ensureIzzyExists, izzyVersion, resetIzzy, spawnIzzy } from "../src/binaries/izzy";
+import {
+  ensureIzzyExists,
+  exitIzzy,
+  izzyVersion,
+  resetIzzy,
+  spawnIzzy,
+} from "../src/binaries/izzy";
 import { getConfig, resetLoadedConfig } from "../src/config";
 import { downloadFFLibs } from "../src/setup";
 import { loadTestConfig } from "./config";
@@ -54,6 +60,7 @@ export default async function () {
   return async () => {
     console.log("Closing test server");
     cleanupFiles();
+    await exitIzzy();
     /* vault.close(); */
   };
 }

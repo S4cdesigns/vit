@@ -34,9 +34,14 @@ import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import Spacer from "../components/Spacer";
 
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
 const queryParser = buildQueryParser({
   q: {
     default: "",
+  },
+  letter: {
+    default: "" as string,
   },
   page: {
     default: 0,
@@ -65,11 +70,12 @@ const queryParser = buildQueryParser({
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { page, q, nationality, sortBy, sortDir, favorite, bookmark, labels } =
+  const { page, q, letter, nationality, sortBy, sortDir, favorite, bookmark, labels } =
     queryParser.parse(query);
 
   const result = await fetchActors(page, {
     query: q,
+    letter: letter || undefined,
     nationality,
     sortBy,
     sortDir,
@@ -93,6 +99,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   const parsedQuery = useMemo(() => queryParser.parse(router.query), []);
 
   const [query, setQuery] = useState(parsedQuery.q);
+  const [letter, setLetter] = useState(parsedQuery.letter);
   const [favorite, setFavorite] = useState(parsedQuery.favorite);
   const [bookmark, setBookmark] = useState(parsedQuery.bookmark);
   const [rating, setRating] = useState(parsedQuery.rating);
@@ -110,6 +117,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
     props.initial,
     {
       query,
+      letter: letter || undefined,
       favorite,
       bookmark,
       sortBy,
@@ -137,6 +145,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   async function refresh(): Promise<void> {
     queryParser.store(router, {
       q: query,
+      letter,
       nationality,
       favorite,
       bookmark,
@@ -185,6 +194,22 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           value={query}
           onChange={(ev) => setQuery(ev.target.value)}
         />
+        {/*  <div style={{ marginBottom: 10 }}>
+          {LETTERS.map((letter) => (
+            <Button onClick={() => setLetter(letter)} key={letter}>
+              {letter}
+            </Button>
+          ))}
+        </div> */}
+        <select value={letter} onChange={(ev) => setLetter(ev.target.value)}>
+          <option value={""}>-</option>
+          {LETTERS.map((letter) => (
+            /*  <Button onClick={() => setLetter(letter)} key={letter}>
+            {letter}
+          </Button> */
+            <option value={letter}>{letter}</option>
+          ))}
+        </select>
         <IconButtonFilter
           value={favorite}
           onClick={() => setFavorite(!favorite)}

@@ -28,6 +28,7 @@ export interface IActorSearchDoc {
   id: string;
   addedOn: number;
   name: string;
+  letter: string;
   rawName: string;
   aliases: string[];
   labels: string[];
@@ -49,6 +50,17 @@ export interface IActorSearchDoc {
   studioNames: string[];
 }
 
+const PLACEHOLDER_LETTER = "$";
+
+function getFirstLetter(actor: Actor): string {
+  const firstChar = actor.name.at(0)?.toUpperCase() || PLACEHOLDER_LETTER;
+
+  if (/^[A-Z]$/i.test(firstChar)) {
+    return firstChar;
+  }
+  return PLACEHOLDER_LETTER;
+}
+
 export async function createActorSearchDoc(actor: Actor): Promise<IActorSearchDoc> {
   const labels = await Actor.getLabels(actor);
 
@@ -67,6 +79,7 @@ export async function createActorSearchDoc(actor: Actor): Promise<IActorSearchDo
     id: actor._id,
     addedOn: actor.addedOn,
     name: actor.name,
+    letter: getFirstLetter(actor),
     rawName: actor.name,
     aliases: normalizeAliases(actor.aliases),
     labels: labels.map((l) => l._id),
@@ -112,6 +125,7 @@ export async function buildActorIndex(): Promise<void> {
 
 export interface IActorSearchQuery {
   query: string;
+  letter?: string;
   favorite?: boolean;
   bookmark?: boolean;
   rating: number;
@@ -127,6 +141,20 @@ export interface IActorSearchQuery {
   custom?: CustomFieldFilter[];
 
   rawQuery?: unknown;
+}
+
+function letterFilter(str: string | undefined) {
+  const letter = str?.at(0);
+  if (letter) {
+    return [
+      {
+        match: {
+          letter,
+        },
+      },
+    ];
+  }
+  return [];
 }
 
 function nationalityFilter(countryCode: string | undefined) {
@@ -172,6 +200,7 @@ export async function searchActors(
           ...arrayFilter(options.studios, "studios", "OR"),
 
           ...nationalityFilter(options.nationality),
+          ...letterFilter(options.letter),
 
           ...buildCustomFilter(options.custom),
 

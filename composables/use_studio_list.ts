@@ -6,8 +6,10 @@ import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { graphqlQuery } from "../util/gql";
 
-export function useStudioList(initial: IPaginationResult<IStudio>, query: any) {
-  const [studios, setStudios] = useState<IStudio[]>(initial?.items || []);
+type StudioListItem = Omit<IStudio, "substudios">;
+
+export function useStudioList(initial: IPaginationResult<StudioListItem>, query: any) {
+  const [studios, setStudios] = useState<StudioListItem[]>(initial?.items || []);
   const [loading, setLoader] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [numItems, setNumItems] = useState(initial?.numItems ?? -1);
@@ -32,7 +34,7 @@ export function useStudioList(initial: IPaginationResult<IStudio>, query: any) {
     setLoader(false);
   }
 
-  function editStudio(studioId: string, fn: (studio: IStudio) => IStudio): void {
+  function editStudio(studioId: string, fn: (studio: StudioListItem) => StudioListItem): void {
     setStudios((studios) => {
       const copy = [...studios];
       const index = copy.findIndex((studio) => studio._id === studioId);
