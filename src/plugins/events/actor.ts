@@ -143,8 +143,6 @@ export async function onActorCreate(
 
   if (pluginResult.externalLinks) {
     actor.externalLinks = pluginResult.externalLinks;
-  } else {
-    console.log(JSON.stringify(pluginResult, null, 2));
   }
 
   if (pluginResult.labels && Array.isArray(pluginResult.labels)) {
