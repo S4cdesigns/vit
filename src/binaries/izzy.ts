@@ -12,7 +12,7 @@ import { configPath } from "../utils/path";
 
 export let izzyProcess!: ChildProcess;
 
-export const izzyHost: string = "127.0.0.1";
+export const izzyHost: string = process.env.IZZY_HOST || "localhost";
 
 export const izzyPath =
   process.env.IZZY_PATH || configPath(type() === "Windows_NT" ? "izzy.exe" : "izzy");
