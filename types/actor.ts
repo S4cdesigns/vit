@@ -34,6 +34,7 @@ export interface IActor {
     nationality: string;
     alias?: string;
   };
+  percentWatched: number;
   numScenes: number;
   watches: number[];
   averageRating: number;

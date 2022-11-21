@@ -8,6 +8,11 @@ import Scene from "../../types/scene";
 import { createObjectSet } from "../../utils/misc";
 
 export default {
+  async percentWatched(actor: Actor): Promise<number> {
+    const uniqueViews = await Actor.countUniqueViews(actor);
+    const numScenes = (await Scene.getByActor(actor._id)).length;
+    return uniqueViews / numScenes;
+  },
   async score(actor: Actor): Promise<number> {
     const avgRating = await Actor.getAverageRating(actor);
     const numViews = await Actor.countUniqueViews(actor);
