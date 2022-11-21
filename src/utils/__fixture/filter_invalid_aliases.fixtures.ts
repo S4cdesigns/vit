@@ -1,14 +1,14 @@
 export const fixtures = [
   {
     aliases: ["Valid"],
-    expected: ["Valid"]
+    expected: ["Valid"],
   },
   {
     aliases: ["  "],
-    expected: []
+    expected: [],
   },
   {
     aliases: [" "],
-    expected: []
-  }
+    expected: [],
+  },
 ];

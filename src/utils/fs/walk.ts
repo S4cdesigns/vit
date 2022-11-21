@@ -1,4 +1,5 @@
 import { basename, join, resolve } from "path";
+
 import { handleError, logger } from "../logger";
 import { getExtension } from "../string";
 import { readdirAsync, statAsync } from "./async";

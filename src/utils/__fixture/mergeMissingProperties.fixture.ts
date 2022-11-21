@@ -84,8 +84,7 @@ export default [
     noChange: true,
   },
   {
-    target: {
-    },
+    target: {},
     defaults: [
       {
         a: ["a", "b"],
