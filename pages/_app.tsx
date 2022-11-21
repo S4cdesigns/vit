@@ -84,7 +84,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         <ThemeContext.Provider value={{ theme, toggle: toggleTheme }}>
           <SafeModeContext.Provider value={{ enabled: safeMode, toggle: toggleSafeMode }}>
             <Layout>
-              <Component {...pageProps} />
+              <Component key={router.asPath} {...pageProps} />
             </Layout>
           </SafeModeContext.Provider>
         </ThemeContext.Provider>

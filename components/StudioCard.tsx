@@ -13,7 +13,7 @@ import Paper from "./Paper";
 import ResponsiveImage from "./ResponsiveImage";
 
 type Props = {
-  studio: IStudio;
+  studio: Omit<IStudio, "substudios">;
   onFav: (value: boolean) => void;
   onBookmark: (value: Date | null) => void;
 };
