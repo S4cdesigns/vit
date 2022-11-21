@@ -83,6 +83,11 @@ export default `
     getActorsWithoutLabels(num: Int): [Actor!]!
   }
 
+  input ExternalLinkUpdateOpts {
+    url: String
+    text: String
+  }
+
   input ActorUpdateOpts {
     name: String
     description: String
@@ -98,7 +103,7 @@ export default `
     bornOn: Long
     customFields: Object
     nationality: String
-    externalLinks: [ExternalLink!]
+    externalLinks: [ExternalLinkUpdateOpts!]
   }
 
   extend type Mutation {

@@ -204,7 +204,6 @@ export default {
 
   async getActorById(_: unknown, { id }: { id: string }): Promise<Actor | null> {
     const actor = await Actor.getById(id);
-    console.log("get actor by id", actor);
     return actor;
   },
 

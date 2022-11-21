@@ -5,9 +5,10 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Button from "../../components/Button";
+import { SafeModeContext } from "../../pages/_app";
 import {
   bookmarkActor,
   favoriteActor,
@@ -35,6 +36,7 @@ type Props = {
 export default function ActorProfile(props: Props) {
   const t = useTranslations();
   const router = useRouter();
+  const { enabled: safeMode } = useContext(SafeModeContext);
 
   const [favorite, setFavorite] = useState(props.favorite);
   const [bookmark, setBookmark] = useState(props.bookmark);
@@ -96,7 +98,12 @@ export default function ActorProfile(props: Props) {
     >
       <div style={{ position: "relative" }}>
         {props.avatarId ? (
-          <img className={styles.avatar} width="140" src={thumbnailUrl(props.avatarId)} />
+          <img
+            className={styles.avatar}
+            width="140"
+            src={thumbnailUrl(props.avatarId)}
+            style={{ filter: safeMode ? "blur(20px)" : undefined }}
+          />
         ) : (
           <div className={styles.avatar} style={{ width: 140, height: 140, aspectRatio: "1" }}>
             <span

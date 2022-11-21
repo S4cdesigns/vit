@@ -1,15 +1,14 @@
+import DeleteIcon from "mdi-react/DeleteIcon";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import EditIcon from "mdi-react/PencilIcon";
-import DeleteIcon from "mdi-react/DeleteIcon";
-
 import ActorProfile from "../../components/actor_details/ActorProfile";
 import ActorStats from "../../components/actor_details/ActorStats";
 import HeroImage from "../../components/actor_details/HeroImage";
 import SceneList from "../../components/actor_details/SceneList";
+import ActorEditor from "../../components/ActorEditor";
 import AutoLayout from "../../components/AutoLayout";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
@@ -19,11 +18,11 @@ import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import PageWrapper from "../../components/PageWrapper";
+import Spacer from "../../components/Spacer";
 import { actorCardFragment } from "../../fragments/actor";
 import { IActor } from "../../types/actor";
 import { graphqlQuery } from "../../util/gql";
 import { buildQueryParser } from "../../util/query_parser";
-import Spacer from "../../components/Spacer";
 
 const queryParser = buildQueryParser({
   q: {
@@ -142,7 +141,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
       <Card>
         <AutoLayout gap={10} layout="h">
           <Spacer />
-          <EditIcon />
+          <ActorEditor onCreate={async () => await router.replace(router.asPath)} actor={actor} />
           <DeleteIcon />
         </AutoLayout>
       </Card>

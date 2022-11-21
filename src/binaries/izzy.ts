@@ -12,6 +12,8 @@ import { configPath } from "../utils/path";
 
 export let izzyProcess!: ChildProcess;
 
+export const izzyHost: string = "127.0.0.1";
+
 export const izzyPath =
   process.env.IZZY_PATH || configPath(type() === "Windows_NT" ? "izzy.exe" : "izzy");
 
@@ -23,7 +25,7 @@ export async function deleteIzzy(): Promise<void> {
 export async function resetIzzy(): Promise<void> {
   try {
     logger.verbose("Resetting izzy");
-    await Axios.delete(`http://localhost:${getConfig().binaries.izzyPort}/collection`);
+    await Axios.delete(`http://${izzyHost}:${getConfig().binaries.izzyPort}/collection`);
   } catch (error) {
     handleError(`Error while resetting izzy`, error);
     throw error;
@@ -34,7 +36,7 @@ export const minIzzyVersion = "0.3.0";
 
 export function exitIzzy() {
   logger.verbose("Closing izzy");
-  return Axios.post(`http://localhost:${getConfig().binaries.izzyPort}/exit`);
+  return Axios.post(`http://${izzyHost}:${getConfig().binaries.izzyPort}/exit`);
 }
 
 export async function izzyHasMinVersion(): Promise<boolean> {
@@ -48,7 +50,7 @@ export async function izzyHasMinVersion(): Promise<boolean> {
 export async function izzyVersion(): Promise<string> {
   logger.debug("Getting izzy version");
   const res = await Axios.get<{ version: string }>(
-    `http://localhost:${getConfig().binaries.izzyPort}/`
+    `http://${izzyHost}:${getConfig().binaries.izzyPort}/`
   );
   return res.data.version;
 }

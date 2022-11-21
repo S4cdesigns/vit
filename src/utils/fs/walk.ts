@@ -4,7 +4,7 @@ import { getExtension } from "../string";
 import { readdirAsync, statAsync } from "./async";
 
 const pathIsIncluded = (include: string[], path: string) => {
-  if (!include.length) {
+  if (!include || !include.length) {
     return true;
   }
   return include.some((regStr) => new RegExp(regStr).test(path));
