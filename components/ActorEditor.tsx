@@ -10,7 +10,9 @@ import CreatableSelect from "react-select/creatable";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";
+import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import Spacer from "./Spacer";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
@@ -166,7 +168,7 @@ export default function ActorEditor({ onCreate, actor }: Props) {
           <Subheading>External Links</Subheading>
           <Button onClick={addExternalLink}>Add link</Button>
           {externalLinks.map((link, idx) => (
-            <div>
+            <AutoLayout gap={10} layout="v">
               <div>
                 <input
                   style={{ width: "100%" }}
@@ -189,7 +191,8 @@ export default function ActorEditor({ onCreate, actor }: Props) {
                   style={{ width: "10%", verticalAlign: "middle" }}
                 />
               </div>
-            </div>
+              <Spacer />
+            </AutoLayout>
           ))}
         </div>
       </Window>
