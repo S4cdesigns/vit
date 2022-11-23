@@ -142,7 +142,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
       <Card>
         <AutoLayout gap={10} layout="h">
           <Spacer />
-          <ActorEditor onCreate={async () => await router.replace(router.asPath)} actor={actor} />
+          <ActorEditor onEdit={async () => await router.replace(router.asPath)} actor={actor} />
           <DeleteIcon />
         </AutoLayout>
       </Card>

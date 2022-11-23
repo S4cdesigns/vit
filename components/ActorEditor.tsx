@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import Color from "color";
+import AddIcon from "mdi-react/AddIcon";
 import DeleteIcon from "mdi-react/DeleteIcon";
 import EditIcon from "mdi-react/PencilIcon";
 import { useTranslations } from "next-intl";
@@ -62,11 +63,11 @@ async function editActor(
 }
 
 type Props = {
-  onCreate: () => void;
+  onEdit: () => void;
   actor: IActor;
 };
 
-export default function ActorEditor({ onCreate, actor }: Props) {
+export default function ActorEditor({ onEdit, actor }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
   const [name, setName] = useState(actor.name);
@@ -108,7 +109,7 @@ export default function ActorEditor({ onCreate, actor }: Props) {
 
   return (
     <>
-      <EditIcon onClick={open} />
+      <EditIcon onClick={open} className="hover" />
       <Window
         onClose={close}
         isOpen={isOpen}
@@ -126,7 +127,7 @@ export default function ActorEditor({ onCreate, actor }: Props) {
                     aliasInput.map((alias) => alias.value),
                     externalLinks
                   );
-                  onCreate();
+                  onEdit();
                   close();
                   // setName("");
                   setAliasInput([]);
@@ -136,7 +137,7 @@ export default function ActorEditor({ onCreate, actor }: Props) {
               }}
               style={{ color: "white", background: "#3142da" }}
             >
-              Create
+              Edit
             </Button>
             <Button onClick={close}>Close</Button>
           </>
@@ -165,8 +166,12 @@ export default function ActorEditor({ onCreate, actor }: Props) {
           />
         </div>
         <div>
-          <Subheading>External Links</Subheading>
-          <Button onClick={addExternalLink}>Add link</Button>
+          <AutoLayout gap={10} layout="h">
+            <Subheading>External Links</Subheading>
+            <div style={{ marginLeft: "auto" }}>
+              <AddIcon onClick={addExternalLink} className="hover" />
+            </div>
+          </AutoLayout>
           {externalLinks.map((link, idx) => (
             <AutoLayout gap={10} layout="v">
               <div>
@@ -187,6 +192,7 @@ export default function ActorEditor({ onCreate, actor }: Props) {
                   type="text"
                 />
                 <DeleteIcon
+                  className="hover"
                   onClick={() => removeLink(idx)}
                   style={{ width: "10%", verticalAlign: "middle" }}
                 />
