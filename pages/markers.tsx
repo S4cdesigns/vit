@@ -108,7 +108,6 @@ export default function MarkerListPage(props: {
       sortBy,
       sortDir,
       include: selectedLabels,
-      // TODO: actors
     }
   );
 

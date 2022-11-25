@@ -32,6 +32,7 @@ import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
+import { fetchMarkers } from "../../composables/use_marker_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { scenePageFragment } from "../../fragments/scene";
 import { IScene } from "../../types/scene";
@@ -168,6 +169,28 @@ export default function ScenePage({
     });
   }, [scene]);
 
+  async function reloadMarkers(): Promise<void> {
+    const q = `
+  query ($id: String!) {
+    getSceneById(id: $id) {
+      markers {
+        _id
+        name
+        time
+      }
+    }
+  }
+  `;
+
+    const { getSceneById } = await graphqlQuery<{
+      getSceneById: IScene;
+    }>(q, {
+      id: scene._id,
+    });
+
+    setMarkers(getSceneById.markers);
+  }
+
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
     await favoriteScene(scene._id, newValue);
@@ -264,11 +287,10 @@ export default function ScenePage({
                       <BookmarkBorderIcon onClick={toggleBookmark} className="hover" size={24} />
                     )}
                   </>
-                  {/* TODO: */}
                   <MarkerCreator
                     sceneId={scene._id}
                     actorIds={scene.actors.map((actor) => actor._id)}
-                    onCreate={() => alert("create")}
+                    onCreate={reloadMarkers}
                   />
                   <Spacer />
                   {!!scene.studio && (
