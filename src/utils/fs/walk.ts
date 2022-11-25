@@ -1,5 +1,5 @@
 import { Dirent } from "fs";
-import { basename, join, resolve } from "path";
+import { basename, resolve } from "path";
 
 import { handleError, logger } from "../logger";
 import { getExtension } from "../string";
