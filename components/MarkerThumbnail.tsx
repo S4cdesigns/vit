@@ -1,4 +1,3 @@
-import EditIcon from "mdi-react/PencilIcon";
 import { useContext } from "react";
 
 import { SafeModeContext, ThemeContext } from "../pages/_app";
@@ -11,9 +10,10 @@ import ResponsiveImage from "./ResponsiveImage";
 type Props = {
   marker: { _id: string; thumbnail?: { _id: string }; time: number; name: string };
   onClick: () => void;
+  onEdit: () => void;
 };
 
-export default function MarkerThumbnailCard({ marker, onClick }: Props) {
+export default function MarkerThumbnailCard({ marker, onEdit, onClick }: Props) {
   const { enabled: safeMode } = useContext(SafeModeContext);
   const { theme } = useContext(ThemeContext);
 
@@ -48,11 +48,7 @@ export default function MarkerThumbnailCard({ marker, onClick }: Props) {
             return false;
           }}
         >
-          <MarkerEditor
-            markerId={marker._id}
-            onCreate={() => alert("edit marker")}
-            onOpen={() => alert("open")}
-          />
+          <MarkerEditor markerId={marker._id} onEdit={onEdit} />
         </div>
       </AutoLayout>
     </Paper>

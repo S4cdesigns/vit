@@ -1,17 +1,12 @@
-import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
-import WatchedIcon from "mdi-react/EyeIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import Link from "next/link";
 import { useContext } from "react";
 
 import { SafeModeContext, ThemeContext } from "../pages/_app";
 import { IMarker } from "../types/marker";
 import { bookmarkMarker, favoriteMarker, rateMarker } from "../util/mutations/marker";
-// import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";
-import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
 import AutoLayout from "./AutoLayout";
@@ -19,7 +14,6 @@ import LabelGroup from "./LabelGroup";
 import Paper from "./Paper";
 import Rating from "./Rating";
 import ResponsiveImage from "./ResponsiveImage";
-import Spacer from "./Spacer";
 
 type Props = {
   marker: Pick<

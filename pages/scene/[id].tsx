@@ -179,6 +179,10 @@ export default function ScenePage({
         _id
         name
         time
+        thumbnail {
+          _id,
+          name
+        }
       }
     }
   }
@@ -553,6 +557,7 @@ export default function ScenePage({
                       .map((marker) => (
                         <Paper key={marker._id}>
                           <MarkerThumbnailCard
+                            onEdit={reloadMarkers}
                             marker={marker}
                             onClick={() => {
                               const videoEl = document.getElementById(

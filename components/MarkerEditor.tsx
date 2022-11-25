@@ -1,17 +1,15 @@
 import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
+import AddMarkerIcon from "mdi-react/EditIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import AddMarkerIcon from "mdi-react/PlaylistAddIcon";
-import { useTranslations } from "next-intl";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 
 import useLabelList from "../composables/use_label_list";
 import { useWindow } from "../composables/use_window";
 import { markerPageFragment } from "../fragments/marker";
-import { VideoContext } from "../pages/_app";
 import ILabel from "../types/label";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
@@ -22,50 +20,37 @@ import Rating from "./Rating";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function createMarker(
+async function editMarker(
+  id: string,
   name: string,
-  scene: string,
-  time: number,
   rating: number,
   favorite: boolean,
   bookmark: boolean,
-  labels: string[],
-  actors?: string[]
+  labels: string[]
 ) {
   const query = `
-  mutation ($name: String!, $scene: String!, $time: Int!, $rating: Int, $favorite: Boolean, $bookmark: Long, $labels: [String!]!, $actors: [String!]!) {
-    createMarker(name: $name, sceke: $scene, time: $time, rating: $rating, favorite: $favorite, bookmark: $bookmark, labels: $labels, actors: $actors) {
+  mutation ($ids: [String!]!, $opts: MarkerUpdateOpts!) {
+    updateMarkers(ids: $ids, opts: $opts) {
       _id
     }
   }
-        `;
+ `;
 
   await graphqlQuery(query, {
-    name,
-    labels,
-    scene,
-    time,
-    rating,
-    favorite,
-    bookmark,
-    actors,
+    ids: [id],
+    opts: { name, rating, favorite, bookmark, labels },
   });
 }
 
 type Props = {
-  onCreate: () => void;
-  onOpen: () => void;
+  onEdit: () => void;
   markerId: string;
 };
 
-export default function MarkerEditor({ onCreate, onOpen, markerId }: Props) {
-  const t = useTranslations();
-  const { isOpen, close, open } = useWindow();
-
-  console.log("render editor");
+export default function MarkerEditor({ onEdit, markerId }: Props) {
   const [marker, setMarker] = useState<IMarker>();
-
   const [loading, setLoader] = useState(false);
+  const { isOpen, close, open } = useWindow();
   const { labels } = useLabelList();
 
   useEffect(() => {
@@ -89,25 +74,74 @@ export default function MarkerEditor({ onCreate, onOpen, markerId }: Props) {
         id: markerId,
       });
 
-      console.log("set marker", getMarkerById);
       setMarker(getMarkerById);
     };
 
-    loadMarker().catch((error) => {
-      console.error(error);
-    });
+    setLoader(true);
+    loadMarker()
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => setLoader(false));
   }, [markerId, isOpen]);
 
   const doOpen = () => {
     open();
   };
-  console.log("render marker", marker);
 
-  const setRating = (value) => {};
-  const setFav = (value) => {};
-  const setBookmark = (value) => {};
-  const setName = (value) => {};
-  const setSelectedLabels = (value) => {};
+  const setRating = (value: number) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      rating: value,
+    });
+  };
+
+  const setFav = (value: boolean) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      favorite: value,
+    });
+  };
+
+  const setBookmark = (value: boolean) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      bookmark: value,
+    });
+  };
+  const setName = (event: React.FormEvent<HTMLInputElement>) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      name: event.currentTarget.value,
+    });
+  };
+
+  const setSelectedLabels = (value: ILabel[]) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      labels: value,
+    });
+  };
 
   return (
     <>
@@ -115,36 +149,34 @@ export default function MarkerEditor({ onCreate, onOpen, markerId }: Props) {
       <Window
         onClose={close}
         isOpen={isOpen}
-        title={`Add marker at ${formatDuration(marker?.time || 0)}`}
+        title={`Edit marker at ${formatDuration(marker?.time || 0)}`}
         actions={
           <>
             <Button
               loading={loading}
               onClick={async () => {
                 try {
+                  if (!marker) {
+                    return;
+                  }
+
                   setLoader(true);
-                  /*
-                  await createMarker(
-                    name,
-                    sceneId,
-                    Math.floor(currentTime),
-                    rating,
-                    fav,
-                    bookmark,
-                    selectedLabels.map(({ _id }) => _id),
-                    actorIds
+                  await editMarker(
+                    marker?._id,
+                    marker?.name,
+                    marker?.rating,
+                    marker?.favorite,
+                    marker?.bookmark,
+                    marker?.labels.map((label) => label._id)
                   );
-                  */
-                  onCreate();
+                  onEdit();
                   close();
-                  // setName("");
-                  // setSelectedLabels([]);
                 } catch (error) {}
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
-              Create
+              Edit
             </Button>
             <Button onClick={close}>Close</Button>
           </>

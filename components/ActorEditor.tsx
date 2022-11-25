@@ -129,7 +129,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
                   );
                   onEdit();
                   close();
-                  // setName("");
+                  setName("");
                   setAliasInput([]);
                   // setSelectedLabels([]);
                 } catch (error) {}
