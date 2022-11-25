@@ -19,6 +19,8 @@ import { thumbnailUrl } from "../../util/thumbnail";
 import Flag from "../Flag";
 import Rating from "../Rating";
 import styles from "./ActorProfile.module.scss";
+import Text from "../Text";
+import AutoLayout from "../AutoLayout";
 
 type Props = {
   actorId: string;
@@ -169,15 +171,14 @@ export default function ActorProfile(props: Props) {
       </div>
       <div>
         {props.links && (
-          <div>
+          <AutoLayout gap={5}>
             {props.links.map((link) => (
-              <div>
-                <a href={link.url} target="_blank" rel="noopener,noreferrer">
-                  <ExternalLinkIcon size={13} /> {link.text}
-                </a>
-              </div>
+              <a key={link.url} href={link.url} target="_blank" rel="noopener,noreferrer">
+                <ExternalLinkIcon size={13} />{" "}
+                <Text style={{ display: "inline" }}>{link.text}</Text>
+              </a>
             ))}
-          </div>
+          </AutoLayout>
         )}
       </div>
       <Rating value={rating} onChange={changeRating} />
