@@ -15,11 +15,11 @@ import {
   runActorPlugins,
 } from "../../util/mutations/actor";
 import { thumbnailUrl } from "../../util/thumbnail";
+import AutoLayout from "../AutoLayout";
 import Flag from "../Flag";
 import Rating from "../Rating";
-import styles from "./ActorProfile.module.scss";
 import Text from "../Text";
-import AutoLayout from "../AutoLayout";
+import styles from "./ActorProfile.module.scss";
 import ExternalLink from "./ExternalLink";
 
 type Props = {

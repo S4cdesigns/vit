@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import Color from "color";
-import AddIcon from "mdi-react/AddIcon";
-import DeleteIcon from "mdi-react/DeleteIcon";
 import EditIcon from "mdi-react/PencilIcon";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -11,36 +8,10 @@ import CreatableSelect from "react-select/creatable";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";
-import AutoLayout from "./AutoLayout";
 import Button from "./Button";
-import Spacer from "./Spacer";
+import ExternalLinksEditor from "./ExternalLinksEditor";
 import Subheading from "./Subheading";
 import Window from "./Window";
-
-// TODO: generic styles for selects?
-const selectStyles = {
-  container: (provided: any) => ({
-    ...provided,
-    maxWidth: 400,
-  }),
-  option: (provided: any) => ({
-    ...provided,
-    color: "black",
-  }),
-  multiValue: (styles: any, { data }: any) => {
-    return {
-      ...styles,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      backgroundColor: data.color || "black",
-      borderRadius: 4,
-    };
-  },
-  multiValueLabel: (styles: any, { data }: any) => ({
-    ...styles,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    color: new Color(data.color || "#000000").isLight() ? "black" : "white",
-  }),
-};
 
 async function editActor(
   id: string,
@@ -165,42 +136,13 @@ export default function ActorEditor({ onEdit, actor }: Props) {
             }}
           />
         </div>
-        <div>
-          <AutoLayout gap={10} layout="h">
-            <Subheading>External Links</Subheading>
-            <div style={{ marginLeft: "auto" }}>
-              <AddIcon onClick={addExternalLink} className="hover" />
-            </div>
-          </AutoLayout>
-          {externalLinks.map((link, idx) => (
-            <AutoLayout gap={10} layout="v">
-              <div>
-                <input
-                  style={{ width: "100%" }}
-                  value={link.url}
-                  onChange={(ev) => updateLinkUrl(idx, ev.target.value)}
-                  placeholder="Enter the URL"
-                  type="url"
-                />
-              </div>
-              <div>
-                <input
-                  style={{ width: "90%" }}
-                  value={link.text}
-                  onChange={(ev) => updateLinkText(idx, ev.target.value)}
-                  placeholder="Enter the URLs text"
-                  type="text"
-                />
-                <DeleteIcon
-                  className="hover"
-                  onClick={() => removeLink(idx)}
-                  style={{ width: "10%", verticalAlign: "middle" }}
-                />
-              </div>
-              <Spacer />
-            </AutoLayout>
-          ))}
-        </div>
+        <ExternalLinksEditor
+          externalLinks={externalLinks}
+          updateLinkText={updateLinkText}
+          updateLinkUrl={updateLinkUrl}
+          addExternalLink={addExternalLink}
+          removeLink={removeLink}
+        />
       </Window>
     </>
   );
