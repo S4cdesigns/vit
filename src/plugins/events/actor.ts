@@ -141,7 +141,7 @@ export async function onActorCreate(
     }
   }
 
-  if (pluginResult.externalLinks) {
+  if (pluginResult.externalLinks && Array.isArray(pluginResult.externalLinks)) {
     actor.externalLinks = pluginResult.externalLinks;
   }
 
