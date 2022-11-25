@@ -18,6 +18,7 @@ export function useMarkerList(initial: IPaginationResult<IMarker>, query: any) {
       setLoader(true);
       setError(null);
       const result = await fetchMarkers(page, query);
+      console.log("query", query);
       setMarkers(result.items);
       setNumItems(result.numItems);
       setNumPages(result.numPages);
@@ -96,6 +97,7 @@ export async function fetchMarkers(page = 0, query: any) {
       page,
       sortBy: "addedOn",
       sortDir: "desc",
+      ...query,
     },
   });
 
