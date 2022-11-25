@@ -36,7 +36,13 @@ export const minIzzyVersion = "0.3.0";
 
 export function exitIzzy() {
   logger.verbose("Closing izzy");
-  return Axios.post(`http://${izzyHost}:${getConfig().binaries.izzyPort}/exit`);
+
+  const config = getConfig();
+
+  // Check for test env
+  if (config) {
+    return Axios.post(`http://${izzyHost}:${getConfig().binaries.izzyPort}/exit`);
+  }
 }
 
 export async function izzyHasMinVersion(): Promise<boolean> {
