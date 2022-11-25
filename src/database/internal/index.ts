@@ -54,7 +54,7 @@ export namespace Izzy {
 
     async clear(): Promise<void> {
       logger.silly(`Clear: ${this.name}`);
-      await Axios.delete<T>(`http://localhost:${getConfig().binaries.izzyPort}/collection`);
+      await Axios.delete<T>(`http://${izzyHost}:${getConfig().binaries.izzyPort}/collection`);
       await createCollection(this.name, this.file, this.indexes);
     }
 
@@ -130,7 +130,9 @@ export namespace Izzy {
     async query(index: string, key: string | null): Promise<T[]> {
       logger.silly(`Querying index ${index} by ${key} from collection: ${this.name}`);
       const res = await Axios.get<{ items: T[] }>(
-        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/${index}/${key}`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${
+          this.name
+        }/${index}/${key}`
       );
       return res.data.items;
     }

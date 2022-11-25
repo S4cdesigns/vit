@@ -12,10 +12,10 @@ import { configPath } from "../utils/path";
 
 export let izzyProcess!: ChildProcess;
 
-export const izzyHost: string = process.env.IZZY_HOST || "localhost";
-
 export const izzyPath =
   process.env.IZZY_PATH || configPath(type() === "Windows_NT" ? "izzy.exe" : "izzy");
+
+export const izzyHost: string = process.env.IZZY_HOST || "localhost";
 
 export async function deleteIzzy(): Promise<void> {
   logger.verbose("Deleting izzy");
@@ -34,9 +34,15 @@ export async function resetIzzy(): Promise<void> {
 
 export const minIzzyVersion = "0.3.0";
 
-export function exitIzzy() {
+export async function exitIzzy(): Promise<void> {
   logger.verbose("Closing izzy");
-  return Axios.post(`http://${izzyHost}:${getConfig().binaries.izzyPort}/exit`);
+
+  const config = getConfig();
+
+  // Check for test env
+  if (config) {
+    await Axios.post(`http://${izzyHost}:${getConfig().binaries.izzyPort}/exit`);
+  }
 }
 
 export async function izzyHasMinVersion(): Promise<boolean> {
