@@ -1,11 +1,12 @@
 import MenuIcon from "mdi-react/HamburgerMenuIcon";
 import PatreonIcon from "mdi-react/PatreonIcon";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import Spacer from "../Spacer";
-import Link from "next/link";
+import ChromeCastIcon from "./ChromeCastIcon";
 
 type Props = {
   setSidebar: (x: boolean) => void;
@@ -34,6 +35,7 @@ export default function Topbar({ setSidebar }: Props) {
         >
           <PatreonIcon size={20} />
         </a>
+        <ChromeCastIcon />
         <Spacer />
         <input
           type="text"
