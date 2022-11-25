@@ -1,27 +1,36 @@
-import { basename, join, resolve } from "path";
+import { Dirent } from "fs";
+import { basename, resolve } from "path";
 
 import { handleError, logger } from "../logger";
 import { getExtension } from "../string";
 import { readdirAsync, statAsync } from "./async";
 
-const pathIsIncluded = (include: string[], path: string) => {
-  if (!include || !include.length) {
+function pathIsIncluded(path: string, include: string[] = []): boolean {
+  if (!include.length) {
     return true;
   }
   return include.some((regStr) => new RegExp(regStr).test(path));
-};
+}
 
-const pathIsExcluded = (exclude: string[], path: string) =>
-  exclude.some((regStr) => new RegExp(regStr).test(path));
+function pathIsExcluded(path: string, exclude: string[] = []): boolean {
+  if (!exclude.length) {
+    return false;
+  }
+  return exclude.some((regStr) => new RegExp(regStr).test(path));
+}
 
-const validExtension = (exts: string[], path: string) =>
-  exts.includes(getExtension(path).toLowerCase());
+function extensionIsIncluded(path: string, exts: string[] = []): boolean {
+  if (!exts) {
+    return true;
+  }
+  return exts.map((x) => x.toLowerCase()).includes(getExtension(path).toLowerCase());
+}
 
 export interface IWalkOptions {
   dir: string;
-  extensions: string[];
-  include: string[];
-  exclude: string[];
+  extensions?: string[];
+  include?: string[];
+  exclude?: string[];
   /**
    * Return a truthy value to stop the walk. The return value will be the
    * path passed to the callback.
@@ -49,10 +58,10 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
     }
 
     logger.debug(`Walking folder ${top}`);
-    let filesInDir: string[] = [];
+    let filesInDir: Dirent[] = [];
 
     try {
-      filesInDir = await readdirAsync(top);
+      filesInDir = await readdirAsync(top, { withFileTypes: true });
     } catch (err) {
       logger.error(`Error reading contents of directory "${top}", skipping`);
       logger.error(err);
@@ -60,11 +69,12 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
     }
 
     for (const file of filesInDir) {
-      const path = join(top, file);
+      const filename = file.name;
+      const path = resolve(top, filename);
 
       if (
-        !pathIsIncluded(options.include, path) ||
-        pathIsExcluded(options.exclude, path) ||
+        !pathIsIncluded(path, options.include) ||
+        pathIsExcluded(path, options.exclude) ||
         basename(path).startsWith(".")
       ) {
         logger.silly(`"${path}" is excluded, skipping`);
@@ -76,12 +86,11 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
         if (stat.isDirectory()) {
           logger.debug(`Pushed folder ${path}`);
           folderStack.push(path);
-        } else if (validExtension(options.extensions, file)) {
+        } else if (extensionIsIncluded(filename, options.extensions)) {
           logger.silly(`Found file ${file}`);
-          const resolvedPath = resolve(path);
-          const res = await options.cb(resolvedPath);
+          const res = await options.cb(path);
           if (res) {
-            return resolvedPath;
+            return path;
           }
         }
       } catch (err) {
