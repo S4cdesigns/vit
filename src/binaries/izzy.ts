@@ -32,14 +32,14 @@ export async function resetIzzy(): Promise<void> {
 
 export const minIzzyVersion = "0.3.0";
 
-export function exitIzzy() {
+export async function exitIzzy(): Promise<void> {
   logger.verbose("Closing izzy");
 
   const config = getConfig();
 
   // Check for test env
   if (config) {
-    return Axios.post(`http://localhost:${getConfig().binaries.izzyPort}/exit`);
+    await Axios.post(`http://localhost:${getConfig().binaries.izzyPort}/exit`);
   }
 }
 
