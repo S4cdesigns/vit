@@ -44,8 +44,15 @@ import {
   unwatchScene,
   watchScene,
 } from "../../util/mutations/scene";
+import { buildQueryParser } from "../../util/query_parser";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+
+const queryParser = buildQueryParser({
+  t: {
+    default: null,
+  },
+});
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -67,6 +74,8 @@ async function runFFprobe(sceneId: string) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { t } = queryParser.parse(ctx.query);
+
   const q = `
   query ($id: String!) {
     getSceneById(id: $id) {
@@ -85,11 +94,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       scene: getSceneById,
+      startAtPosition: t,
     },
   };
 };
 
-export default function ScenePage({ scene }: { scene: IScene }) {
+export default function ScenePage({
+  scene,
+  startAtPosition,
+}: {
+  scene: IScene;
+  startAtPosition?: number;
+}) {
   const router = useRouter();
   const t = useTranslations();
 
@@ -202,6 +218,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
     <PageWrapper padless title={scene.name}>
       <AutoLayout>
         <VideoPlayer
+          startAtPosition={startAtPosition}
           duration={scene.meta.duration}
           markers={markers.map((marker) => ({
             ...marker,

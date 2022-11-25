@@ -16,7 +16,6 @@ import {
   runActorPlugins,
 } from "../../util/mutations/actor";
 import { thumbnailUrl } from "../../util/thumbnail";
-import ActorImagesEditor from "../ActorImagesEditor";
 import Flag from "../Flag";
 import Rating from "../Rating";
 import styles from "./ActorProfile.module.scss";
@@ -185,7 +184,6 @@ export default function ActorProfile(props: Props) {
       <Button loading={pluginLoader} onClick={triggerPlugins}>
         Run Plugins
       </Button>
-      <ActorImagesEditor onEdit={() => alert("edit")} actorId={props.actorId} />
     </div>
   );
 }

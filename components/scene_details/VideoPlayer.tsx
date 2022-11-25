@@ -16,9 +16,10 @@ type Props = {
   poster?: string;
   markers: { name: string; time: number; thumbnail: string }[];
   duration: number;
+  startAtPosition?: number;
 };
 
-export default function VideoPlayer({ src, poster, markers, duration }: Props) {
+export default function VideoPlayer({ src, poster, markers, duration, startAtPosition }: Props) {
   const [loading, setLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
   const [hover, setHover] = useState(false);
@@ -40,10 +41,23 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
     }
   }
 
+  useEffect(() => {
+    if (videoEl.current && startAtPosition) {
+      videoEl.current.currentTime = startAtPosition;
+      videoEl.current.play().catch((error) => {
+        console.error(error);
+      });
+    }
+  }, []);
+
   // Loading chunks
   useEffect(() => {
     const handler = () => {
-      const vid = videoEl.current!;
+      if (!videoEl.current) {
+        return;
+      }
+
+      const vid = videoEl.current;
       const total = vid.duration;
       setBufferRanges(
         [...new Array(vid.buffered.length)].map((_, i) => ({

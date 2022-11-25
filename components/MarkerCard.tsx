@@ -25,6 +25,7 @@ type Props = {
   marker: Pick<
     IMarker,
     | "_id"
+    | "time"
     | "name"
     | "scene"
     | "favorite"
@@ -64,7 +65,7 @@ export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props)
     <Paper style={{ position: "relative" }}>
       <ResponsiveImage
         aspectRatio="4 / 3"
-        href={`/scene/${marker.scene._id}`}
+        href={`/scene/${marker.scene._id}?t=${marker.time}`}
         src={marker.thumbnail?._id && thumbnailUrl(marker.thumbnail._id)}
         imgStyle={{
           transition: "filter 0.15s ease-in-out",
@@ -115,6 +116,11 @@ export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props)
 
         {!!marker.actors.length && <ActorList actors={marker.actors} />}
 
+        {marker.scene && (
+          <div style={{ fontSize: 12, opacity: 0.66 }}>
+            From scene: <a href={`/scene/${marker.scene._id}`}>{marker.scene.name}</a>
+          </div>
+        )}
         <div>{<Rating onChange={changeRating} value={marker.rating || 0} />}</div>
 
         <div>{<LabelGroup labels={marker.labels} />}</div>
