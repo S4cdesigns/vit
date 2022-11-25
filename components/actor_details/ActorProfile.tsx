@@ -1,6 +1,5 @@
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
-import ExternalLinkIcon from "mdi-react/ExternalLinkIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useRouter } from "next/router";
@@ -19,6 +18,9 @@ import { thumbnailUrl } from "../../util/thumbnail";
 import Flag from "../Flag";
 import Rating from "../Rating";
 import styles from "./ActorProfile.module.scss";
+import Text from "../Text";
+import AutoLayout from "../AutoLayout";
+import ExternalLink from "./ExternalLink";
 
 type Props = {
   actorId: string;
@@ -169,15 +171,13 @@ export default function ActorProfile(props: Props) {
       </div>
       <div>
         {props.links && (
-          <div>
-            {props.links.map((link) => (
-              <div>
-                <a href={link.url} target="_blank" rel="noopener,noreferrer">
-                  <ExternalLinkIcon size={13} /> {link.text}
-                </a>
-              </div>
+          <AutoLayout gap={7}>
+            {props.links.map(({ url, text }) => (
+              <ExternalLink url={url} key={url}>
+                {text}
+              </ExternalLink>
             ))}
-          </div>
+          </AutoLayout>
         )}
       </div>
       <Rating value={rating} onChange={changeRating} />
