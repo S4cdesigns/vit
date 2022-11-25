@@ -55,9 +55,10 @@ type Props = {
   onCreate: () => void;
   sceneId: string;
   actorIds: string[];
+  onOpen: () => void;
 };
 
-export default function MarkerCreator({ onCreate, sceneId, actorIds }: Props) {
+export default function MarkerCreator({ onCreate, onOpen, sceneId, actorIds }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
@@ -71,9 +72,14 @@ export default function MarkerCreator({ onCreate, sceneId, actorIds }: Props) {
   const [loading, setLoader] = useState(false);
   const { labels } = useLabelList();
 
+  const doOpen = () => {
+    open();
+    onOpen();
+  };
+
   return (
     <>
-      <AddMarkerIcon className="hover" size={24} onClick={open} />
+      <AddMarkerIcon className="hover" size={24} onClick={doOpen} />
       <Window
         onClose={close}
         isOpen={isOpen}

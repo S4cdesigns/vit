@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -32,9 +32,9 @@ import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
-import { fetchMarkers } from "../../composables/use_marker_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { scenePageFragment } from "../../fragments/scene";
+import { SafeModeContext, VideoContext } from "../../pages/_app";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
 import {
@@ -124,6 +124,7 @@ export default function ScenePage({
   const gridUrl = `/api/media/scene/${scene._id}/grid`;
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
+  const { enabled: safeMode } = useContext(SafeModeContext);
 
   const {
     actors,
@@ -288,9 +289,26 @@ export default function ScenePage({
                     )}
                   </>
                   <MarkerCreator
+                    onOpen={() => {
+                      const videoEl = document.getElementById(
+                        "video-player"
+                      ) as HTMLVideoElement | null;
+                      if (videoEl) {
+                        videoEl.pause();
+                      }
+                    }}
                     sceneId={scene._id}
                     actorIds={scene.actors.map((actor) => actor._id)}
-                    onCreate={reloadMarkers}
+                    onCreate={async () => {
+                      const videoEl = document.getElementById(
+                        "video-player"
+                      ) as HTMLVideoElement | null;
+                      if (videoEl) {
+                        videoEl.play().catch(() => {});
+                      }
+
+                      await reloadMarkers();
+                    }}
                   />
                   <Spacer />
                   {!!scene.studio && (
@@ -551,7 +569,10 @@ export default function ScenePage({
                             className="hover"
                             width="100%"
                             height="100%"
-                            style={{ objectFit: "cover" }}
+                            style={{
+                              objectFit: "cover",
+                              filter: safeMode ? "blur(20px)" : undefined,
+                            }}
                             src={thumbnailUrl(marker.thumbnail?._id)}
                             alt={marker.name}
                           />
