@@ -38,6 +38,7 @@ export default `
 
   extend type Query {
     getMarkers(query: MarkerSearchQuery!, seed: String): MarkerSearchResults!
+    getMarkerById(id: String!): Marker
   }
 
   input MarkerUpdateOpts {

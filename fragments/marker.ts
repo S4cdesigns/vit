@@ -1,8 +1,19 @@
 export const markerPageFragment = `
-fragment MarkerPage on Scene {
+fragment MarkerPage on Marker {
   _id
   name
+  time
+  rating
   favorite
+  bookmark
+  labels {
+    _id
+    name
+  }
+  thumbnail {
+    _id
+    name
+  }
 }
 `;
 

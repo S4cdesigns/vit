@@ -4,6 +4,7 @@ import Actor from "../../types/actor";
 import CustomField, { CustomFieldTarget } from "../../types/custom_field";
 import Image from "../../types/image";
 import Label from "../../types/label";
+import Marker from "../../types/marker";
 import Movie from "../../types/movie";
 import Scene from "../../types/scene";
 import Studio from "../../types/studio";
@@ -217,6 +218,9 @@ export default {
 
   async getLabelById(_: unknown, { id }: { id: string }): Promise<Label | null> {
     return await Label.getById(id);
+  },
+  async getMarkerById(_: unknown, { id }: { id: string }): Promise<Marker | null> {
+    return await Marker.getById(id);
   },
   async getCustomFields(
     _: unknown,

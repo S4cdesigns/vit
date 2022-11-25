@@ -23,6 +23,7 @@ import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
 import MarkerCreator from "../../components/MarkerCreator";
+import MarkerThumbnailCard from "../../components/MarkerThumbnail";
 import MovieCard from "../../components/MovieCard";
 import PageWrapper from "../../components/PageWrapper";
 import Paper from "../../components/Paper";
@@ -551,7 +552,8 @@ export default function ScenePage({
                       .sort((a, b) => a.time - b.time)
                       .map((marker) => (
                         <Paper key={marker._id}>
-                          <img
+                          <MarkerThumbnailCard
+                            marker={marker}
                             onClick={() => {
                               const videoEl = document.getElementById(
                                 "video-player"
@@ -566,15 +568,6 @@ export default function ScenePage({
                                 });
                               }
                             }}
-                            className="hover"
-                            width="100%"
-                            height="100%"
-                            style={{
-                              objectFit: "cover",
-                              filter: safeMode ? "blur(20px)" : undefined,
-                            }}
-                            src={thumbnailUrl(marker.thumbnail?._id)}
-                            alt={marker.name}
                           />
                         </Paper>
                       ))}
