@@ -1,5 +1,6 @@
 import Axios, { AxiosError, AxiosResponse } from "axios";
 
+import { izzyHost } from "../../binaries/izzy";
 import { getConfig } from "../../config";
 import { formatMessage, logger } from "../../utils/logger";
 
@@ -28,7 +29,7 @@ export namespace Izzy {
     async count(): Promise<number> {
       logger.silly(`Getting collection count: ${this.name}`);
       const res = await Axios.get<{ count: number }>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/count`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/count`
       );
       return res.data.count;
     }
@@ -37,7 +38,7 @@ export namespace Izzy {
     async compact(): Promise<AxiosResponse<unknown>> {
       logger.silly(`Compacting collection: ${this.name}`);
       return Axios.post(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/compact/${this.name}`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/compact/${this.name}`
       );
     }
 
@@ -45,7 +46,7 @@ export namespace Izzy {
     async upsert(id: string, obj: T): Promise<T> {
       logger.silly(`Upsert ${id} in collection: ${this.name}`);
       const res = await Axios.post<T>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/${id}`,
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/${id}`,
         obj
       );
       return res.data;
@@ -53,7 +54,7 @@ export namespace Izzy {
 
     async clear(): Promise<void> {
       logger.silly(`Clear: ${this.name}`);
-      await Axios.delete<T>(`http://localhost:${getConfig().binaries.izzyPort}/collection`);
+      await Axios.delete<T>(`http://${izzyHost}:${getConfig().binaries.izzyPort}/collection`);
       await createCollection(this.name, this.file, this.indexes);
     }
 
@@ -61,7 +62,7 @@ export namespace Izzy {
     async remove(id: string): Promise<T> {
       logger.silly(`Remove ${id} in collection: ${this.name}`);
       const res = await Axios.delete<T>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/${id}`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/${id}`
       );
       return res.data;
     }
@@ -70,7 +71,7 @@ export namespace Izzy {
     async getHead(): Promise<T | null> {
       logger.silly(`Get head from collection: ${this.name}`);
       const res = await Axios.get<T | null>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/head`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/head`
       );
       return res.data;
     }
@@ -79,7 +80,7 @@ export namespace Izzy {
     async getAll(): Promise<T[]> {
       logger.silly(`Get all from collection: ${this.name}`);
       const res = await Axios.get<{ items: T[] }>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}`
       );
       return res.data.items;
     }
@@ -89,7 +90,7 @@ export namespace Izzy {
       logger.silly(`Getting ${id} from collection: ${this.name}`);
       try {
         const res = await Axios.get(
-          `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/${id}`
+          `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/${id}`
         );
         return res.data as T;
       } catch (error) {
@@ -108,7 +109,7 @@ export namespace Izzy {
     async getBulk(items: string[]): Promise<T[]> {
       logger.silly(`Getting ${items.length} items in bulk from collection: ${this.name}`);
       const { data } = await Axios.post<{ items: T[] }>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/bulk`,
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/bulk`,
         { items }
       );
       const filtered = data.items.filter(Boolean);
@@ -129,7 +130,9 @@ export namespace Izzy {
     async query(index: string, key: string | null): Promise<T[]> {
       logger.silly(`Querying index ${index} by ${key} from collection: ${this.name}`);
       const res = await Axios.get<{ items: T[] }>(
-        `http://localhost:${getConfig().binaries.izzyPort}/collection/${this.name}/${index}/${key}`
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${
+          this.name
+        }/${index}/${key}`
       );
       return res.data.items;
     }
@@ -144,7 +147,7 @@ export namespace Izzy {
     try {
       logger.debug(`Creating collection: ${name} (persistence: ${file})`);
       logger.silly(indexes);
-      await Axios.post(`http://localhost:${getConfig().binaries.izzyPort}/collection/${name}`, {
+      await Axios.post(`http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${name}`, {
         file,
         indexes,
       });
