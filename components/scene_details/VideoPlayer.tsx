@@ -4,7 +4,7 @@ import PlayIcon from "mdi-react/PlayIcon";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { SafeModeContext } from "../../pages/_app";
+import { SafeModeContext, VideoContext } from "../../pages/_app";
 import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
 import Marker from "../Marker";
@@ -26,6 +26,7 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
   const [progress, setProgress] = useState(0);
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
   const { enabled: safeMode } = useContext(SafeModeContext);
+  const { currentTime, setCurrentTime } = useContext(VideoContext);
   const videoEl = useRef<HTMLVideoElement | null>(null);
 
   function togglePlayback() {
@@ -58,7 +59,10 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
   // Play/pause
   useEffect(() => {
     const handler = () => {
-      setPaused(videoEl.current!.paused);
+      if (!videoEl.current) {
+        return;
+      }
+      setPaused(videoEl.current.paused);
     };
     videoEl.current?.addEventListener("play", handler, false);
     videoEl.current?.addEventListener("pause", handler, false);
@@ -81,8 +85,16 @@ export default function VideoPlayer({ src, poster, markers, duration }: Props) {
   useEffect(() => {
     const handler = () => {
       const vid = videoEl.current!;
+
+      // this happens when playing a video then navigating away.
+      // TODO: reset state?
+      if (!vid) {
+        return;
+      }
+
       const buffered = vid.currentTime;
       const duration = vid.duration;
+      setCurrentTime(vid.currentTime);
       setProgress(buffered / duration);
       setLoading(false);
     };

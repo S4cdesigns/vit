@@ -5,7 +5,6 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import CopyIcon from "mdi-react/ContentCopyIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import AddMarkerIcon from "mdi-react/PlaylistAddIcon";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,11 +22,13 @@ import Code from "../../components/Code";
 import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
+import MarkerCreator from "../../components/MarkerCreator";
 import MovieCard from "../../components/MovieCard";
 import PageWrapper from "../../components/PageWrapper";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
+import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
@@ -45,7 +46,6 @@ import {
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import Spacer from "../../components/Spacer";
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -248,7 +248,11 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                     )}
                   </>
                   {/* TODO: */}
-                  <AddMarkerIcon className="hover" size={24} />
+                  <MarkerCreator
+                    sceneId={scene._id}
+                    actorIds={scene.actors.map((actor) => actor._id)}
+                    onCreate={() => alert("create")}
+                  />
                   <Spacer />
                   {!!scene.studio && (
                     <Link href={`/studio/${scene.studio._id}`} passHref>
