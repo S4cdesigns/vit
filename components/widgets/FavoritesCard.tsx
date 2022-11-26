@@ -1,8 +1,8 @@
 import HeartIcon from "mdi-react/HeartIcon";
 import { useTranslations } from "next-intl";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { SafeModeContext } from "../../pages/_app";
+import { useSafeMode } from "../../composables/use_safe_mode";
 import { IActor } from "../../types/actor";
 import { graphqlQuery } from "../../util/gql";
 import ActorGridItem from "../ActorGridItem";

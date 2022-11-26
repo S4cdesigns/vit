@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
-import { SafeModeContext, ThemeContext } from "../pages/_app";
+import { useSafeMode } from "../composables/use_safe_mode";
+import { ThemeContext } from "../pages/_app";
 import { thumbnailUrl } from "../util/thumbnail";
 import AutoLayout from "./AutoLayout";
 import MarkerEditor from "./MarkerEditor";
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export default function MarkerThumbnailCard({ marker, onEdit, onClick }: Props) {
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
   const { theme } = useContext(ThemeContext);
 
   return (
@@ -24,7 +25,7 @@ export default function MarkerThumbnailCard({ marker, onEdit, onClick }: Props) 
         src={marker.thumbnail?._id && thumbnailUrl(marker.thumbnail._id)}
         imgStyle={{
           transition: "filter 0.15s ease-in-out",
-          filter: safeMode ? "blur(20px)" : undefined,
+          filter: safeModeBlur,
         }}
       ></ResponsiveImage>
       <AutoLayout gap={5} style={{ padding: "6px 8px 8px 8px" }} layout="h">

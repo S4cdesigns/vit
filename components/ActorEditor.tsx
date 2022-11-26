@@ -48,36 +48,6 @@ export default function ActorEditor({ onEdit, actor }: Props) {
   const [externalLinks, setExternalLinks] = useState(actor.externalLinks);
   const [loading, setLoader] = useState(false);
 
-  const updateLinkUrl = (idx: number, url: string): void => {
-    const newLinks = externalLinks.map((link, index) => {
-      if (index !== idx) {
-        return link;
-      }
-
-      return { url, text: link.text };
-    });
-    setExternalLinks(newLinks);
-  };
-
-  const updateLinkText = (idx: number, text: string): void => {
-    const newLinks = externalLinks.map((link, index) => {
-      if (index !== idx) {
-        return link;
-      }
-
-      return { url: link.url, text };
-    });
-    setExternalLinks(newLinks);
-  };
-
-  const addExternalLink = () => {
-    setExternalLinks([...externalLinks, { url: "", text: "" }]);
-  };
-
-  const removeLink = (idx: number) => {
-    setExternalLinks(externalLinks.filter((link, index) => idx !== index));
-  };
-
   return (
     <>
       <EditIcon onClick={open} className="hover" />
@@ -100,7 +70,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
                   );
                   onEdit();
                   close();
-                  setName("");
+                  // setName("");
                   setAliasInput([]);
                   // setSelectedLabels([]);
                 } catch (error) {}
@@ -136,6 +106,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
             }}
           />
         </div>
+<<<<<<< HEAD
         <ExternalLinksEditor
           externalLinks={externalLinks}
           updateLinkText={updateLinkText}
@@ -143,6 +114,9 @@ export default function ActorEditor({ onEdit, actor }: Props) {
           addExternalLink={addExternalLink}
           removeLink={removeLink}
         />
+=======
+        <ExternalLinksEditor value={externalLinks} onChange={setExternalLinks} />
+>>>>>>> ssr
       </Window>
     </>
   );

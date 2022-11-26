@@ -5,30 +5,56 @@ import AutoLayout from "./AutoLayout";
 import Spacer from "./Spacer";
 import Subheading from "./Subheading";
 
+type Value = {
+  url: string;
+  text: string;
+}[];
+
 type Props = {
-  externalLinks: { url: string; text: string }[];
-  addExternalLink: (link: { url: string; text: string }) => void;
-  updateLinkUrl: (index: number, url: string) => void;
-  updateLinkText: (index: number, url: string) => void;
-  removeLink: (index: number) => void;
+  value: Value;
+  onChange: (value: Value) => void;
 };
 
-export default function ExternalLinksEditor({
-  externalLinks,
-  addExternalLink,
-  updateLinkUrl,
-  updateLinkText,
-  removeLink,
-}: Props) {
+export default function ExternalLinksEditor({ value, onChange }: Props) {
+  function updateLinkUrl(idx: number, url: string): void {
+    const newLinks = value.map((link, index) => {
+      if (index !== idx) {
+        return link;
+      }
+
+      return { url, text: link.text };
+    });
+    onChange?.(newLinks);
+  }
+
+  function updateLinkText(idx: number, text: string): void {
+    const newLinks = value.map((link, index) => {
+      if (index !== idx) {
+        return link;
+      }
+
+      return { url: link.url, text };
+    });
+    onChange?.(newLinks);
+  }
+
+  function addExternalLink(): void {
+    onChange?.([...value, { url: "", text: "" }]);
+  }
+
+  function removeLink(idx: number): void {
+    onChange?.(value.filter((link, index) => idx !== index));
+  }
+
   return (
     <div>
       <AutoLayout gap={10} layout="h">
         <Subheading>External Links</Subheading>
         <div style={{ marginLeft: "auto" }}>
-          <AddIcon onClick={() => addExternalLink({ url: "", text: "" })} className="hover" />
+          <AddIcon onClick={addExternalLink} className="hover" />
         </div>
       </AutoLayout>
-      {externalLinks.map((link, idx) => (
+      {value.map((link, idx) => (
         <AutoLayout gap={10} layout="v">
           <div>
             <input

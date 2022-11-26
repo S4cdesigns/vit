@@ -1,17 +1,18 @@
 import { useContext } from "react";
 
-import { SafeModeContext } from "../../pages/_app";
+import { useSafeMode } from "../../composables/use_safe_mode";
 
 type Props = {
   imageId?: string;
 };
 
 export default function HeroImage({ imageId }: Props) {
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
+
   return (
     <>
       {imageId && (
-        <div style={{ position: "relative", filter: safeMode ? "blur(20px)" : undefined }}>
+        <div style={{ position: "relative", filter: safeModeBlur }}>
           <img
             width="100%"
             style={{ aspectRatio: String(2.75) }}

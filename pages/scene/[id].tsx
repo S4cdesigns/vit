@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -35,7 +35,6 @@ import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { scenePageFragment } from "../../fragments/scene";
-import { SafeModeContext, VideoContext } from "../../pages/_app";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
 import {
@@ -125,7 +124,6 @@ export default function ScenePage({
   const gridUrl = `/api/media/scene/${scene._id}/grid`;
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
-  const { enabled: safeMode } = useContext(SafeModeContext);
 
   const {
     actors,

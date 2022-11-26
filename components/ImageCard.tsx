@@ -1,6 +1,4 @@
-import { useContext } from "react";
-
-import { SafeModeContext } from "../pages/_app";
+import { useSafeMode } from "../composables/use_safe_mode";
 import Lightbox from "./Lightbox";
 
 type Props = {
@@ -38,7 +36,7 @@ export default function ImageCard(props: Props) {
     rating,
   } = props;
 
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
 
   return (
     <>
@@ -51,7 +49,7 @@ export default function ImageCard(props: Props) {
           onClick={() => onOpen?.()}
           style={{
             transition: "filter 0.15s ease-in-out",
-            filter: safeMode ? "blur(20px)" : undefined,
+            filter: safeModeBlur,
             display: "block",
           }}
         />
