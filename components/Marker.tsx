@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useSafeMode } from "../composables/use_safe_mode";
 import styles from "./Marker.module.scss";
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
 
 export default function Marker({ time, name, thumbnail, onClick }: Props) {
   const [hover, setHover] = useState(false);
+  const { blur: safeModeBlur } = useSafeMode();
 
   return (
     <div
@@ -39,7 +41,7 @@ export default function Marker({ time, name, thumbnail, onClick }: Props) {
             left: -80,
           }}
         >
-          <img style={{ width: 160 }} src={thumbnail} />
+          <img style={{ width: 160, filter: safeModeBlur }} src={thumbnail} />
           <div style={{ fontSize: 14, fontWeight: 500, opacity: 0.8, marginBottom: 4 }}>{name}</div>
         </div>
       )}

@@ -34,6 +34,7 @@ import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
+import { useVideoControls } from "../../composables/use_video_control";
 import { scenePageFragment } from "../../fragments/scene";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
@@ -124,6 +125,7 @@ export default function ScenePage({
   const gridUrl = `/api/media/scene/${scene._id}/grid`;
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
+  const { startPlayback } = useVideoControls();
 
   const {
     actors,
@@ -245,6 +247,7 @@ export default function ScenePage({
     <PageWrapper padless title={scene.name}>
       <AutoLayout>
         <VideoPlayer
+          scene={scene}
           startAtPosition={startAtPosition}
           duration={scene.meta.duration}
           markers={markers.map((marker) => ({
@@ -558,18 +561,12 @@ export default function ScenePage({
                             onEdit={reloadMarkers}
                             marker={marker}
                             onClick={() => {
-                              const videoEl = document.getElementById(
-                                "video-player"
-                              ) as HTMLVideoElement | null;
-                              if (videoEl) {
-                                videoEl.currentTime = marker.time;
-                                videoEl.play().catch(() => {});
-                                window.scrollTo({
-                                  left: 0,
-                                  top: 0,
-                                  behavior: "smooth",
-                                });
-                              }
+                              startPlayback(marker.time);
+                              window.scrollTo({
+                                left: 0,
+                                top: 0,
+                                behavior: "smooth",
+                              });
                             }}
                           />
                         </Paper>

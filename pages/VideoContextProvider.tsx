@@ -1,49 +1,50 @@
 import { createContext, useState } from "react";
-import CastProvider from "react-chromecast";
+
+import { PlaybackTarget, VideoContext } from "../composables/use_video_control";
+import { IScene } from "../types/scene";
 
 type Props = {
   children: any;
 };
 
-export const PlaybackTarget = {
-  BROWSER: "browser",
-  // https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API
-  PICT_IN_PIC: "picture_in_picture",
-  CHROMECAST: "chromecast",
-};
-
-export const VideoContext = createContext<{
-  currentTime: number;
-  currentTarget: string;
-  setCurrentTime: (time: number) => void;
-  pause: (paused: boolean) => void;
-  setTarget: (target: string) => void;
-}>({
-  currentTime: 0,
-  currentTarget: PlaybackTarget.BROWSER,
-  setCurrentTime: (time: number) => {},
-  pause: (paused: boolean) => {},
-  setTarget: (target: string) => {},
-});
-
 export default function VideoContextProvider(props: Props) {
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
+  const [newPlaybackTime, setNewPlaybackTime] = useState(0);
   const [paused, setPaused] = useState(true);
+  const [scene, setScene] = useState<IScene>();
   const [playerTarget, setPlayerTarget] = useState(PlaybackTarget.BROWSER);
 
+  const togglePlayback = () => {
+    setPaused(!paused);
+  };
+
+  const startPlayback = (time?: number) => {
+    if (time) {
+      setNewPlaybackTime(time);
+    }
+
+    if (paused) {
+      setPaused(false);
+    }
+  };
+
   return (
-    <CastProvider>
-      <VideoContext.Provider
-        value={{
-          currentTime: currentPlaybackTime,
-          currentTarget: playerTarget,
-          setCurrentTime: setCurrentPlaybackTime,
-          pause: setPaused,
-          setTarget: setPlayerTarget,
-        }}
-      >
-        {props.children}
-      </VideoContext.Provider>
-    </CastProvider>
+    <VideoContext.Provider
+      value={{
+        togglePlayback,
+        startPlayback,
+        scene,
+        setScene,
+        newPlaybackTime,
+        currentTime: currentPlaybackTime,
+        currentTarget: playerTarget,
+        paused,
+        setCurrentTime: setCurrentPlaybackTime,
+        setPaused,
+        setTarget: setPlayerTarget,
+      }}
+    >
+      {props.children}
+    </VideoContext.Provider>
   );
 }

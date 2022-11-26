@@ -9,8 +9,8 @@ import { useContext, useState } from "react";
 import Select from "react-select";
 
 import useLabelList from "../composables/use_label_list";
+import { useVideoControls } from "../composables/use_video_control";
 import { useWindow } from "../composables/use_window";
-import { VideoContext } from "../pages/VideoContextProvider";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
@@ -66,7 +66,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actorIds }: P
   const [fav, setFav] = useState(false);
   const [bookmark, setBookmark] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<readonly ILabel[]>([]);
-  const { currentTime } = useContext(VideoContext);
+  const { currentTime } = useVideoControls();
 
   const [loading, setLoader] = useState(false);
   const { labels } = useLabelList();

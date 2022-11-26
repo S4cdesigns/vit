@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import Spacer from "../Spacer";
-import ChromeCastIcon from "./ChromeCastIcon";
 
 type Props = {
   setSidebar: (x: boolean) => void;
@@ -36,7 +35,6 @@ export default function Topbar({ setSidebar }: Props) {
           <PatreonIcon size={20} />
         </a>
         <Spacer />
-        <ChromeCastIcon />
         <input
           type="text"
           placeholder={t("findContent")}

@@ -1,11 +1,11 @@
 import { PRERENDER_REVALIDATE_ONLY_GENERATED_HEADER } from "next/dist/server/api-utils";
 import { useCallback, useContext, useEffect, useState } from "react";
 
-import { PlaybackTarget, VideoContext } from "../../pages/VideoContextProvider";
+import { PlaybackTarget, useVideoControls } from "../../composables/use_video_control";
 
 type Props = {};
 export default function ExternalPlayerControls(props: Props) {
-  const { currentTarget, setTarget } = useContext(VideoContext);
+  const { currentTarget, setTarget } = useVideoControls();
   return (
     <div
       style={{

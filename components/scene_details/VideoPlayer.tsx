@@ -1,15 +1,14 @@
 import FullscreenIcon from "mdi-react/FullscreenIcon";
-import PauseIcon from "mdi-react/PauseIcon";
-import PlayIcon from "mdi-react/PlayIcon";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useMedia } from "react-chromecast";
+import { useEffect, useRef, useState } from "react";
 
 import { useSafeMode } from "../../composables/use_safe_mode";
-import { PlaybackTarget, VideoContext } from "../../pages/VideoContextProvider";
+import { useVideoControls } from "../../composables/use_video_control";
+import { IScene } from "../../types/scene";
 import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
 import Marker from "../Marker";
+import PlayPauseToggleButton from "../player/PlayPauseToggleButton";
 import Spacer from "../Spacer";
 import styles from "./VideoPlayer.module.scss";
 
@@ -19,46 +18,86 @@ type Props = {
   markers: { name: string; time: number; thumbnail: string }[];
   duration: number;
   startAtPosition?: number;
+  scene: IScene;
 };
 
-export default function VideoPlayer({ src, poster, markers, duration, startAtPosition }: Props) {
+export default function VideoPlayer({
+  src,
+  poster,
+  markers,
+  duration,
+  startAtPosition,
+  scene,
+}: Props) {
   const { blur: safeModeBlur } = useSafeMode();
 
+  const didMountRef = useRef(false);
   const [loading, setLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
   const [hover, setHover] = useState(false);
-  const [paused, setPaused] = useState(true);
   const [progress, setProgress] = useState(0);
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
-  const { currentTime, setCurrentTime, currentTarget } = useContext(VideoContext);
-  const media = useMedia();
+  const { setCurrentTime, paused, startPlayback, newPlaybackTime, setScene, setPaused } =
+    useVideoControls();
   const videoEl = useRef<HTMLVideoElement | null>(null);
 
-  async function togglePlayback() {
-    if (currentTarget === PlaybackTarget.CHROMECAST) {
-      if (media) {
-        await media.playMedia(src);
+  // play/pause handling from VideoContext
+  useEffect(() => {
+    // avoid autoplay
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      // unless we want to immediately start at a specific position (markers)
+      if (!startAtPosition) {
+        return;
       }
-      return;
     }
 
     if (!videoEl.current) {
       return;
     }
-    if (videoEl.current.paused) {
-      videoEl.current.play().catch(() => {});
-    } else {
-      videoEl.current.pause();
-    }
-  }
 
+    if (paused) {
+      videoEl.current.pause();
+    } else {
+      videoEl.current
+        .play()
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setScene(scene);
+        });
+    }
+  }, [paused]);
+
+  // handle starting the playback at a specific position
   useEffect(() => {
     if (videoEl.current && startAtPosition) {
-      videoEl.current.currentTime = startAtPosition;
-      videoEl.current.play().catch((error) => {
-        console.error(error);
-      });
+      startPlayback(startAtPosition);
     }
+  }, []);
+
+  // handle triggers for skipping the current playhead
+  useEffect(() => {
+    if (typeof newPlaybackTime === "undefined" || isNaN(newPlaybackTime)) {
+      return;
+    }
+
+    const vid = videoEl.current!;
+    vid.currentTime = newPlaybackTime;
+  }, [newPlaybackTime]);
+
+  // Play/pause handling from video element to update the context
+  useEffect(() => {
+    const handler = (event: any) => {
+      setPaused(event.type !== 'play');
+    };
+    videoEl.current?.addEventListener("play", handler, false);
+    videoEl.current?.addEventListener("pause", handler, false);
+    return () => {
+      videoEl.current?.removeEventListener("play", handler);
+      videoEl.current?.removeEventListener("pause", handler);
+    };
   }, []);
 
   // Loading chunks
@@ -79,22 +118,6 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
     };
     videoEl.current?.addEventListener("progress", handler, false);
     return () => videoEl.current?.removeEventListener("progress", handler);
-  }, []);
-
-  // Play/pause
-  useEffect(() => {
-    const handler = () => {
-      if (!videoEl.current) {
-        return;
-      }
-      setPaused(videoEl.current.paused);
-    };
-    videoEl.current?.addEventListener("play", handler, false);
-    videoEl.current?.addEventListener("pause", handler, false);
-    return () => {
-      videoEl.current?.removeEventListener("play", handler);
-      videoEl.current?.removeEventListener("pause", handler);
-    };
   }, []);
 
   // Waiting (load)
@@ -135,8 +158,6 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
     document.addEventListener("fullscreenchange", handler, false);
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
-
-  const PlaybackButton = paused ? PlayIcon : PauseIcon;
 
   return (
     <div
@@ -189,7 +210,7 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
               const xCoordInClickTarget = ev.nativeEvent.offsetX;
               const percent = xCoordInClickTarget / clickTargetWidth;
               const vid = videoEl.current!;
-              vid.currentTime = vid.duration * percent;
+              startPlayback(vid.duration * percent);
             }}
             className={styles.seekbar}
           >
@@ -225,7 +246,7 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
           ))}
 
           <div className={styles.buttons}>
-            <PlaybackButton size={28} onClick={togglePlayback} style={{ cursor: "pointer" }} />
+            <PlayPauseToggleButton scene={scene} />
             <VolumeHighIcon size={28} />
             <span style={{ fontSize: 14, fontWeight: 500, opacity: 0.8 }}>
               {formatDuration(duration * progress)} / {formatDuration(duration)}
