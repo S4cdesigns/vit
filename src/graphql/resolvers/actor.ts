@@ -85,4 +85,7 @@ export default {
     }
     return getNationality(actor.nationality);
   },
+  externalLinks(actor: Actor): { url: string; text: string }[] {
+    return actor.externalLinks || [];
+  },
 };
