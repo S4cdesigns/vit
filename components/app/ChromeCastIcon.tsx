@@ -1,3 +1,4 @@
+import CastIcon from "mdi-react/CastIcon";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useCast } from "react-chromecast";
 
@@ -17,5 +18,5 @@ export default function ChromeCastIcon(props: Props) {
       setTarget(PlaybackTarget.CHROMECAST);
     }
   }, [cast.castReceiver, cast.handleConnection]);
-  return <button onClick={handleClick}>castIcon</button>;
+  return <CastIcon className="hover" onClick={handleClick} />;
 }
