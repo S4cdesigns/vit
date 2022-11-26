@@ -3,8 +3,10 @@ import PauseIcon from "mdi-react/PauseIcon";
 import PlayIcon from "mdi-react/PlayIcon";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import { useContext, useEffect, useRef, useState } from "react";
+import { useMedia } from "react-chromecast";
 
-import { SafeModeContext, VideoContext } from "../../pages/_app";
+import { SafeModeContext } from "../../pages/_app";
+import { PlaybackTarget, VideoContext } from "../../pages/VideoContextProvider";
 import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
 import Marker from "../Marker";
@@ -27,10 +29,19 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
   const [progress, setProgress] = useState(0);
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
   const { enabled: safeMode } = useContext(SafeModeContext);
-  const { currentTime, setCurrentTime } = useContext(VideoContext);
+  const { currentTime, setCurrentTime, currentTarget } = useContext(VideoContext);
+  const media = useMedia();
   const videoEl = useRef<HTMLVideoElement | null>(null);
 
-  function togglePlayback() {
+  async function togglePlayback() {
+    if (currentTarget === PlaybackTarget.CHROMECAST) {
+      if (media) {
+        // TODO:
+        await media.playMedia(`http://192.168.1.249:3000${src}`);
+      }
+      return;
+    }
+
     if (!videoEl.current) {
       return;
     }

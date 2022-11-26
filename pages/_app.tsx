@@ -11,6 +11,7 @@ import { createContext, useEffect, useState } from "react";
 
 import Layout from "../components/app/Layout";
 import lang from "../locale";
+import VideoContextProvider from "./VideoContextProvider";
 
 Router.events.on("routeChangeStart", () => nprogress.start());
 Router.events.on("routeChangeComplete", () => nprogress.done());
@@ -34,18 +35,9 @@ export const SafeModeContext = createContext<{
   toggle: () => {},
 });
 
-export const VideoContext = createContext<{
-  currentTime: number;
-  setCurrentTime: (time: number) => void;
-}>({
-  currentTime: 0,
-  setCurrentTime: (time: number) => {},
-});
-
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   const [theme, setTheme] = useState<Theme>("light");
   const [safeMode, setSafeMode] = useState(false);
-  const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
 
   function toggleTheme(): void {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -92,13 +84,11 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
       <NextIntlProvider messages={lang[router.locale || "en"]}>
         <ThemeContext.Provider value={{ theme, toggle: toggleTheme }}>
           <SafeModeContext.Provider value={{ enabled: safeMode, toggle: toggleSafeMode }}>
-            <VideoContext.Provider
-              value={{ currentTime: currentPlaybackTime, setCurrentTime: setCurrentPlaybackTime }}
-            >
+            <VideoContextProvider>
               <Layout>
                 <Component key={router.asPath} {...pageProps} />
               </Layout>
-            </VideoContext.Provider>
+            </VideoContextProvider>
           </SafeModeContext.Provider>
         </ThemeContext.Provider>
       </NextIntlProvider>

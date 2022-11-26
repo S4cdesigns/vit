@@ -10,8 +10,7 @@ import Select from "react-select";
 
 import useLabelList from "../composables/use_label_list";
 import { useWindow } from "../composables/use_window";
-import { VideoContext } from "../pages/_app";
-import { favorite } from "../src/search/common";
+import { VideoContext } from "../pages/VideoContextProvider";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
