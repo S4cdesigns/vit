@@ -5,7 +5,7 @@ import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMedia } from "react-chromecast";
 
-import { SafeModeContext } from "../../pages/_app";
+import { useSafeMode } from "../../composables/use_safe_mode";
 import { PlaybackTarget, VideoContext } from "../../pages/VideoContextProvider";
 import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
@@ -22,13 +22,14 @@ type Props = {
 };
 
 export default function VideoPlayer({ src, poster, markers, duration, startAtPosition }: Props) {
+  const { blur: safeModeBlur } = useSafeMode();
+
   const [loading, setLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
   const [hover, setHover] = useState(false);
   const [paused, setPaused] = useState(true);
   const [progress, setProgress] = useState(0);
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
-  const { enabled: safeMode } = useContext(SafeModeContext);
   const { currentTime, setCurrentTime, currentTarget } = useContext(VideoContext);
   const media = useMedia();
   const videoEl = useRef<HTMLVideoElement | null>(null);
@@ -169,7 +170,7 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
           src={src}
           width="100%"
           height="100%"
-          style={{ filter: safeMode ? "blur(20px)" : undefined }}
+          style={{ filter: safeModeBlur }}
         />
         <div
           className={styles.controls}

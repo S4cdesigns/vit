@@ -4,7 +4,8 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useContext } from "react";
 
-import { SafeModeContext, ThemeContext } from "../pages/_app";
+import { useSafeMode } from "../composables/use_safe_mode";
+import { ThemeContext } from "../pages/_app";
 import { IMarker } from "../types/marker";
 import { bookmarkMarker, favoriteMarker, rateMarker } from "../util/mutations/marker";
 import { thumbnailUrl } from "../util/thumbnail";
@@ -35,7 +36,7 @@ type Props = {
 };
 
 export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props) {
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
   const { theme } = useContext(ThemeContext);
 
   async function toggleFav(): Promise<void> {
@@ -63,7 +64,7 @@ export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props)
         src={marker.thumbnail?._id && thumbnailUrl(marker.thumbnail._id)}
         imgStyle={{
           transition: "filter 0.15s ease-in-out",
-          filter: safeMode ? "blur(20px)" : undefined,
+          filter: safeModeBlur,
         }}
       ></ResponsiveImage>
       <AutoLayout

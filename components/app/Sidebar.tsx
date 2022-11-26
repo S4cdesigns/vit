@@ -17,11 +17,12 @@ import { useTranslations } from "next-intl";
 import { Fragment, ReactNode, useContext } from "react";
 
 import { useVersion } from "../../composables/use_version";
-import { SafeModeContext, ThemeContext } from "../../pages/_app";
+import { ThemeContext } from "../../pages/_app";
 import Flag from "../Flag";
 import Paper from "../Paper";
 import SidebarLink from "./SidebarLink";
 import Spacer from "../Spacer";
+import { useSafeMode } from "../../composables/use_safe_mode";
 
 const links: (
   | { divider: true }
@@ -98,7 +99,7 @@ type Props = {
 export default function Sidebar({ active, setSidebar }: Props) {
   const router = useRouter();
   const t = useTranslations();
-  const { enabled: safeMode, toggle: toggleSafeMode } = useContext(SafeModeContext);
+  const { enabled: safeMode, toggle: toggleSafeMode } = useSafeMode();
   const { theme, toggle: toggleTheme } = useContext(ThemeContext);
   const { version } = useVersion();
 

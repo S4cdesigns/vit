@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { useContext, useEffect, useState } from "react";
 
 import Button from "../../components/Button";
-import { SafeModeContext } from "../../pages/_app";
+import { useSafeMode } from "../../composables/use_safe_mode";
 import {
   bookmarkActor,
   favoriteActor,
@@ -38,7 +38,7 @@ type Props = {
 export default function ActorProfile(props: Props) {
   const t = useTranslations();
   const router = useRouter();
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
 
   const [favorite, setFavorite] = useState(props.favorite);
   const [bookmark, setBookmark] = useState(props.bookmark);
@@ -104,7 +104,7 @@ export default function ActorProfile(props: Props) {
             className={styles.avatar}
             width="140"
             src={thumbnailUrl(props.avatarId)}
-            style={{ filter: safeMode ? "blur(20px)" : undefined }}
+            style={{ filter: safeModeBlur }}
           />
         ) : (
           <div className={styles.avatar} style={{ width: 140, height: 140, aspectRatio: "1" }}>

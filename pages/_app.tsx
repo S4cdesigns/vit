@@ -10,6 +10,7 @@ import nprogress from "nprogress";
 import { createContext, useEffect, useState } from "react";
 
 import Layout from "../components/app/Layout";
+import { SafeModeContext } from "../composables/use_safe_mode";
 import lang from "../locale";
 import VideoContextProvider from "./VideoContextProvider";
 
@@ -24,14 +25,6 @@ export const ThemeContext = createContext<{
   toggle: () => void;
 }>({
   theme: "light",
-  toggle: () => {},
-});
-
-export const SafeModeContext = createContext<{
-  enabled: boolean;
-  toggle: () => void;
-}>({
-  enabled: false,
   toggle: () => {},
 });
 

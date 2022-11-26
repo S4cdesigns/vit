@@ -1,5 +1,6 @@
 import HeartIcon from "mdi-react/HeartIcon";
 import Link from "next/link";
+import { useSafeMode } from "../composables/use_safe_mode";
 
 import { thumbnailUrl } from "../util/thumbnail";
 import ResponsiveImage from "./ResponsiveImage";
@@ -12,14 +13,20 @@ type Props = {
 };
 
 export default function ActorGridItem({ id, name, thumbnailId, favorite }: Props) {
+  const { blur: safeModeBlur } = useSafeMode();
+
   return (
     <Link href={`/actor/${id}`} passHref>
-      <a style={{ display: "block" }} className="hover">
+      <a style={{ display: "block", borderRadius: 8, overflow: "hidden" }} className="hover">
         <div className="hover" style={{ position: "relative" }}>
           <ResponsiveImage
             aspectRatio="3 / 4"
             href={`/actor/${id}`}
             src={thumbnailId && thumbnailUrl(thumbnailId)}
+            imgStyle={{
+              transition: "filter 0.15s ease-in-out",
+              filter: safeModeBlur,
+            }}
           />
           {favorite && (
             <div

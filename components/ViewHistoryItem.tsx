@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { useContext } from "react";
-import { SafeModeContext } from "../pages/_app";
+
+import { useSafeMode } from "../composables/use_safe_mode";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
 import AutoLayout from "./AutoLayout";
@@ -33,7 +33,7 @@ type Props = {
 };
 
 export default function ViewHistoryItem({ date, scene }: Props) {
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
 
   return (
     <AutoLayout layout="h" gap={10}>
@@ -44,7 +44,7 @@ export default function ViewHistoryItem({ date, scene }: Props) {
           src={scene.thumbnail?._id && thumbnailUrl(scene.thumbnail._id)}
           imgStyle={{
             transition: "filter 0.15s ease-in-out",
-            filter: safeMode ? "blur(20px)" : undefined,
+            filter: safeModeBlur,
             height: "160px",
           }}
           containerStyle={{
