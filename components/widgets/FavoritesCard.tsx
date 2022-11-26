@@ -1,8 +1,8 @@
 import HeartIcon from "mdi-react/HeartIcon";
 import { useTranslations } from "next-intl";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSafeMode } from "../../composables/use_safe_mode";
 
-import { SafeModeContext } from "../../pages/_app";
 import { IActor } from "../../types/actor";
 import { graphqlQuery } from "../../util/gql";
 import ActorGridItem from "../ActorGridItem";
@@ -42,7 +42,6 @@ export default function FavoritesCard() {
   const [skip, setSkip] = useState(0);
   const [items, setItems] = useState<IActor[]>([]);
   const [done, setDone] = useState(false);
-  const { enabled: safeMode } = useContext(SafeModeContext);
 
   async function nextPage() {
     const { actors } = await getActors(skip);
@@ -80,7 +79,6 @@ export default function FavoritesCard() {
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gridGap: 4,
-          filter: safeMode ? "blur(20px)" : undefined,
         }}
       >
         {content()}

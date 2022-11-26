@@ -4,10 +4,9 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "../../components/Button";
-import { SafeModeContext } from "../../pages/_app";
 import {
   bookmarkActor,
   favoriteActor,
@@ -18,9 +17,9 @@ import { thumbnailUrl } from "../../util/thumbnail";
 import AutoLayout from "../AutoLayout";
 import Flag from "../Flag";
 import Rating from "../Rating";
-import Text from "../Text";
 import styles from "./ActorProfile.module.scss";
 import ExternalLink from "./ExternalLink";
+import { useSafeMode } from "../../composables/use_safe_mode";
 
 type Props = {
   actorId: string;
@@ -38,7 +37,7 @@ type Props = {
 export default function ActorProfile(props: Props) {
   const t = useTranslations();
   const router = useRouter();
-  const { enabled: safeMode } = useContext(SafeModeContext);
+  const { blur: safeModeBlur } = useSafeMode();
 
   const [favorite, setFavorite] = useState(props.favorite);
   const [bookmark, setBookmark] = useState(props.bookmark);
@@ -104,7 +103,7 @@ export default function ActorProfile(props: Props) {
             className={styles.avatar}
             width="140"
             src={thumbnailUrl(props.avatarId)}
-            style={{ filter: safeMode ? "blur(20px)" : undefined }}
+            style={{ filter: safeModeBlur }}
           />
         ) : (
           <div className={styles.avatar} style={{ width: 140, height: 140, aspectRatio: "1" }}>

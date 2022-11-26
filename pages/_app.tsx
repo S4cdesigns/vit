@@ -11,6 +11,7 @@ import { createContext, useEffect, useState } from "react";
 
 import Layout from "../components/app/Layout";
 import lang from "../locale";
+import { SafeModeContext } from "../composables/use_safe_mode";
 
 Router.events.on("routeChangeStart", () => nprogress.start());
 Router.events.on("routeChangeComplete", () => nprogress.done());
@@ -23,14 +24,6 @@ export const ThemeContext = createContext<{
   toggle: () => void;
 }>({
   theme: "light",
-  toggle: () => {},
-});
-
-export const SafeModeContext = createContext<{
-  enabled: boolean;
-  toggle: () => void;
-}>({
-  enabled: false,
   toggle: () => {},
 });
 
