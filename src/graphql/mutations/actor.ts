@@ -8,7 +8,7 @@ import ActorReference from "../../types/actor_reference";
 import { isValidCountryCode } from "../../types/countries";
 import LabelledItem from "../../types/labelled_item";
 import { logger } from "../../utils/logger";
-import { filterInvalidAliases, isArrayEq } from "../../utils/misc";
+import { filterInvalidAliases, filterInvalidExternalUrls, isArrayEq } from "../../utils/misc";
 import { Dictionary } from "../../utils/types";
 
 type IActorUpdateOpts = Partial<{
@@ -26,6 +26,7 @@ type IActorUpdateOpts = Partial<{
   bornOn: number;
   customFields: Dictionary<string[] | boolean | string | null>;
   nationality: string | null;
+  externalLinks: { url: string; text: string }[];
 }>;
 
 async function runActorPlugins(id: string): Promise<Actor | null> {
@@ -111,6 +112,10 @@ export default {
 
         if (Array.isArray(opts.aliases)) {
           actor.aliases = [...new Set(filterInvalidAliases(opts.aliases))];
+        }
+
+        if (Array.isArray(opts.externalLinks)) {
+          actor.externalLinks = [...new Set(filterInvalidExternalUrls(opts.externalLinks))];
         }
 
         if (Array.isArray(opts.labels)) {

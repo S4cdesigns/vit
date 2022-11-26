@@ -12,6 +12,8 @@ export default function PageWrapper({ children, padless, title }: Props) {
 
   return (
     <div style={{ padding: _padless ? 0 : 10 }}>
+      {/* container for modal windows to avoid z-index issues */}
+      <div id="modal-portal" />
       <Head>
         <title>{title}</title>
       </Head>

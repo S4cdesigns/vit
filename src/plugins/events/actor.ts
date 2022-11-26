@@ -47,7 +47,6 @@ export async function onActorCreate(
   event: "actorCreated" | "actorCustom" = "actorCreated"
 ): Promise<{ actor: Actor; commit: () => Promise<void> }> {
   const config = getConfig();
-
   const createdImages = [] as Image[];
 
   const pluginResult = await runPluginsSerial(config, event, {
@@ -140,6 +139,10 @@ export async function onActorCreate(
     } else if (pluginResult.nationality === null) {
       actor.nationality = pluginResult.nationality;
     }
+  }
+
+  if (pluginResult.externalLinks && Array.isArray(pluginResult.externalLinks)) {
+    actor.externalLinks = pluginResult.externalLinks;
   }
 
   if (pluginResult.labels && Array.isArray(pluginResult.labels)) {

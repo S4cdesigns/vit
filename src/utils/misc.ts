@@ -295,6 +295,12 @@ export function filterInvalidAliases(aliases: string[]): string[] {
   return aliases.filter((alias) => !!alias.trim());
 }
 
+export function filterInvalidExternalUrls(
+  links: { url: string; text: string }[]
+): { url: string; text: string }[] {
+  return links.filter((link) => !!link.text?.trim() || !!link.url?.trim());
+}
+
 /**
  * Reads the first n bytes of the file into a buffer
  * https://stackoverflow.com/a/59722384/13599482

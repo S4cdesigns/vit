@@ -1,3 +1,4 @@
+import axios from "axios";
 import type { FfprobeData } from "fluent-ffmpeg";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
@@ -44,7 +45,6 @@ import {
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import axios from "axios";
 import Spacer from "../../components/Spacer";
 
 async function runFFprobe(sceneId: string) {
