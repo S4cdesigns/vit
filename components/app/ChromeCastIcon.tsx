@@ -8,15 +8,31 @@ type Props = {};
 export default function ChromeCastIcon(props: Props) {
   const { currentTarget, setTarget } = useContext(VideoContext);
 
-  const cast = useCast({
+  const { castReceiver, handleConnection, isConnect } = useCast({
     initialize_media_player: "DEFAULT_MEDIA_RECEIVER_APP_ID",
     auto_initialize: true,
   });
+
   const handleClick = useCallback(async () => {
-    if (cast.castReceiver) {
-      await cast.handleConnection();
+    if (castReceiver) {
+      await handleConnection();
       setTarget(PlaybackTarget.CHROMECAST);
     }
-  }, [cast.castReceiver, cast.handleConnection]);
-  return <CastIcon className="hover" onClick={handleClick} />;
+  }, [castReceiver, handleConnection]);
+
+  useEffect(() => {
+    if (isConnect) {
+      setTarget(PlaybackTarget.CHROMECAST);
+    } else {
+      setTarget(PlaybackTarget.CHROMECAST);
+    }
+  }, [isConnect]);
+
+  return (
+    <CastIcon
+      className="hover"
+      onClick={handleClick}
+      style={{ color: isConnect ? "red" : undefined }}
+    />
+  );
 }

@@ -7,6 +7,8 @@ type Props = {
 
 export const PlaybackTarget = {
   BROWSER: "browser",
+  // https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API
+  PICT_IN_PIC: "picture_in_picture",
   CHROMECAST: "chromecast",
 };
 

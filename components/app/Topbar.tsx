@@ -35,8 +35,8 @@ export default function Topbar({ setSidebar }: Props) {
         >
           <PatreonIcon size={20} />
         </a>
-        <ChromeCastIcon />
         <Spacer />
+        <ChromeCastIcon />
         <input
           type="text"
           placeholder={t("findContent")}

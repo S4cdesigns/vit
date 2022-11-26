@@ -36,8 +36,7 @@ export default function VideoPlayer({ src, poster, markers, duration, startAtPos
   async function togglePlayback() {
     if (currentTarget === PlaybackTarget.CHROMECAST) {
       if (media) {
-        // TODO:
-        await media.playMedia(`http://192.168.1.249:3000${src}`);
+        await media.playMedia(src);
       }
       return;
     }
