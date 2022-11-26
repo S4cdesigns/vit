@@ -1,6 +1,6 @@
 import axios from "axios";
-import { graphqlQuery } from "../gql";
 
+import { graphqlQuery } from "../gql";
 import { gqlIp } from "../ip";
 
 export async function setActorThumbnail(actorId: string, imageId: string) {
@@ -73,6 +73,19 @@ export async function setActorHero(actorId: string, imageId: string) {
       },
     }
   );
+}
+
+export async function runActorPlugins(actorId: string): Promise<void> {
+  const mutation = `
+mutation($id: String!) {
+  runActorPlugins(id: $id) {
+    _id
+  }
+}
+`;
+  await graphqlQuery(mutation, {
+    id: actorId,
+  });
 }
 
 export async function rateActor(actorId: string, rating: number): Promise<void> {

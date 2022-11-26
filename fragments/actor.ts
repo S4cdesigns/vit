@@ -24,5 +24,9 @@ fragment ActorCard on Actor {
     nationality
     alias
   }
+  externalLinks {
+    url
+    text
+  }
 }
 `;

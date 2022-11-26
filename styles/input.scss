@@ -1,6 +1,7 @@
 @import "./color.scss";
 
 input[type="text"],
+input[type="url"],
 input[type="search"],
 textarea,
 select {
@@ -32,6 +33,7 @@ select {
 
 .dark {
   input[type="text"],
+  input[type="url"],
   input[type="search"],
   textarea,
   select {

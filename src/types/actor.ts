@@ -32,6 +32,7 @@ export default class Actor {
   favorite = false;
   bookmark: number | null = null;
   rating = 0;
+  externalLinks?: { url: string; text: string }[] = [];
   customFields: Record<string, boolean | string | number | string[] | null> = {};
 
   description?: string | null = null;
