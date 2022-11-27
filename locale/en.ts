@@ -17,6 +17,7 @@ export default {
   libraryTime: "Remaining library time",
   videoProcessingQueue: "Video processing queue",
   scanStats: "Scan",
+  scenesWatched: "% scenes watched",
 
   viewsInDays:
     "{numViews, plural, one {scene view} other {{numViews} scene views} } in {numDays, plural, one {{numDays} day} other {{numDays} days} }",
@@ -48,7 +49,7 @@ export default {
     select: "Select",
   },
 
-  video: "{numItems, plural, one {video} other {{numItems} videos} }",
+  video: "{numItems, plural, one {video} other {videos} }",
   scene: "{numItems, plural, one {scene} other {scenes} }",
   actor: "{numItems, plural, one {actor} other {actors} }",
   movie: "{numItems, plural, one {movie} other {movies} }",

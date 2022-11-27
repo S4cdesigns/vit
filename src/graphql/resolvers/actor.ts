@@ -9,8 +9,12 @@ import { createObjectSet } from "../../utils/misc";
 
 export default {
   async percentWatched(actor: Actor): Promise<number> {
-    const uniqueViews = await Actor.countUniqueViews(actor);
     const numScenes = (await Scene.getByActor(actor._id)).length;
+    if (!numScenes) {
+      return 0;
+    }
+
+    const uniqueViews = await Actor.countUniqueViews(actor);
     return uniqueViews / numScenes;
   },
   async score(actor: Actor): Promise<number> {

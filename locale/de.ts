@@ -17,6 +17,7 @@ export default {
   libraryTime: "Gesehene Videos",
   videoProcessingQueue: "Videoverarbeitung",
   scanStats: "Scan",
+  scenesWatched: "% gesehene Videos",
 
   viewsInDays:
     "{numViews, plural, one {gesehene Szene} other {{numViews} gesehene Szenen} } in {numDays, plural, one {{numDays} Tag} other {{numDays} Tagen} }",
@@ -48,7 +49,7 @@ export default {
     select: "Auswählen",
   },
 
-  video: "{numItems, plural, one {Video} other {{numItems} Videos} }",
+  video: "{numItems, plural, one {Video} other {Videos} }",
   scene: "{numItems, plural, one {Szene} other {Szenen} }",
   actor: "Darsteller",
   movie: "{numItems, plural, one {Film} other {Filme} }",
@@ -81,7 +82,7 @@ export default {
   bitrate: "Bitrate",
 
   rating: "Bewertung",
-  avgRating: "Durchschnittswertung",
+  avgRating: "Durchschn. Wertung",
   pvScore: "PV Wertung",
   yearsOld: "{age} Jahre alt",
   aliases: "Alt. Namen",

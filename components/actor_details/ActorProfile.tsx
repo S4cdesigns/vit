@@ -99,12 +99,9 @@ export default function ActorProfile(props: Props) {
     >
       <div style={{ position: "relative" }}>
         {props.avatarId ? (
-          <img
-            className={styles.avatar}
-            width="140"
-            src={thumbnailUrl(props.avatarId)}
-            style={{ filter: safeModeBlur }}
-          />
+          <div className={styles.avatar}>
+            <img src={thumbnailUrl(props.avatarId)} style={{ filter: safeModeBlur }} />
+          </div>
         ) : (
           <div className={styles.avatar} style={{ width: 140, height: 140, aspectRatio: "1" }}>
             <span

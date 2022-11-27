@@ -369,7 +369,7 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                           Run FFprobe
                         </Button>
                         <Button loading={pluginLoader} onClick={handleRunScenePlugins}>
-                          Run Plugins
+                          Run plugins
                         </Button>
                         <Window
                           isOpen={!!ffprobeData}

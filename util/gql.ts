@@ -22,6 +22,7 @@ export async function graphqlQuery<T>(
   );
 
   if (body.errors?.length) {
+    console.error(body.errors);
     throw new Error(body.errors[0].message);
   }
 
