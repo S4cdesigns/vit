@@ -262,7 +262,6 @@ export default function VideoPlayer({
 
           <div className={styles.buttons}>
             <PlayPauseToggleButton scene={scene} />
-            {currentTime}
             <VolumeHighIcon size={28} />
             <span style={{ fontSize: 14, fontWeight: 500, opacity: 0.8 }}>
               {formatDuration(duration * progress)} / {formatDuration(duration)}
