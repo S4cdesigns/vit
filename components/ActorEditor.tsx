@@ -106,17 +106,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
             }}
           />
         </div>
-<<<<<<< HEAD
-        <ExternalLinksEditor
-          externalLinks={externalLinks}
-          updateLinkText={updateLinkText}
-          updateLinkUrl={updateLinkUrl}
-          addExternalLink={addExternalLink}
-          removeLink={removeLink}
-        />
-=======
         <ExternalLinksEditor value={externalLinks} onChange={setExternalLinks} />
->>>>>>> ssr
       </Window>
     </>
   );
