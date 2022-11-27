@@ -43,6 +43,7 @@ import {
   favoriteScene,
   rateScene,
   runScenePlugins,
+  screenshotScene,
   unwatchScene,
   watchScene,
 } from "../../util/mutations/scene";
@@ -119,13 +120,14 @@ export default function ScenePage({
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
+  const [screenshotLoader, setScreenshotLoader] = useState(false);
 
   const [pluginLoader, setPluginLoader] = useState(false);
 
   const gridUrl = `/api/media/scene/${scene._id}/grid`;
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
-  const { startPlayback } = useVideoControls();
+  const { startPlayback, currentTime } = useVideoControls();
 
   const {
     actors,
@@ -241,6 +243,17 @@ export default function ScenePage({
       console.error(error);
     }
     setPluginLoader(false);
+  }
+
+  async function handleScreenshotScene() {
+    setScreenshotLoader(true);
+    try {
+      await screenshotScene(scene._id, currentTime);
+      router.replace(router.asPath).catch(() => {});
+    } catch (error) {
+      console.error(error);
+    }
+    setScreenshotLoader(false);
   }
 
   return (
@@ -479,6 +492,9 @@ export default function ScenePage({
                           }}
                         >
                           Generate grid
+                        </Button>
+                        <Button loading={screenshotLoader} onClick={handleScreenshotScene}>
+                          Use current frame as thumbnail
                         </Button>
                       </div>
                     </CardSection>
