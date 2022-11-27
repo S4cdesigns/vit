@@ -8,7 +8,9 @@ type Props = {
 };
 
 export default function VideoContextProvider(props: Props) {
+  // currentPlaybackTime = position of the playhead, setting this does not affect the playback
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
+  // newPlaybackTime can be used to jump to a specific time in a stream, use this for seeking
   const [newPlaybackTime, setNewPlaybackTime] = useState(0);
   const [paused, setPaused] = useState(true);
   const [scene, setScene] = useState<IScene>();
@@ -28,9 +30,16 @@ export default function VideoContextProvider(props: Props) {
     }
   };
 
+  const reset = () => {
+    setCurrentPlaybackTime(0);
+    setNewPlaybackTime(0);
+    setPaused(true);
+  };
+
   return (
     <VideoContext.Provider
       value={{
+        reset,
         togglePlayback,
         startPlayback,
         scene,

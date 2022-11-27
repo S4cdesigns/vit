@@ -37,8 +37,17 @@ export default function VideoPlayer({
   const [hover, setHover] = useState(false);
   const [progress, setProgress] = useState(0);
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
-  const { setCurrentTime, paused, startPlayback, newPlaybackTime, setScene, setPaused } =
-    useVideoControls();
+  const {
+    setCurrentTime,
+    currentTime,
+    paused,
+    startPlayback,
+    newPlaybackTime,
+    setScene,
+    setPaused,
+    reset,
+    togglePlayback,
+  } = useVideoControls();
   const videoEl = useRef<HTMLVideoElement | null>(null);
 
   // play/pause handling from VideoContext
@@ -70,6 +79,11 @@ export default function VideoPlayer({
     }
   }, [paused]);
 
+  // reset player state on unmount
+  useEffect(() => {
+    return reset;
+  }, []);
+
   // handle starting the playback at a specific position
   useEffect(() => {
     if (videoEl.current && startAtPosition) {
@@ -90,7 +104,7 @@ export default function VideoPlayer({
   // Play/pause handling from video element to update the context
   useEffect(() => {
     const handler = (event: any) => {
-      setPaused(event.type !== 'play');
+      setPaused(event.type !== "play");
     };
     videoEl.current?.addEventListener("play", handler, false);
     videoEl.current?.addEventListener("pause", handler, false);
@@ -191,6 +205,7 @@ export default function VideoPlayer({
           src={src}
           width="100%"
           height="100%"
+          onClick={togglePlayback}
           style={{ filter: safeModeBlur }}
         />
         <div
@@ -247,6 +262,7 @@ export default function VideoPlayer({
 
           <div className={styles.buttons}>
             <PlayPauseToggleButton scene={scene} />
+            {currentTime}
             <VolumeHighIcon size={28} />
             <span style={{ fontSize: 14, fontWeight: 500, opacity: 0.8 }}>
               {formatDuration(duration * progress)} / {formatDuration(duration)}

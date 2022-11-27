@@ -26,6 +26,8 @@ export const VideoContext = createContext<{
   setPaused: (paused: boolean) => void;
   setTarget: (target: string) => void;
   setScene: (scene: IScene) => void;
+  // reset the player state to paused, at time 0
+  reset: () => void;
 }>({
   currentTime: 0,
   currentTarget: PlaybackTarget.BROWSER,
@@ -36,6 +38,7 @@ export const VideoContext = createContext<{
   setPaused: (paused: boolean) => {},
   setTarget: (target: string) => {},
   setScene: (scene: IScene) => {},
+  reset: () => {},
 });
 
 export function useVideoControls() {
