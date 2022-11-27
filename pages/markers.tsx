@@ -134,7 +134,7 @@ export default function MarkerListPage(props: {
   const hasNoLabels = !labelLoader && !labelList.length;
 
   return (
-    <PageWrapper title={t("foundMarkers", { numItems: 0 })}>
+    <PageWrapper title={t("foundMarkers", { numItems })}>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMarkers", { numItems })}</div>
         <Spacer />
