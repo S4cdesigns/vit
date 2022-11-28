@@ -14,6 +14,10 @@ fragment MarkerPage on Marker {
     _id
     name
   }
+  actors {
+    _id
+    name
+  }
 }
 `;
 

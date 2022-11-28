@@ -16,6 +16,7 @@ const defaultProps = {
 };
 
 export default function ActorDropdownChoice({ selectedActors, onChange }: Props) {
+  console.log('selected', selectedActors);
   const loadOptions = (inputValue: string, callback: (options: SelectableActor[]) => void) => {
     fetchActors(0, { query: inputValue })
       .then((result) => {
@@ -57,12 +58,12 @@ export default function ActorDropdownChoice({ selectedActors, onChange }: Props)
           color: "white",
         }),
       }}
-      filterOption={({ data: label }, query) => label.name.toLowerCase().includes(query)}
+      filterOption={({ data: actor }, query) => actor.name.toLowerCase().includes(query)}
       isMulti
       defaultOptions={selectedActors}
       loadOptions={loadOptions}
-      getOptionLabel={(label) => label.name}
-      getOptionValue={(label) => label._id}
+      getOptionLabel={(actor) => actor.name}
+      getOptionValue={(actor) => actor._id}
     />
   );
 }

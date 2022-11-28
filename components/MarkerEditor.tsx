@@ -78,6 +78,7 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
 
       setMarker(getMarkerById);
       setSelectedLabels(getMarkerById?.labels || []);
+      setSelectedActors(getMarkerById?.actors || []);
     };
 
     setLoader(true);
