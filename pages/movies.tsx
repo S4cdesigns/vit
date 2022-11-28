@@ -22,6 +22,7 @@ import { buildQueryParser } from "../util/query_parser";
 import MovieCreator from "../components/MovieCreator";
 import MovieBulkCreator from "../components/MovieBulkCreator";
 import Spacer from "../components/Spacer";
+import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -107,88 +108,82 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
 
   return (
     <PageWrapper title={t("foundMovies", { numItems })}>
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
-        <Spacer />
-        <Pagination numPages={numPages} current={page} onChange={onPageChange} />
-      </div>
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <MovieCreator onCreate={() => onPageChange(0)} />
-        <MovieBulkCreator onCreate={() => onPageChange(0)} />
-        {/* <Button style={{ marginRight: 10 }}>Choose</Button>
+      <AutoLayout>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
+          <Spacer />
+          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <MovieCreator onCreate={() => onPageChange(0)} />
+          <MovieBulkCreator onCreate={() => onPageChange(0)} />
+          {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
-      </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <input
-          type="text"
-          onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              refresh().catch(() => {});
-            }
-          }}
-          placeholder={t("findContent")}
-          value={query}
-          onChange={(ev) => setQuery(ev.target.value)}
-        />
-        <IconButtonFilter
-          value={favorite}
-          onClick={() => setFavorite(!favorite)}
-          activeIcon={HeartIcon}
-          inactiveIcon={HeartBorderIcon}
-        />
-        <IconButtonFilter
-          value={bookmark}
-          onClick={() => setBookmark(!bookmark)}
-          activeIcon={BookmarkIcon}
-          inactiveIcon={BookmarkBorderIcon}
-        />
-        <select value={sortBy} onChange={(ev) => setSortBy(ev.target.value)}>
-          <option value="relevance">{t("relevance")}</option>
-          <option value="addedOn">{t("addedToCollection")}</option>
-          <option value="duration">{t("duration")}</option>
-          <option value="numScenes">{t("numScenes")}</option>
-        </select>
-        <SortDirectionButton
-          disabled={sortBy === "$shuffle"}
-          value={sortDir}
-          onChange={setSortDir}
-        />
-        <Spacer />
-        <Button loading={loading} onClick={refresh}>
-          {t("refresh")}
-        </Button>
-      </div>
-      <ListWrapper loading={loading} noResults={!numItems}>
-        {movies.map((movie) => (
-          <MovieCard
-            onFav={(value) => {
-              editMovie(movie._id, (movie) => {
-                movie.favorite = value;
-                return movie;
-              });
+        </div>
+        <AutoLayout layout="h" gap={10}>
+          <input
+            type="text"
+            onKeyDown={(ev) => {
+              if (ev.key === "Enter") {
+                refresh().catch(() => {});
+              }
             }}
-            onBookmark={(value) => {
-              editMovie(movie._id, (movie) => {
-                movie.bookmark = !!value;
-                return movie;
-              });
-            }}
-            key={movie._id}
-            movie={movie}
-          ></MovieCard>
-        ))}
-      </ListWrapper>
-      <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
-        <Pagination numPages={numPages} current={page} onChange={onPageChange} />
-      </div>
+            placeholder={t("findContent")}
+            value={query}
+            onChange={(ev) => setQuery(ev.target.value)}
+          />
+          <IconButtonFilter
+            value={favorite}
+            onClick={() => setFavorite(!favorite)}
+            activeIcon={HeartIcon}
+            inactiveIcon={HeartBorderIcon}
+          />
+          <IconButtonFilter
+            value={bookmark}
+            onClick={() => setBookmark(!bookmark)}
+            activeIcon={BookmarkIcon}
+            inactiveIcon={BookmarkBorderIcon}
+          />
+          <select value={sortBy} onChange={(ev) => setSortBy(ev.target.value)}>
+            <option value="relevance">{t("relevance")}</option>
+            <option value="addedOn">{t("addedToCollection")}</option>
+            <option value="duration">{t("duration")}</option>
+            <option value="numScenes">{t("numScenes")}</option>
+          </select>
+          <SortDirectionButton
+            disabled={sortBy === "$shuffle"}
+            value={sortDir}
+            onChange={setSortDir}
+          />
+          <Spacer />
+          <Button loading={loading} onClick={refresh}>
+            {t("refresh")}
+          </Button>
+        </AutoLayout>
+        <ListWrapper loading={loading} noResults={!numItems}>
+          {movies.map((movie) => (
+            <MovieCard
+              onFav={(value) => {
+                editMovie(movie._id, (movie) => {
+                  movie.favorite = value;
+                  return movie;
+                });
+              }}
+              onBookmark={(value) => {
+                editMovie(movie._id, (movie) => {
+                  movie.bookmark = !!value;
+                  return movie;
+                });
+              }}
+              key={movie._id}
+              movie={movie}
+            ></MovieCard>
+          ))}
+        </ListWrapper>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+        </div>
+      </AutoLayout>
     </PageWrapper>
   );
 }

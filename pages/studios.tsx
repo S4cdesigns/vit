@@ -25,6 +25,7 @@ import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
 import { thumbnailUrl } from "../util/thumbnail";
 import Spacer from "../components/Spacer";
+import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -119,87 +120,81 @@ export default function StudioListPage(props: {
 
   return (
     <PageWrapper title={t("foundStudios", { numItems })}>
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundStudios", { numItems })}</div>
-        <Spacer />
-        <Pagination numPages={numPages} current={page} onChange={onPageChange} />
-      </div>
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <Button style={{ marginRight: 10 }}>+ Add studio</Button>
-        {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
-        {/* <Button style={{ marginRight: 10 }}>Choose</Button>
+      <AutoLayout>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundStudios", { numItems })}</div>
+          <Spacer />
+          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Button style={{ marginRight: 10 }}>+ Add studio</Button>
+          {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
+          {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
-      </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <input
-          type="text"
-          onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              refresh().catch(() => {});
-            }
-          }}
-          placeholder={t("findContent")}
-          value={query}
-          onChange={(ev) => setQuery(ev.target.value)}
-        />
-        <IconButtonFilter
-          value={favorite}
-          onClick={() => setFavorite(!favorite)}
-          activeIcon={HeartIcon}
-          inactiveIcon={HeartBorderIcon}
-        />
-        <IconButtonFilter
-          value={bookmark}
-          onClick={() => setBookmark(!bookmark)}
-          activeIcon={BookmarkIcon}
-          inactiveIcon={BookmarkBorderIcon}
-        />
-        <select value={sortBy} onChange={(ev) => setSortBy(ev.target.value)}>
-          <option value="relevance">{t("relevance")}</option>
-          <option value="addedOn">{t("addedToCollection")}</option>
-          <option value="numScenes">{t("numScenes")}</option>
-        </select>
-        <SortDirectionButton
-          disabled={sortBy === "$shuffle"}
-          value={sortDir}
-          onChange={setSortDir}
-        />
-        <Spacer />
-        <Button loading={loading} onClick={refresh}>
-          {t("refresh")}
-        </Button>
-      </div>
-      <ListWrapper loading={loading} noResults={!studios.length}>
-        {studios.map((studio) => (
-          <StudioCard
-            key={studio._id}
-            onFav={(value) => {
-              editStudio(studio._id, (studio) => {
-                studio.favorite = value;
-                return studio;
-              });
+        </div>
+        <AutoLayout layout="h" gap={10}>
+          <input
+            type="text"
+            onKeyDown={(ev) => {
+              if (ev.key === "Enter") {
+                refresh().catch(() => {});
+              }
             }}
-            onBookmark={(value) => {
-              editStudio(studio._id, (studio) => {
-                studio.bookmark = !!value;
-                return studio;
-              });
-            }}
-            studio={studio}
+            placeholder={t("findContent")}
+            value={query}
+            onChange={(ev) => setQuery(ev.target.value)}
           />
-        ))}
-      </ListWrapper>
-      <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
-        <Pagination numPages={numPages} current={page} onChange={onPageChange} />
-      </div>
+          <IconButtonFilter
+            value={favorite}
+            onClick={() => setFavorite(!favorite)}
+            activeIcon={HeartIcon}
+            inactiveIcon={HeartBorderIcon}
+          />
+          <IconButtonFilter
+            value={bookmark}
+            onClick={() => setBookmark(!bookmark)}
+            activeIcon={BookmarkIcon}
+            inactiveIcon={BookmarkBorderIcon}
+          />
+          <select value={sortBy} onChange={(ev) => setSortBy(ev.target.value)}>
+            <option value="relevance">{t("relevance")}</option>
+            <option value="addedOn">{t("addedToCollection")}</option>
+            <option value="numScenes">{t("numScenes")}</option>
+          </select>
+          <SortDirectionButton
+            disabled={sortBy === "$shuffle"}
+            value={sortDir}
+            onChange={setSortDir}
+          />
+          <Spacer />
+          <Button loading={loading} onClick={refresh}>
+            {t("refresh")}
+          </Button>
+        </AutoLayout>
+        <ListWrapper loading={loading} noResults={!studios.length}>
+          {studios.map((studio) => (
+            <StudioCard
+              key={studio._id}
+              onFav={(value) => {
+                editStudio(studio._id, (studio) => {
+                  studio.favorite = value;
+                  return studio;
+                });
+              }}
+              onBookmark={(value) => {
+                editStudio(studio._id, (studio) => {
+                  studio.bookmark = !!value;
+                  return studio;
+                });
+              }}
+              studio={studio}
+            />
+          ))}
+        </ListWrapper>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+        </div>
+      </AutoLayout>
     </PageWrapper>
   );
 }
