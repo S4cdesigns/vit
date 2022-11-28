@@ -11,11 +11,15 @@ import Select from "react-select";
 import useLabelList from "../composables/use_label_list";
 import { useVideoControls } from "../composables/use_video_control";
 import { useWindow } from "../composables/use_window";
+import actor from "../src/graphql/mutations/actor";
+import { IActor } from "../types/actor";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
+import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Rating from "./Rating";
 import Subheading from "./Subheading";
 import Window from "./Window";
@@ -53,11 +57,11 @@ async function createMarker(
 type Props = {
   onCreate: () => void;
   sceneId: string;
-  actorIds: string[];
+  actors: IActor[];
   onOpen: () => void;
 };
 
-export default function MarkerCreator({ onCreate, onOpen, sceneId, actorIds }: Props) {
+export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
@@ -65,11 +69,11 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actorIds }: P
   const [rating, setRating] = useState(0);
   const [fav, setFav] = useState(false);
   const [bookmark, setBookmark] = useState(false);
-  const [selectedLabels, setSelectedLabels] = useState<readonly ILabel[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
+  const [selectedActors, setSelectedActors] = useState<readonly SelectableActor[]>(actors);
   const { currentTime } = useVideoControls();
 
   const [loading, setLoader] = useState(false);
-  const { labels } = useLabelList();
 
   const doOpen = () => {
     open();
@@ -98,7 +102,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actorIds }: P
                     fav,
                     bookmark,
                     selectedLabels.map(({ _id }) => _id),
-                    actorIds
+                    selectedActors.map(({ _id }) => _id)
                   );
                   onCreate();
                   close();
@@ -158,39 +162,12 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actorIds }: P
           </div>
         </AutoLayout>
         <div>
+          <Subheading>Actors</Subheading>
+          <ActorDropdownChoice selectedActors={selectedActors} onChange={setSelectedActors} />
+        </div>
+        <div>
           <Subheading>Labels</Subheading>
-          <Select
-            value={selectedLabels}
-            onChange={setSelectedLabels}
-            closeMenuOnSelect={false}
-            isClearable
-            styles={{
-              container: (provided) => ({
-                ...provided,
-                maxWidth: 400,
-              }),
-              option: (provided) => ({
-                ...provided,
-                color: "black",
-              }),
-              multiValue: (styles, { data }) => {
-                return {
-                  ...styles,
-                  backgroundColor: data.color || "black",
-                  borderRadius: 4,
-                };
-              },
-              multiValueLabel: (styles, { data }) => ({
-                ...styles,
-                color: new Color(data.color || "#000000").isLight() ? "black" : "white",
-              }),
-            }}
-            filterOption={({ data: label }, query) => label.name.toLowerCase().includes(query)}
-            isMulti
-            options={labels}
-            getOptionLabel={(label) => label.name}
-            getOptionValue={(label) => label._id}
-          />
+          <LabelDropdownChoice selectedLabels={selectedLabels} onChange={setSelectedLabels} />
         </div>
       </Window>
     </>

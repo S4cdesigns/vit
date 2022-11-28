@@ -18,8 +18,6 @@ const defaultProps = {
 export default function LabelDropdownChoice({ selectedLabels, onChange }: Props) {
   const { labels } = useLabelList();
 
-  console.log(selectedLabels);
-
   return (
     <Select
       value={selectedLabels}

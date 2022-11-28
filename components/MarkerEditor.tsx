@@ -8,9 +8,11 @@ import { useEffect, useState } from "react";
 
 import { useWindow } from "../composables/use_window";
 import { markerPageFragment } from "../fragments/marker";
+import Actor from "../src/graphql/mutations/actor";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
+import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
@@ -24,7 +26,8 @@ async function editMarker(
   rating: number,
   favorite: boolean,
   bookmark: boolean,
-  labels: string[]
+  labels: string[],
+  actors: string[]
 ) {
   const query = `
   mutation ($ids: [String!]!, $opts: MarkerUpdateOpts!) {
@@ -36,7 +39,7 @@ async function editMarker(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, rating, favorite, bookmark, labels },
+    opts: { name, rating, favorite, bookmark, labels, actors },
   });
 }
 
@@ -49,6 +52,7 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
   const [marker, setMarker] = useState<IMarker>();
   const [loading, setLoader] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
+  const [selectedActors, setSelectedActors] = useState<readonly SelectableActor[]>([]);
   const { isOpen, close, open } = useWindow();
 
   useEffect(() => {
@@ -149,14 +153,14 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
                   }
 
                   setLoader(true);
-                  console.log(selectedLabels);
                   await editMarker(
                     marker?._id,
                     marker?.name,
                     marker?.rating,
                     marker?.favorite,
                     marker?.bookmark,
-                    selectedLabels.map((label) => label._id)
+                    selectedLabels.map((label) => label._id),
+                    selectedActors.map((actor) => actor._id)
                   );
                   onEdit();
                   close();
@@ -213,6 +217,10 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
             )}
           </div>
         </AutoLayout>
+        <div>
+          <Subheading>Actors</Subheading>
+          <ActorDropdownChoice selectedActors={selectedActors} onChange={setSelectedActors} />
+        </div>
         <div>
           <Subheading>Labels</Subheading>
           <LabelDropdownChoice selectedLabels={selectedLabels} onChange={setSelectedLabels} />

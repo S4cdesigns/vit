@@ -317,7 +317,7 @@ export default function ScenePage({
                       }
                     }}
                     sceneId={scene._id}
-                    actorIds={scene.actors.map((actor) => actor._id)}
+                    actors={scene.actors}
                     onCreate={async () => {
                       const videoEl = document.getElementById(
                         "video-player"
