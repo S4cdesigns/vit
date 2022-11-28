@@ -1,13 +1,11 @@
-import Color from "color";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import Select from "react-select";
 
-import useLabelList from "../composables/use_label_list";
 import { useWindow } from "../composables/use_window";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
+import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
@@ -37,10 +35,9 @@ export default function ActorCreator({ onCreate }: Props) {
 
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");
-  const [selectedLabels, setSelectedLabels] = useState<readonly ILabel[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
 
   const [loading, setLoader] = useState(false);
-  const { labels } = useLabelList();
 
   return (
     <>
@@ -98,41 +95,7 @@ export default function ActorCreator({ onCreate }: Props) {
         </div>
         <div>
           <Subheading>Labels</Subheading>
-          <Select
-            value={selectedLabels}
-            onChange={setSelectedLabels}
-            closeMenuOnSelect={false}
-            isClearable
-            styles={{
-              container: (provided) => ({
-                ...provided,
-                maxWidth: 400,
-              }),
-              option: (provided) => ({
-                ...provided,
-                color: "black",
-              }),
-              multiValue: (styles, { data }) => {
-                return {
-                  ...styles,
-                  backgroundColor: data.color || "black",
-                  borderRadius: 4,
-                };
-              },
-              multiValueLabel: (styles, { data }) => ({
-                ...styles,
-                color: new Color(data.color || "#000000").isLight() ? "black" : "white",
-              }),
-            }}
-            filterOption={({ data: label }, query) =>
-              label.name.toLowerCase().includes(query) ||
-              label.aliases.some((alias) => alias.toLowerCase().includes(query))
-            }
-            isMulti
-            options={labels}
-            getOptionLabel={(label) => label.name}
-            getOptionValue={(label) => label._id}
-          />
+          <LabelDropdownChoice onChange={setSelectedLabels} selectedLabels={selectedLabels} />
         </div>
       </Window>
     </>

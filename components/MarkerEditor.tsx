@@ -5,17 +5,15 @@ import AddMarkerIcon from "mdi-react/EditIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useEffect, useState } from "react";
-import Select from "react-select";
 
-import useLabelList from "../composables/use_label_list";
 import { useWindow } from "../composables/use_window";
 import { markerPageFragment } from "../fragments/marker";
-import ILabel from "../types/label";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Rating from "./Rating";
 import Subheading from "./Subheading";
 import Window from "./Window";
@@ -50,8 +48,8 @@ type Props = {
 export default function MarkerEditor({ onEdit, markerId }: Props) {
   const [marker, setMarker] = useState<IMarker>();
   const [loading, setLoader] = useState(false);
+  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
   const { isOpen, close, open } = useWindow();
-  const { labels } = useLabelList();
 
   useEffect(() => {
     if (!isOpen) {
@@ -75,6 +73,7 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
       });
 
       setMarker(getMarkerById);
+      setSelectedLabels(getMarkerById?.labels || []);
     };
 
     setLoader(true);
@@ -132,17 +131,6 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
     });
   };
 
-  const setSelectedLabels = (value: ILabel[]) => {
-    if (!marker) {
-      return;
-    }
-
-    setMarker({
-      ...marker,
-      labels: value,
-    });
-  };
-
   return (
     <>
       <AddMarkerIcon className="hover" size={24} onClick={doOpen} />
@@ -161,13 +149,14 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
                   }
 
                   setLoader(true);
+                  console.log(selectedLabels);
                   await editMarker(
                     marker?._id,
                     marker?.name,
                     marker?.rating,
                     marker?.favorite,
                     marker?.bookmark,
-                    marker?.labels.map((label) => label._id)
+                    selectedLabels.map((label) => label._id)
                   );
                   onEdit();
                   close();
@@ -226,38 +215,7 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
         </AutoLayout>
         <div>
           <Subheading>Labels</Subheading>
-          <Select
-            value={marker?.labels}
-            onChange={setSelectedLabels}
-            closeMenuOnSelect={false}
-            isClearable
-            styles={{
-              container: (provided) => ({
-                ...provided,
-                maxWidth: 400,
-              }),
-              option: (provided) => ({
-                ...provided,
-                color: "black",
-              }),
-              multiValue: (styles, { data }) => {
-                return {
-                  ...styles,
-                  backgroundColor: data.color || "black",
-                  borderRadius: 4,
-                };
-              },
-              multiValueLabel: (styles, { data }) => ({
-                ...styles,
-                color: new Color(data.color || "#000000").isLight() ? "black" : "white",
-              }),
-            }}
-            filterOption={({ data: label }, query) => label.name.toLowerCase().includes(query)}
-            isMulti
-            options={labels}
-            getOptionLabel={(label) => label.name}
-            getOptionValue={(label) => label._id}
-          />
+          <LabelDropdownChoice selectedLabels={selectedLabels} onChange={setSelectedLabels} />
         </div>
       </Window>
     </>
