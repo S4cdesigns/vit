@@ -154,7 +154,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
         <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
       </div>
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <ImageUploader onDone={() => console.log("done")} onUpload={prependImages} />
+        <ImageUploader  onUpload={prependImages} />
       </div>
       <div
         style={{
