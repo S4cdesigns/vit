@@ -264,9 +264,9 @@ export default function ActorPage({ actor }: { actor: IActor }) {
   );
 
   return (
-    <PageWrapper title={actor.name}>
+    <PageWrapper padless title={actor.name}>
       <HeroImage imageId={actor.hero?._id} />
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "center", padding: 10 }}>
         <ComplexGrid negativeTop={!!actor.hero} leftChildren={leftCol} rightChildren={rightCol} />
       </div>
     </PageWrapper>

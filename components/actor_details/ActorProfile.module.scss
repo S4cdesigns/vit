@@ -4,8 +4,15 @@
   border-radius: 40%;
   border-width: 4;
   border-style: solid;
-  border-color: $primary;
-  object-fit: cover;
+  border-color: darken($bg, 20%);
+  max-width: 160px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+  }
 }
 
 .actor-name {
@@ -21,6 +28,6 @@
   }
 
   .avatar {
-    border-color: $primary-light;
+    border-color: lighten($bg-dark, 20%);
   }
 }
