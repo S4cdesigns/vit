@@ -1,6 +1,5 @@
 import { ReactNode, useState } from "react";
 
-import ExternalPlayerControls from "./ExternalPlayerControls";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
@@ -20,7 +19,6 @@ export default function Layout({ children }: Props): JSX.Element {
       <Topbar setSidebar={setSidebar} />
       <Sidebar active={mobileSidebar} setSidebar={setSidebar} />
       <div className="content">{children}</div>
-      <ExternalPlayerControls />
     </div>
   );
 }
