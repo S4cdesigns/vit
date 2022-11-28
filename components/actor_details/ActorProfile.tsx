@@ -4,10 +4,9 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "../../components/Button";
-import { useSafeMode } from "../../composables/use_safe_mode";
 import {
   bookmarkActor,
   favoriteActor,
@@ -18,9 +17,9 @@ import { thumbnailUrl } from "../../util/thumbnail";
 import AutoLayout from "../AutoLayout";
 import Flag from "../Flag";
 import Rating from "../Rating";
-import Text from "../Text";
 import styles from "./ActorProfile.module.scss";
 import ExternalLink from "./ExternalLink";
+import { useSafeMode } from "../../composables/use_safe_mode";
 
 type Props = {
   actorId: string;
@@ -100,9 +99,12 @@ export default function ActorProfile(props: Props) {
     >
       <div style={{ position: "relative" }}>
         {props.avatarId ? (
-          <div className={styles.avatar}>
-            <img src={thumbnailUrl(props.avatarId)} style={{ filter: safeModeBlur }} />
-          </div>
+          <img
+            className={styles.avatar}
+            width="140"
+            src={thumbnailUrl(props.avatarId)}
+            style={{ filter: safeModeBlur }}
+          />
         ) : (
           <div className={styles.avatar} style={{ width: 140, height: 140, aspectRatio: "1" }}>
             <span

@@ -1,6 +1,6 @@
 import Axios, { AxiosError, AxiosResponse } from "axios";
-import { izzyHost } from "../../binaries/izzy";
 
+import { izzyHost } from "../../binaries/izzy";
 import { getConfig } from "../../config";
 import { formatMessage, logger } from "../../utils/logger";
 
