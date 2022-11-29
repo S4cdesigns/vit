@@ -90,6 +90,7 @@ export async function clearIndices() {
     logger.verbose(`Deleting indices: ${indices.join(", ")}`);
     await client.indices.delete({ index: indices });
   } catch (error) {
+    console.error(error);
     handleError("Error deleting indices", error);
   }
   logger.info("Wiped Elasticsearch");
@@ -126,9 +127,13 @@ async function ensureIndexExists(name: string): Promise<boolean> {
             name: {
               type: "text",
               analyzer: "pv_analyzer",
+              copy_to: "name_ac",
             },
             rawName: {
               type: "keyword",
+            },
+            name_ac: {
+              type: "search_as_you_type",
             },
           },
         },

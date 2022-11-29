@@ -1,5 +1,7 @@
 import { collections } from "../../../database";
+import { indexMap } from "../../../search";
 import { IActorSearchQuery, searchActors } from "../../../search/actor";
+import { performAutocomplete } from "../../../search/common";
 import Actor from "../../../types/actor";
 import { logger } from "../../../utils/logger";
 
@@ -57,4 +59,11 @@ export async function getActors(
     numPages: result.numPages,
     items: actors,
   };
+}
+
+export async function autocompleteActors(
+  _: unknown,
+  { query }: { query: { term: string } }
+): Promise<{ items: { _id: string; name: string }[] }> {
+  return await performAutocomplete(indexMap.actors, query.term);
 }

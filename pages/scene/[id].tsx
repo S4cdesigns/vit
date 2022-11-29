@@ -50,6 +50,7 @@ import {
 import { buildQueryParser } from "../../util/query_parser";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+import MarkerCard from "../../components/MarkerCard";
 
 const queryParser = buildQueryParser({
   t: {

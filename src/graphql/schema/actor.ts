@@ -54,6 +54,14 @@ export default `
     items: [Actor!]!
   }
 
+  type ActorAutocompleteResults {
+    items: [Actor!]!
+  }
+
+  input ActorAutocompleteQuery {
+    term: String!
+  }
+
   input ActorSearchQuery {
     query: String
     letter: String
@@ -76,6 +84,7 @@ export default `
 
   extend type Query {
     numActors: Int!
+    autocompleteActors(query: ActorAutocompleteQuery): ActorAutocompleteResults!
     getActors(query: ActorSearchQuery!, seed: String): ActorSearchResults!
     getActorById(id: String!): Actor
     topActors(skip: Int, take: Int): [Actor!]!

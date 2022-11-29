@@ -10,7 +10,7 @@ import Scene from "../../types/scene";
 import Studio from "../../types/studio";
 import SceneView from "../../types/watch";
 import { collections } from "./../../database";
-import { getActors, getUnwatchedActors } from "./search/actor";
+import { autocompleteActors, getActors, getUnwatchedActors } from "./search/actor";
 import { getImages } from "./search/image";
 import { getMarkers } from "./search/marker";
 import { getMovies } from "./search/movie";
@@ -191,6 +191,7 @@ export default {
   getStudios,
   getMovies,
   getActors,
+  autocompleteActors,
   getScenes,
   getImages,
   getMarkers,

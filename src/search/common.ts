@@ -23,6 +23,37 @@ export async function removeSearchDocument(index: string, id: string): Promise<v
   });
 }
 
+export async function performAutocomplete(
+  index: string,
+  query?: string
+): Promise<{ items: { _id: string; name: string }[] }> {
+  if (!query || !query.length) {
+    return Promise.resolve({ items: [] });
+  }
+
+  const body = {
+    query: {
+      match_phrase_prefix: {
+        name_ac: query,
+      },
+    },
+  };
+
+  const result = await getClient().search<{ id: string; name: string }>({
+    index,
+    body,
+  });
+
+  const items = result.hits?.hits.map((hit) => {
+    return {
+      _id: hit._id,
+      name: hit._source.name,
+    };
+  });
+
+  return { items };
+}
+
 export async function performSearch<
   T extends { id: string },
   Q extends Partial<{

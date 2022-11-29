@@ -1,9 +1,11 @@
+import axios from "axios";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import { ReactNode } from "react";
 import useSWR from "swr";
 
 import AutoLayout from "../../components/AutoLayout";
+import Button from "../../components/Button";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
@@ -98,6 +100,16 @@ function StatusSection({ status }: { status: StatusData }) {
           </table>
         </div>
         <Text>Note: Health "green" and "yellow" are OK</Text>
+        <Button
+          onClick={() => {
+            // TODO: confirmation
+            axios.post("/api/system/reindex").catch((error) => {
+              console.error(error);
+            });
+          }}
+        >
+          Reindex
+        </Button>
       </SettingsSection>
     </>
   );
