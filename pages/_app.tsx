@@ -10,9 +10,9 @@ import nprogress from "nprogress";
 import { createContext, useEffect, useState } from "react";
 
 import Layout from "../components/app/Layout";
+import VideoContextProvider from "../components/VideoContextProvider";
 import { SafeModeContext } from "../composables/use_safe_mode";
 import lang from "../locale";
-import VideoContextProvider from "./VideoContextProvider";
 
 Router.events.on("routeChangeStart", () => nprogress.start());
 Router.events.on("routeChangeComplete", () => nprogress.done());
