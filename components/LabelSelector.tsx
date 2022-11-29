@@ -1,16 +1,23 @@
+import EditIcon from "mdi-react/EditIcon";
 import { useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
 import ILabel from "../types/label";
+import AutoLayout from "./AutoLayout";
 import Paper from "./Paper";
 
 type Props = {
   items: ILabel[];
   selected: string[];
   onChange?: (x: string[]) => void;
+  editEnabled: boolean;
 };
 
-export default function LabelSelector({ items, selected, onChange }: Props) {
+LabelSelector.defaultProps = {
+  editEnabled: false,
+};
+
+export default function LabelSelector({ items, selected, onChange, editEnabled }: Props) {
   const { theme } = useContext(ThemeContext);
 
   function isSelected(labelId: string): boolean {
@@ -49,7 +56,12 @@ export default function LabelSelector({ items, selected, onChange }: Props) {
               : "white",
           }}
         >
-          <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500 }}>{label.name}</div>
+          <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500 }}>
+            <AutoLayout layout="h">
+              <div>{label.name}</div>
+              <div>{editEnabled && <EditIcon className="hover" />}</div>
+            </AutoLayout>
+          </div>
         </Paper>
       ))}
     </>

@@ -21,6 +21,7 @@ import MarkerCard from "../components/MarkerCard";
 import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
+import MarkerList from "../components/scene_details/MarkerList";
 import SortDirectionButton from "../components/SortDirectionButton";
 import Spacer from "../components/Spacer";
 import useLabelList from "../composables/use_label_list";
@@ -222,30 +223,28 @@ export default function MarkerListPage(props: {
       </div>
 
       <ListWrapper loading={false} noResults={false}>
-        {markers.map((marker) => (
-          <MarkerCard
-            marker={marker}
-            key={marker._id}
-            onFav={(value) => {
-              editMarker(marker._id, (marker) => {
-                marker.favorite = value;
-                return marker;
-              });
-            }}
-            onBookmark={(value) => {
-              editMarker(marker._id, (marker) => {
-                marker.bookmark = value;
-                return marker;
-              });
-            }}
-            onRate={(rating) => {
-              editMarker(marker._id, (marker) => {
-                marker.rating = rating;
-                return marker;
-              });
-            }}
-          />
-        ))}
+        <MarkerList
+          markers={markers}
+          onDelete={refresh}
+          onFav={(marker, value) => {
+            editMarker(marker._id, (marker) => {
+              marker.favorite = value;
+              return marker;
+            });
+          }}
+          onBookmark={(marker, value) => {
+            editMarker(marker._id, (marker) => {
+              marker.bookmark = value;
+              return marker;
+            });
+          }}
+          onRate={(marker, rating) => {
+            editMarker(marker._id, (marker) => {
+              marker.rating = rating;
+              return marker;
+            });
+          }}
+        />
       </ListWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numPages} current={page} onChange={onPageChange} />

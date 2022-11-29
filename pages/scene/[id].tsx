@@ -22,12 +22,12 @@ import Code from "../../components/Code";
 import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
+import ListWrapper from "../../components/ListWrapper";
 import MarkerCreator from "../../components/MarkerCreator";
-import MarkerThumbnailCard from "../../components/MarkerThumbnail";
 import MovieCard from "../../components/MovieCard";
 import PageWrapper from "../../components/PageWrapper";
-import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
+import MarkerList from "../../components/scene_details/MarkerList";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
 import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
@@ -50,7 +50,6 @@ import {
 import { buildQueryParser } from "../../util/query_parser";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import MarkerCard from "../../components/MarkerCard";
 
 const queryParser = buildQueryParser({
   t: {
@@ -566,31 +565,21 @@ export default function ScenePage({
                 </div>
               )}
               {/* MARKERS */}
-              {!!markers.length && (
-                <div>
-                  <CardTitle style={{ marginBottom: 20 }}>{t("marker", { numItems: 2 })}</CardTitle>
-                  <ListContainer size={200}>
-                    {markers
-                      .sort((a, b) => a.time - b.time)
-                      .map((marker) => (
-                        <Paper key={marker._id}>
-                          <MarkerThumbnailCard
-                            onEdit={reloadMarkers}
-                            marker={marker}
-                            onClick={() => {
-                              startPlayback(marker.time);
-                              window.scrollTo({
-                                left: 0,
-                                top: 0,
-                                behavior: "smooth",
-                              });
-                            }}
-                          />
-                        </Paper>
-                      ))}
-                  </ListContainer>
-                </div>
-              )}
+              <CardTitle>Markers</CardTitle>
+              <ListWrapper loading={false} noResults={scene.markers.length === 0}>
+                {/* TODO: update marker list on delete */}
+                <MarkerList
+                  markers={scene.markers}
+                  onClick={(marker) => {
+                    startPlayback(marker.time);
+                    window.scrollTo({
+                      left: 0,
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                />
+              </ListWrapper>
             </AutoLayout>
           </div>
         </div>

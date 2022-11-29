@@ -138,15 +138,7 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
 
   return (
     <>
-      <AddMarkerIcon
-        className="hover"
-        size={24}
-        onClick={(event) => {
-          doOpen();
-          event.stopPropagation();
-          event.preventDefault();
-        }}
-      />
+      <AddMarkerIcon className="hover" size={24} onClick={doOpen} />
       <Window
         onClose={close}
         isOpen={isOpen}

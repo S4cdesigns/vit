@@ -102,10 +102,11 @@ function StatusSection({ status }: { status: StatusData }) {
         <Text>Note: Health "green" and "yellow" are OK</Text>
         <Button
           onClick={() => {
-            // TODO: confirmation
-            axios.post("/api/system/reindex").catch((error) => {
-              console.error(error);
-            });
+            if (window.confirm("Are your sure?")) {
+              axios.post("/api/system/reindex").catch((error) => {
+                console.error(error);
+              });
+            }
           }}
         >
           Reindex
@@ -145,14 +146,14 @@ export default function SettingsPage() {
               <SettingsSection title="Scan folders">
                 <CardSection title={t("heading.videos")}>
                   <ul>
-                    {scanStatus.folders.videos.map((folder) => (
+                    {scanStatus.folders?.videos.map((folder) => (
                       <li>{folder.path}</li>
                     ))}
                   </ul>
                 </CardSection>
                 <CardSection title={t("heading.images")}>
                   <ul>
-                    {scanStatus.folders.images.map((folder) => (
+                    {scanStatus.folders?.images.map((folder) => (
                       <li>{folder.path}</li>
                     ))}
                   </ul>

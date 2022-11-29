@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { CSSProperties, ReactNode, useContext } from "react";
+import { CSSProperties, MouseEvent, ReactNode, useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
 import styles from "./Paper.module.scss";
@@ -8,7 +8,7 @@ type Props = {
   children?: ReactNode;
   style?: CSSProperties;
   className?: string;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
 };
 
 export default function Paper({ onClick, children, style, className }: Props): JSX.Element {
@@ -16,7 +16,7 @@ export default function Paper({ onClick, children, style, className }: Props): J
 
   return (
     <div
-      onClick={() => onClick?.()}
+      onClick={(event) => onClick?.(event)}
       className={clsx(className, styles.paper)}
       style={{
         background: theme === "dark" ? "#1C1C25" : "white",

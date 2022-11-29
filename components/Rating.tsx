@@ -26,6 +26,8 @@ export default function Rating({ value, readonly, onChange }: RatingProps) {
       return;
     }
 
+    ev.stopPropagation();
+
     const clickTarget = ev.target as HTMLElement;
     const clickTargetWidth = clickTarget.getBoundingClientRect().width;
     const xCoordInClickTarget = ev.nativeEvent.offsetX;
