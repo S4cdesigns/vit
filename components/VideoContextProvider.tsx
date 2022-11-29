@@ -1,10 +1,10 @@
-import { createContext, useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { PlaybackTarget, VideoContext } from "../composables/use_video_control";
 import { IScene } from "../types/scene";
 
 type Props = {
-  children: any;
+  children: ReactNode;
 };
 
 export default function VideoContextProvider(props: Props) {
