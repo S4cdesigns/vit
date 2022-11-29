@@ -133,14 +133,14 @@ export default function SettingsPage() {
               <SettingsSection title="Scan folders">
                 <CardSection title={t("heading.videos")}>
                   <ul>
-                    {scanStatus.folders.videos.map((folder) => (
+                    {scanStatus.folders?.videos.map((folder) => (
                       <li>{folder.path}</li>
                     ))}
                   </ul>
                 </CardSection>
                 <CardSection title={t("heading.images")}>
                   <ul>
-                    {scanStatus.folders.images.map((folder) => (
+                    {scanStatus.folders?.images.map((folder) => (
                       <li>{folder.path}</li>
                     ))}
                   </ul>

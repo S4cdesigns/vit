@@ -32,6 +32,7 @@ export default `
     skip: Int
     take: Int
     page: Int
+    scene: String
 
     rawQuery: Json
   }

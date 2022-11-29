@@ -66,7 +66,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   };
 };
 
-export default function ActorListPage(props: { page: number; initial: IPaginationResult<IMovie> }) {
+export default function MovieListPage(props: { page: number; initial: IPaginationResult<IMovie> }) {
   const router = useRouter();
   const t = useTranslations();
 
