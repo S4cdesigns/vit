@@ -35,6 +35,7 @@ import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import { imageUrl, thumbnailUrl } from "../util/thumbnail";
 import Spacer from "../components/Spacer";
+import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -148,132 +149,126 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
 
   return (
     <PageWrapper title={t("foundImages", { numItems })}>
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundImages", { numItems })}</div>
-        <Spacer />
-        <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
-      </div>
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
-        <ImageUploader onDone={() => console.log("done")} onUpload={prependImages} />
-      </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <input
-          type="text"
-          onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              refresh().catch(() => {});
-            }
-          }}
-          placeholder={t("findContent")}
-          value={query}
-          onChange={(ev) => setQuery(ev.target.value)}
-        />
-        <IconButtonFilter
-          value={favorite}
-          onClick={() => setFavorite(!favorite)}
-          activeIcon={HeartIcon}
-          inactiveIcon={HeartBorderIcon}
-        />
-        <IconButtonFilter
-          value={bookmark}
-          onClick={() => setBookmark(!bookmark)}
-          activeIcon={BookmarkIcon}
-          inactiveIcon={BookmarkBorderIcon}
-        />
-        <IconButtonMenu
-          value={!!rating}
-          activeIcon={rating === 10 ? Star : StarHalf}
-          inactiveIcon={StarOutline}
-        >
-          <Rating value={rating} onChange={setRating} />
-        </IconButtonMenu>
-        <IconButtonMenu
-          counter={selectedLabels.length}
-          value={!!selectedLabels.length}
-          activeIcon={LabelIcon}
-          inactiveIcon={LabelOutlineIcon}
-          isLoading={labelLoader}
-          disabled={hasNoLabels}
-        >
+      <AutoLayout>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundImages", { numItems })}</div>
+          <Spacer />
+          <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <ImageUploader onUpload={prependImages} />
+        </div>
+        <AutoLayout layout="h" gap={10}>
           <input
             type="text"
-            style={{ width: "100%", marginBottom: 10 }}
-            placeholder={t("findLabels")}
-            value={labelQuery}
-            onChange={(ev) => setLabelQuery(ev.target.value)}
+            onKeyDown={(ev) => {
+              if (ev.key === "Enter") {
+                refresh().catch(() => {});
+              }
+            }}
+            placeholder={t("findContent")}
+            value={query}
+            onChange={(ev) => setQuery(ev.target.value)}
           />
-          <LabelSelector
-            selected={selectedLabels}
-            items={labelList.filter(
-              (label) =>
-                label.name.toLowerCase().includes(labelQuery.toLowerCase()) ||
-                label.aliases.some((alias) =>
-                  alias.toLowerCase().includes(labelQuery.toLowerCase())
-                )
-            )}
-            onChange={setSelectedLabels}
+          <IconButtonFilter
+            value={favorite}
+            onClick={() => setFavorite(!favorite)}
+            activeIcon={HeartIcon}
+            inactiveIcon={HeartBorderIcon}
           />
-        </IconButtonMenu>
-        <select value={sortBy} onChange={(ev) => setSortBy(ev.target.value)}>
-          <option value="relevance">{t("relevance")}</option>
-          <option value="addedOn">{t("addedToCollection")}</option>
-          <option value="rating">{t("rating")}</option>
-        </select>
-        <SortDirectionButton
-          disabled={sortBy === "$shuffle"}
-          value={sortDir}
-          onChange={setSortDir}
-        />
-        <Spacer />
-        <Button onClick={refresh}>{t("refresh")}</Button>
-      </div>
-      <ContentWrapper
-        loader={
-          <ListContainer>
-            {[...new Array(16)].map((_, i) => (
-              <Paper style={{ height: 150 }} key={i} className="skeleton-card"></Paper>
-            ))}
-          </ListContainer>
-        }
-        loading={loading}
-        noResults={!images.length}
-      >
-        <Masonry
-          items={images}
-          rowGutter={4}
-          columnGutter={4}
-          columnCount={(windowWidth || 1080) < 480 ? 2 : undefined}
-          columnWidth={225}
-          render={({ data, index }) => (
-            <ImageCard
-              // TODO: use a "hasPrevious" prop instead
-              onPrevious={index > 0 ? () => setActive(index - 1) : undefined}
-              onNext={index < images.length - 1 ? () => setActive(index + 1) : undefined}
-              onOpen={() => setActive(index)}
-              onClose={() => setActive(-1)}
-              active={index === activeIndex}
-              favorite={data.favorite}
-              bookmark={data.bookmark}
-              rating={data.rating}
-              key={data._id}
-              fullSrc={imageUrl(data._id)}
-              src={thumbnailUrl(data._id)}
-              alt={data.name}
+          <IconButtonFilter
+            value={bookmark}
+            onClick={() => setBookmark(!bookmark)}
+            activeIcon={BookmarkIcon}
+            inactiveIcon={BookmarkBorderIcon}
+          />
+          <IconButtonMenu
+            value={!!rating}
+            activeIcon={rating === 10 ? Star : StarHalf}
+            inactiveIcon={StarOutline}
+          >
+            <Rating value={rating} onChange={setRating} />
+          </IconButtonMenu>
+          <IconButtonMenu
+            counter={selectedLabels.length}
+            value={!!selectedLabels.length}
+            activeIcon={LabelIcon}
+            inactiveIcon={LabelOutlineIcon}
+            isLoading={labelLoader}
+            disabled={hasNoLabels}
+          >
+            <input
+              type="text"
+              style={{ width: "100%", marginBottom: 10 }}
+              placeholder={t("findLabels")}
+              value={labelQuery}
+              onChange={(ev) => setLabelQuery(ev.target.value)}
             />
-          )}
-        />
-      </ContentWrapper>
-      <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
-        <Pagination numPages={numPages} current={page} onChange={onPageChange} />
-      </div>
+            <LabelSelector
+              selected={selectedLabels}
+              items={labelList.filter(
+                (label) =>
+                  label.name.toLowerCase().includes(labelQuery.toLowerCase()) ||
+                  label.aliases.some((alias) =>
+                    alias.toLowerCase().includes(labelQuery.toLowerCase())
+                  )
+              )}
+              onChange={setSelectedLabels}
+            />
+          </IconButtonMenu>
+          <select value={sortBy} onChange={(ev) => setSortBy(ev.target.value)}>
+            <option value="relevance">{t("relevance")}</option>
+            <option value="addedOn">{t("addedToCollection")}</option>
+            <option value="rating">{t("rating")}</option>
+          </select>
+          <SortDirectionButton
+            disabled={sortBy === "$shuffle"}
+            value={sortDir}
+            onChange={setSortDir}
+          />
+          <Spacer />
+          <Button onClick={refresh}>{t("refresh")}</Button>
+        </AutoLayout>
+        <ContentWrapper
+          loader={
+            <ListContainer>
+              {[...new Array(16)].map((_, i) => (
+                <Paper style={{ height: 150 }} key={i} className="skeleton-card"></Paper>
+              ))}
+            </ListContainer>
+          }
+          loading={loading}
+          noResults={!images.length}
+        >
+          <Masonry
+            items={images}
+            rowGutter={4}
+            columnGutter={4}
+            columnCount={(windowWidth || 1080) < 480 ? 2 : undefined}
+            columnWidth={225}
+            render={({ data, index }) => (
+              <ImageCard
+                // TODO: use a "hasPrevious" prop instead
+                onPrevious={index > 0 ? () => setActive(index - 1) : undefined}
+                onNext={index < images.length - 1 ? () => setActive(index + 1) : undefined}
+                onOpen={() => setActive(index)}
+                onClose={() => setActive(-1)}
+                active={index === activeIndex}
+                favorite={data.favorite}
+                bookmark={data.bookmark}
+                rating={data.rating}
+                key={data._id}
+                fullSrc={imageUrl(data._id)}
+                src={thumbnailUrl(data._id)}
+                alt={data.name}
+              />
+            )}
+          />
+        </ContentWrapper>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+        </div>
+      </AutoLayout>
     </PageWrapper>
   );
 }

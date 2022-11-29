@@ -1,12 +1,9 @@
-import axios from "axios";
 import CloseIcon from "mdi-react/CloseIcon";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { useWindow } from "../composables/use_window";
-import { imageCardFragment } from "../fragments/image";
 import { IImage } from "../types/image";
-import { gqlIp } from "../util/ip";
 import { uploadImage } from "../util/mutations/image";
 import Button from "./Button";
 import FileInput from "./FileInput";

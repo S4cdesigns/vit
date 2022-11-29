@@ -17,6 +17,7 @@ import useLabelList from "../../composables/use_label_list";
 import { useSceneList } from "../../composables/use_scene_list";
 import useUpdateEffect from "../../composables/use_update_effect";
 import ActorSelector from "../ActorSelector";
+import AutoLayout from "../AutoLayout";
 import Button from "../Button";
 import CardTitle from "../CardTitle";
 import IconButtonFilter from "../IconButtonFilter";
@@ -122,8 +123,8 @@ export default function ActorDetailsPageSceneList(props: Props) {
   const hasNoLabels = !labelLoader && !labelList.length;
 
   return (
-    <div>
-      <CardTitle style={{ marginBottom: 20 }}>
+    <AutoLayout>
+      <CardTitle>
         {sceneLoader ? (
           "Loading..."
         ) : (
@@ -132,15 +133,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
           </span>
         )}
       </CardTitle>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
+      <AutoLayout layout="h" gap={10}>
         <input
           type="text"
           style={{ maxWidth: 120 }}
@@ -230,7 +223,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
         <Button loading={sceneLoader} onClick={refreshScenes}>
           {t("refresh")}
         </Button>
-      </div>
+      </AutoLayout>
       <ListWrapper loading={sceneLoader} noResults={!numScenes}>
         {scenes.map((scene) => (
           <SceneCard
@@ -257,9 +250,9 @@ export default function ActorDetailsPageSceneList(props: Props) {
           />
         ))}
       </ListWrapper>
-      <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Pagination numPages={numScenePages} current={page} onChange={onPageChange} />
       </div>
-    </div>
+    </AutoLayout>
   );
 }
