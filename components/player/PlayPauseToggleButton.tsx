@@ -17,11 +17,5 @@ export default function PlayPauseToggleButton({ scene }: Props) {
     PlaybackButton = PlayIcon;
   }
 
-  /*
-  if (scene?._id && scene._id !== loadedScene?._id) {
-    PlaybackButton = PlayIcon;
-  }
-  */
-
   return <PlaybackButton size={28} onClick={togglePlayback} style={{ cursor: "pointer" }} />;
 }
