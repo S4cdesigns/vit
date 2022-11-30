@@ -79,6 +79,7 @@ export default function ActorCreator({ onCreate }: Props) {
         <div>
           <Subheading>Actor name</Subheading>
           <input
+            style={{ width: "100%" }}
             autoFocus
             value={name}
             onChange={(ev) => setName(ev.target.value)}
@@ -89,6 +90,7 @@ export default function ActorCreator({ onCreate }: Props) {
         <div>
           <Subheading>Aliases</Subheading>
           <textarea
+            style={{ width: "100%" }}
             value={aliasInput}
             onChange={(ev) => setAliasInput(ev.target.value)}
             placeholder="1 per line"

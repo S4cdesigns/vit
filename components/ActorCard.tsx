@@ -3,11 +3,13 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import moment from "moment";
 import { useContext, useMemo, useState } from "react";
-import { useSafeMode } from "../composables/use_safe_mode";
 
+import { useSafeMode } from "../composables/use_safe_mode";
 import { ThemeContext } from "../pages/_app";
 import { IActor } from "../types/actor";
+import { IScene } from "../types/scene";
 import { bookmarkActor, favoriteActor, rateActor } from "../util/mutations/actor";
 import { thumbnailUrl } from "../util/thumbnail";
 import AutoLayout from "./AutoLayout";
@@ -31,13 +33,21 @@ type Props = {
     | "name"
     | "rating"
     | "labels"
+    | "bornOn"
   >;
+  scene?: IScene;
   onFav: (value: boolean) => void;
   onBookmark: (value: Date | null) => void;
   onRate: (rating: number) => void;
 };
 
-export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
+function calculateAge(bornOn?: number, sceneDate?: number) {
+  if (bornOn) {
+    return moment(sceneDate).diff(bornOn, "years");
+  }
+}
+
+export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
   const { theme } = useContext(ThemeContext);
   const [hover, setHover] = useState(false);
@@ -90,7 +100,14 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
             transition: "filter 0.15s ease-in-out",
             filter: safeModeBlur,
           }}
-        />
+        >
+          {actor.bornOn && scene?.releaseDate && (
+            <div className="">
+              <div className="">{calculateAge(actor.bornOn, scene.releaseDate)}</div>
+              <div className="">y/o in this scene</div>
+            </div>
+          )}
+        </ResponsiveImage>
       </div>
       <AutoLayout
         gap={5}
