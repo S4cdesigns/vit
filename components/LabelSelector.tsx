@@ -12,23 +12,47 @@ type Props = {
   onChange?: (x: string[]) => void;
   onEdit?: (updatedLabel: ILabel) => void;
   editEnabled: boolean;
+  filter: string;
 };
 
 LabelSelector.defaultProps = {
   editEnabled: false,
   onEdit: undefined,
+  filter: undefined,
 };
 
-export default function LabelSelector({ items, selected, onChange, editEnabled, onEdit }: Props) {
+export default function LabelSelector({
+  items,
+  selected,
+  onChange,
+  editEnabled,
+  onEdit,
+  filter,
+}: Props) {
   const { theme } = useContext(ThemeContext);
+  const normalizedFilter = filter?.toLowerCase().trim();
 
   function isSelected(labelId: string): boolean {
     return selected.includes(labelId);
   }
 
+  const filterLabel = (label: ILabel, index: number) => {
+    if (normalizedFilter.length === 0) {
+      return true;
+    }
+
+    const name = label.name?.toLowerCase();
+
+    if (!name) {
+      return true;
+    }
+
+    return name.indexOf(normalizedFilter) >= 0;
+  };
+
   return (
     <>
-      {items.map((label) => (
+      {items.filter(filterLabel).map((label) => (
         <Paper
           onClick={() => {
             if (isSelected(label._id)) {
