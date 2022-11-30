@@ -2,7 +2,7 @@ import DeleteIcon from "mdi-react/DeleteIcon";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
@@ -11,7 +11,7 @@ import LabelSelector from "../components/LabelSelector";
 import ListWrapper from "../components/ListWrapper";
 import PageWrapper from "../components/PageWrapper";
 import Spacer from "../components/Spacer";
-import useLabelList, { fetchLabels } from "../composables/use_label_list";
+import { fetchLabels } from "../composables/use_label_list";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 
@@ -32,8 +32,21 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
 
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [labels, setLabels] = useState<ILabel[]>([]);
 
-  const { labels, loading } = useLabelList();
+  const doLoad = async () => {
+    setLoading(true);
+    const labels = await fetchLabels();
+    setLabels(labels);
+  };
+
+  useEffect(() => {
+    doLoad()
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
   const numItems: number = props.initial.length;
 
   async function removeLabels() {
@@ -48,15 +61,20 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
     });
   }
   async function refresh() {
-    // TODO: not working properly
-    await router.replace(router.asPath);
+    try {
+      await doLoad();
+    } catch (error) {
+      console.error(error);
+    }
+
+    setLoading(false);
   }
 
   return (
-    <PageWrapper title={t("foundMovies", { numItems })}>
+    <PageWrapper title={t("foundLabels", { numItems })}>
       <AutoLayout>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
+          <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundLabels", { numItems })}</div>
           <Spacer />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
