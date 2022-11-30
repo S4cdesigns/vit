@@ -47,8 +47,6 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
       .finally(() => setLoading(false));
   }, []);
 
-  const numItems: number = props.initial.length;
-
   async function removeLabels() {
     const query = `
   mutation ($ids: [String!]!) {
@@ -60,6 +58,9 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
       ids: selectedLabels,
     });
   }
+
+  const normalizedFilter = query.toLowerCase().trim();
+
   async function refresh() {
     try {
       await doLoad();
@@ -70,8 +71,26 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
     setLoading(false);
   }
 
+  const filterLabel = (label: ILabel, index: number) => {
+    if (normalizedFilter.length === 0) {
+      return true;
+    }
+
+    const name = label.name?.toLowerCase();
+
+    if (!name) {
+      return true;
+    }
+
+    return name.indexOf(normalizedFilter) >= 0;
+  };
+
+  const filteredLabels = labels.filter(filterLabel);
+
+  const numItems: number = filteredLabels.length;
+
   return (
-    <PageWrapper title={t("foundLabels", { numItems })}>
+    <PageWrapper title={"Labels"}>
       <AutoLayout>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundLabels", { numItems })}</div>
@@ -111,7 +130,7 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
           <LabelSelector
             filter={query}
             onEdit={async () => await refresh()}
-            items={labels}
+            items={filteredLabels}
             onChange={setSelectedLabels}
             selected={selectedLabels}
             editEnabled

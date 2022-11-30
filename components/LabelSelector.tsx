@@ -30,29 +30,14 @@ export default function LabelSelector({
   filter,
 }: Props) {
   const { theme } = useContext(ThemeContext);
-  const normalizedFilter = filter?.toLowerCase().trim();
 
   function isSelected(labelId: string): boolean {
     return selected.includes(labelId);
   }
 
-  const filterLabel = (label: ILabel, index: number) => {
-    if (normalizedFilter.length === 0) {
-      return true;
-    }
-
-    const name = label.name?.toLowerCase();
-
-    if (!name) {
-      return true;
-    }
-
-    return name.indexOf(normalizedFilter) >= 0;
-  };
-
   return (
     <>
-      {items.filter(filterLabel).map((label) => (
+      {items.map((label) => (
         <Paper
           onClick={() => {
             if (isSelected(label._id)) {
