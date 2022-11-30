@@ -97,9 +97,15 @@ export default {
     return true;
   },
 
-  async addLabel(_: unknown, args: { name: string; aliases?: string[] }): Promise<Label> {
+  async addLabel(
+    _: unknown,
+    args: { name: string; aliases?: string[]; color?: string }
+  ): Promise<Label> {
     const aliases = filterInvalidAliases(args.aliases || []);
     const label = new Label(args.name, aliases);
+    if (args.color) {
+      label.color = args.color;
+    }
 
     const config = getConfig();
 

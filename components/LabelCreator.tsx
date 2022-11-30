@@ -1,5 +1,5 @@
-import Color from "color";
-import AddMarkerIcon from "mdi-react/EditIcon";
+import AddLabelIcon from "mdi-react/AddIcon";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useWindow } from "../composables/use_window";
@@ -10,46 +10,45 @@ import Button from "./Button";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function editLabel(id: string, name: string, color: string) {
+async function createLabel(name: string, color: string): Promise<ILabel> {
   const query = `
-  mutation ($ids: [String!]!, $opts: LabelUpdateOpts!) {
-    updateLabels(ids: $ids, opts: $opts) {
+  mutation ($name: String!, $aliases: [String!]!, $color: String!) {
+    addLabel(name: $name, aliases: $aliases, color: $color) {
       _id
     }
   }
  `;
 
-  await graphqlQuery(query, {
-    ids: [id],
-    opts: { name, color },
+  const result = await graphqlQuery<{ data: { addLabel: ILabel } }>(query, {
+    name,
+    // TODO
+    aliases: [],
+    color,
   });
+
+  return result?.data?.addLabel;
 }
 
 type Props = {
-  onEdit: () => void;
-  label: ILabel;
+  onCreate: (label: ILabel) => void;
 };
 
-export default function LabelEditor({ onEdit, label }: Props) {
+export default function LabelCreator({ onCreate }: Props) {
+  const t = useTranslations();
   const [loading, setLoader] = useState(false);
-  const [name, setName] = useState(label.name);
-  const [color, setColor] = useState(label.color);
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("#000000");
   const { isOpen, close, open } = useWindow();
 
   return (
     <>
-      <AddMarkerIcon
-        className="hover"
-        size={24}
-        onClick={(e) => {
-          e.stopPropagation();
-          open();
-        }}
-      />
+      <Button onClick={open} style={{ marginRight: 10 }}>
+        + {t("actions.add")}
+      </Button>
       <Window
         onClose={close}
         isOpen={isOpen}
-        title={`Edit label ${label.name}`}
+        title={`Create label`}
         actions={
           <>
             <Button
@@ -57,15 +56,15 @@ export default function LabelEditor({ onEdit, label }: Props) {
               onClick={async () => {
                 try {
                   setLoader(true);
-                  await editLabel(label._id, name, color);
-                  onEdit();
+                  const newLabel = await createLabel(name, color);
+                  onCreate(newLabel);
                   close();
                 } catch (error) {}
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
-              Edit
+              Create
             </Button>
             <Button onClick={close}>Close</Button>
           </>
@@ -73,6 +72,7 @@ export default function LabelEditor({ onEdit, label }: Props) {
       >
         <div>
           <input
+            autoFocus
             style={{ width: "100%" }}
             value={name}
             onChange={(event: React.FormEvent<HTMLInputElement>) => {

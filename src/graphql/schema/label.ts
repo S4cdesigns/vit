@@ -24,7 +24,7 @@ export default `
   }
 
   extend type Mutation {
-    addLabel(name: String!, aliases: [String!]): Label!
+    addLabel(name: String!, aliases: [String!], color: String!): Label!
     updateLabels(ids: [String!]!, opts: LabelUpdateOpts!): [Label!]!
     removeLabels(ids: [String!]!): Boolean!
   }

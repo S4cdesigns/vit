@@ -79,6 +79,7 @@ export default function ActorCreator({ onCreate }: Props) {
         <div>
           <Subheading>Actor name</Subheading>
           <input
+            autoFocus
             value={name}
             onChange={(ev) => setName(ev.target.value)}
             placeholder="Enter an actor name"
