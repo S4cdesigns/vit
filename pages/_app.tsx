@@ -10,6 +10,7 @@ import nprogress from "nprogress";
 import { createContext, useEffect, useState } from "react";
 
 import Layout from "../components/app/Layout";
+import SettingsContextProvider from "../components/SettingsContextProvider";
 import VideoContextProvider from "../components/VideoContextProvider";
 import { SafeModeContext } from "../composables/use_safe_mode";
 import lang from "../locale";
@@ -76,13 +77,15 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
       </Head>
       <NextIntlProvider messages={lang[router.locale || "en"]}>
         <ThemeContext.Provider value={{ theme, toggle: toggleTheme }}>
-          <SafeModeContext.Provider value={{ enabled: safeMode, toggle: toggleSafeMode }}>
-            <VideoContextProvider>
-              <Layout>
-                <Component key={router.asPath} {...pageProps} />
-              </Layout>
-            </VideoContextProvider>
-          </SafeModeContext.Provider>
+          <SettingsContextProvider>
+            <SafeModeContext.Provider value={{ enabled: safeMode, toggle: toggleSafeMode }}>
+              <VideoContextProvider>
+                <Layout>
+                  <Component key={router.asPath} {...pageProps} />
+                </Layout>
+              </VideoContextProvider>
+            </SafeModeContext.Provider>
+          </SettingsContextProvider>
         </ThemeContext.Provider>
       </NextIntlProvider>
     </>

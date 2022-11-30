@@ -1,4 +1,3 @@
-import AddLabelIcon from "mdi-react/AddIcon";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -10,7 +9,7 @@ import Button from "./Button";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function createLabel(name: string, color: string): Promise<ILabel> {
+async function createLabel(name: string, color: string, aliases: string[]): Promise<ILabel> {
   const query = `
   mutation ($name: String!, $aliases: [String!]!, $color: String!) {
     addLabel(name: $name, aliases: $aliases, color: $color) {
@@ -21,8 +20,7 @@ async function createLabel(name: string, color: string): Promise<ILabel> {
 
   const result = await graphqlQuery<{ data: { addLabel: ILabel } }>(query, {
     name,
-    // TODO
-    aliases: [],
+    aliases,
     color,
   });
 
@@ -37,6 +35,7 @@ export default function LabelCreator({ onCreate }: Props) {
   const t = useTranslations();
   const [loading, setLoader] = useState(false);
   const [name, setName] = useState("");
+  const [aliasInput, setAliasInput] = useState("");
   const [color, setColor] = useState("#000000");
   const { isOpen, close, open } = useWindow();
 
@@ -56,7 +55,7 @@ export default function LabelCreator({ onCreate }: Props) {
               onClick={async () => {
                 try {
                   setLoader(true);
-                  const newLabel = await createLabel(name, color);
+                  const newLabel = await createLabel(name, color, aliasInput.split("\n"));
                   onCreate(newLabel);
                   close();
                 } catch (error) {}
@@ -82,7 +81,18 @@ export default function LabelCreator({ onCreate }: Props) {
             type="text"
           />
         </div>
-        <AutoLayout gap={5} layout="h">
+
+        <AutoLayout gap={5} layout="v">
+          <div>
+            <Subheading>Aliases</Subheading>
+            <textarea
+              style={{ width: "100%" }}
+              value={aliasInput}
+              onChange={(ev) => setAliasInput(ev.target.value)}
+              placeholder="1 per line"
+            />
+          </div>
+
           <div>
             <Subheading>Color</Subheading>
             <input

@@ -57,6 +57,7 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
     await graphqlQuery(query, {
       ids: selectedLabels,
     });
+    setSelectedLabels([]);
   }
 
   const normalizedFilter = query.toLowerCase().trim();

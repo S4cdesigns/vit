@@ -77,7 +77,8 @@ export default function LabelSelector({
                   whiteSpace: "nowrap",
                 }}
               >
-                {label.name}
+                {label.name}{" "}
+                {label.aliases && <span style={{ fontSize: 12 }}>({label.aliases.join(",")})</span>}
               </div>
               <div style={{ flex: 1 }}>
                 {editEnabled && (

@@ -1,6 +1,8 @@
 import Color from "color";
 import AddMarkerIcon from "mdi-react/EditIcon";
 import { useState } from "react";
+import { MultiValue } from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 import { useWindow } from "../composables/use_window";
 import ILabel from "../types/label";
@@ -10,7 +12,7 @@ import Button from "./Button";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function editLabel(id: string, name: string, color: string) {
+async function editLabel(id: string, name: string, color?: string, aliases?: string[]) {
   const query = `
   mutation ($ids: [String!]!, $opts: LabelUpdateOpts!) {
     updateLabels(ids: $ids, opts: $opts) {
@@ -21,7 +23,7 @@ async function editLabel(id: string, name: string, color: string) {
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, color },
+    opts: { name, color, aliases },
   });
 }
 
@@ -33,6 +35,10 @@ type Props = {
 export default function LabelEditor({ onEdit, label }: Props) {
   const [loading, setLoader] = useState(false);
   const [name, setName] = useState(label.name);
+  const [aliasInput, setAliasInput] = useState(
+    label.aliases.map((alias) => ({ value: alias, label: alias }))
+  );
+
   const [color, setColor] = useState(label.color);
   const { isOpen, close, open } = useWindow();
 
@@ -57,7 +63,12 @@ export default function LabelEditor({ onEdit, label }: Props) {
               onClick={async () => {
                 try {
                   setLoader(true);
-                  await editLabel(label._id, name, color);
+                  await editLabel(
+                    label._id,
+                    name,
+                    color,
+                    aliasInput.map((opt) => opt.value)
+                  );
                   onEdit();
                   close();
                 } catch (error) {}
@@ -73,6 +84,7 @@ export default function LabelEditor({ onEdit, label }: Props) {
       >
         <div>
           <input
+            autoFocus
             style={{ width: "100%" }}
             value={name}
             onChange={(event: React.FormEvent<HTMLInputElement>) => {
@@ -82,7 +94,20 @@ export default function LabelEditor({ onEdit, label }: Props) {
             type="text"
           />
         </div>
-        <AutoLayout gap={5} layout="h">
+        <AutoLayout gap={5} layout="v">
+          <div>
+            <Subheading>Aliases</Subheading>
+            <CreatableSelect
+              isMulti
+              value={aliasInput}
+              onChange={(options: MultiValue<{ value: string; label: string }>) => {
+                setAliasInput(
+                  options.map((option) => ({ value: option.value, label: option.label }))
+                );
+              }}
+            />
+          </div>
+
           <div>
             <Subheading>Color</Subheading>
             <input
