@@ -1,3 +1,4 @@
+import DeleteIcon from "mdi-react/DeleteIcon";
 import { useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
@@ -12,23 +13,15 @@ type Props = {
   onChange?: (x: string[]) => void;
   onEdit?: (updatedLabel: ILabel) => void;
   editEnabled: boolean;
-  filter: string;
 };
 
 LabelSelector.defaultProps = {
   editEnabled: false,
   onEdit: undefined,
-  filter: undefined,
+  onDelete: undefined,
 };
 
-export default function LabelSelector({
-  items,
-  selected,
-  onChange,
-  editEnabled,
-  onEdit,
-  filter,
-}: Props) {
+export default function LabelSelector({ items, selected, onChange, editEnabled, onEdit }: Props) {
   const { theme } = useContext(ThemeContext);
 
   function isSelected(labelId: string): boolean {
@@ -78,7 +71,9 @@ export default function LabelSelector({
                 }}
               >
                 {label.name}{" "}
-                {label.aliases && <span style={{ fontSize: 12 }}>({label.aliases.join(",")})</span>}
+                {label.aliases?.length > 0 && (
+                  <span style={{ fontSize: 12 }}>({label.aliases.join(",")})</span>
+                )}
               </div>
               <div style={{ flex: 1 }}>
                 {editEnabled && (

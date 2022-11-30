@@ -1,19 +1,14 @@
-import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import AddMarkerIcon from "mdi-react/PlaylistAddIcon";
 import { useTranslations } from "next-intl";
-import { useContext, useState } from "react";
-import Select from "react-select";
+import { useState } from "react";
 
-import useLabelList from "../composables/use_label_list";
 import { useVideoControls } from "../composables/use_video_control";
 import { useWindow } from "../composables/use_window";
-import actor from "../src/graphql/mutations/actor";
 import { IActor } from "../types/actor";
-import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
 import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
@@ -97,7 +92,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
                   await createMarker(
                     name,
                     sceneId,
-                    Math.floor(currentTime),
+                    parseInt(currentTime, 10),
                     rating,
                     fav,
                     bookmark,

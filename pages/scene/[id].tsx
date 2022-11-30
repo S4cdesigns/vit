@@ -36,6 +36,7 @@ import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { useVideoControls } from "../../composables/use_video_control";
 import { scenePageFragment } from "../../fragments/scene";
+import ILabel from "../../types/label";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
 import {
@@ -56,6 +57,33 @@ const queryParser = buildQueryParser({
     default: null,
   },
 });
+
+async function updateLabels(sceneId: string, updatedLabels: string[]): Promise<ILabel[]> {
+  const q = `
+  mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
+    updateScenes(ids: $ids, opts: $opts) {
+      _id
+      labels {
+        _id
+        name
+        color
+      }
+    }
+  }`;
+
+  type updateLabelType = {
+    updateScenes: { _id: string; labels: ILabel[] }[];
+  };
+
+  const result = await graphqlQuery<updateLabelType>(q, {
+    ids: [sceneId],
+    opts: {
+      labels: updatedLabels,
+    },
+  });
+
+  return result.updateScenes[0].labels;
+}
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -116,6 +144,9 @@ export default function ScenePage({
   const [bookmark, setBookmark] = useState(!!scene.bookmark);
   const [rating, setRating] = useState(scene.rating);
   const [markers, setMarkers] = useState(scene.markers);
+  const [labels, setLabels] = useState<{ _id: string; name: string; color?: string }[]>(
+    scene.labels
+  );
   const [ffprobeData, setFFprobeData] = useState<FfprobeData | null>(null);
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
@@ -256,6 +287,20 @@ export default function ScenePage({
     setScreenshotLoader(false);
   }
 
+  async function addLabels(newLabels: string[]) {
+    const updatedLabels = await updateLabels(scene._id, [
+      ...labels.map((l) => l._id),
+      ...newLabels,
+    ]);
+    setLabels(updatedLabels);
+  }
+
+  async function deleteLabel(id: string) {
+    const newLabels = labels.filter((label) => label._id !== id).map((label) => label._id);
+    const updatedLabels = await updateLabels(scene._id, newLabels);
+    setLabels(updatedLabels);
+  }
+
   return (
     <PageWrapper padless title={scene.name}>
       <AutoLayout>
@@ -380,7 +425,16 @@ export default function ScenePage({
                       <Rating onChange={changeRating} value={rating}></Rating>
                     </CardSection>
                     <CardSection title="Labels">
-                      <LabelGroup limit={999} labels={scene.labels} />
+                      <LabelGroup
+                        limit={999}
+                        labels={labels}
+                        onAdd={addLabels}
+                        onDelete={async (id: string) => {
+                          if (window.confirm("Really delete this label?")) {
+                            await deleteLabel(id);
+                          }
+                        }}
+                      />
                     </CardSection>
                   </AutoLayout>
                   <AutoLayout>

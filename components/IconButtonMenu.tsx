@@ -1,6 +1,7 @@
 import DropdownMenu, { DropdownItemGroup } from "@atlaskit/dropdown-menu";
+import { OnOpenChangeArgs } from "@atlaskit/dropdown-menu/types";
 import { MdiReactIconComponentType } from "mdi-react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 type Props = {
   value: boolean;
@@ -10,6 +11,7 @@ type Props = {
   counter?: number;
   isLoading?: boolean;
   disabled?: boolean;
+  closeDropdown?: boolean;
 };
 
 const size = 24;
@@ -22,13 +24,27 @@ export default function IconButtonMenu({
   inactiveIcon,
   isLoading,
   disabled,
+  closeDropdown,
 }: Props) {
   const Icon = value ? activeIcon : inactiveIcon;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (closeDropdown) {
+      setIsOpen(false);
+    }
+  }, [closeDropdown]);
 
   return (
     <DropdownMenu
       appearance="tall"
       isLoading={isLoading}
+      autoFocus={false}
+      isOpen={isOpen}
+      onOpenChange={(attrs: OnOpenChangeArgs) => {
+        setIsOpen(attrs.isOpen);
+      }}
       trigger={({ triggerRef, onClick }) => (
         <div
           style={{ position: "relative", display: "flex", alignItems: "center" }}

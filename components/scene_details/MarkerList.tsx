@@ -30,6 +30,7 @@ export default function MarkerList({
     <>
       {markers.map((marker) => (
         <MarkerCard
+          key={marker._id}
           marker={marker}
           onClick={onClick ? () => onClick(marker) : undefined}
           onDelete={onDelete ? () => onDelete() : undefined}

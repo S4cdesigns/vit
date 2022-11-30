@@ -77,7 +77,7 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
       return true;
     }
 
-    const name = label.name?.toLowerCase();
+    const name = `${label.name?.toLowerCase()}${label.aliases?.join("").toLowerCase()}`;
 
     if (!name) {
       return true;

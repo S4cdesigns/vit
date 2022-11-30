@@ -212,6 +212,7 @@ export default {
 
         if (Array.isArray(opts.labels)) {
           // If the update sets labels, use those and ignore the existing
+          // TODO: this does not allow to delete labels with the updateScenes mutation
           labelsToApply.push(...opts.labels);
         } else {
           const existingLabels = (await Scene.getLabels(scene)).map((l) => l._id);
