@@ -10,6 +10,7 @@ import { scenePageFragment } from "../fragments/scene";
 import { IScene } from "../types/scene";
 import { graphqlQuery } from "../util/gql";
 import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
+import { convertTimestampToDate } from "./ActorEditor";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
 import Rating from "./Rating";
@@ -22,7 +23,8 @@ async function editScene(
   rating: number,
   favorite: boolean,
   bookmark: boolean,
-  actors: string[]
+  actors: string[],
+  releaseDate?: number
 ) {
   const query = `
   mutation ($ids: [String!]!, $opts: SceneUpdateOpts!) {
@@ -34,7 +36,7 @@ async function editScene(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, rating, favorite, bookmark, actors },
+    opts: { name, rating, favorite, bookmark, actors, releaseDate },
   });
 }
 
@@ -118,6 +120,18 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
       bookmark: value,
     });
   };
+
+  const setReleaseDate = (releaseDate: number) => {
+    if (!scene) {
+      return;
+    }
+
+    setScene({
+      ...scene,
+      releaseDate,
+    });
+  };
+
   const setName = (event: React.FormEvent<HTMLInputElement>) => {
     if (!scene) {
       return;
@@ -161,7 +175,8 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
                     scene?.rating,
                     scene?.favorite,
                     scene?.bookmark,
-                    selectedActors.map((actor) => actor._id)
+                    selectedActors.map((actor) => actor._id),
+                    scene?.releaseDate
                   );
                   onEdit();
                   close();
@@ -186,6 +201,15 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
           />
         </div>
         <AutoLayout gap={5} layout="h">
+          <div>
+            <Subheading>Release date</Subheading>
+            <input
+              type="date"
+              value={convertTimestampToDate(scene?.releaseDate)}
+              onChange={(e) => setReleaseDate(new Date(e.currentTarget.value).getTime())}
+            ></input>
+          </div>
+
           <div>
             <Rating value={scene?.rating || 0} onChange={setRating} />
           </div>

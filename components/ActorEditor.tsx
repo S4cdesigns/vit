@@ -9,11 +9,21 @@ import CreatableSelect from "react-select/creatable";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";
+import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import { CountrySelector } from "./CountrySelector";
 import ExternalLinksEditor from "./ExternalLinksEditor";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
+
+export const convertTimestampToDate = (timestamp?: number) => {
+  if (!timestamp) {
+    return;
+  }
+
+  return moment(timestamp).format("YYYY-MM-DD");
+};
 
 async function editActor(
   id: string,
@@ -56,14 +66,6 @@ export default function ActorEditor({ onEdit, actor }: Props) {
   );
   const [externalLinks, setExternalLinks] = useState(actor.externalLinks);
   const [loading, setLoader] = useState(false);
-
-  const convertTimestampToDate = (timestamp?: number) => {
-    if (!timestamp) {
-      return;
-    }
-
-    return moment(timestamp).format("YYYY-MM-DD");
-  };
 
   return (
     <>
@@ -114,12 +116,22 @@ export default function ActorEditor({ onEdit, actor }: Props) {
           />
         </div>
         <div>
-          <Subheading>Born on</Subheading>
-          <input
-            type="date"
-            value={convertTimestampToDate(bornOn)}
-            onChange={(e) => setBornOn(new Date(e.currentTarget.value).getTime())}
-          ></input>
+          <AutoLayout layout="v">
+            <div>
+              <Subheading>Born on</Subheading>
+              <input
+                type="date"
+                value={convertTimestampToDate(bornOn)}
+                onChange={(e) => setBornOn(new Date(e.currentTarget.value).getTime())}
+              ></input>
+            </div>
+            {/* 
+            TODO
+            <div>
+              <Subheading>Nationality</Subheading>
+            </div>
+          */}
+          </AutoLayout>
         </div>
         <div>
           <Subheading>Aliases</Subheading>

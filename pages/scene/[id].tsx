@@ -590,6 +590,7 @@ export default function ScenePage({
                   <ListContainer size={150}>
                     {actors.map((actor) => (
                       <ActorCard
+                        scene={scene}
                         onFav={(value) => {
                           editActor(actor._id, (actor) => {
                             actor.favorite = value;

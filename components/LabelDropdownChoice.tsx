@@ -18,6 +18,7 @@ const defaultProps = {
 export default function LabelDropdownChoice({ selectedLabels, onChange }: Props) {
   const { labels } = useLabelList();
 
+  // TODO: theme
   return (
     <Select
       value={selectedLabels}

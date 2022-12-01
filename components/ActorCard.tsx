@@ -7,6 +7,7 @@ import moment from "moment";
 import { useContext, useMemo, useState } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
+import { useSettings } from "../composables/use_settings";
 import { ThemeContext } from "../pages/_app";
 import { IActor } from "../types/actor";
 import { IScene } from "../types/scene";
@@ -49,6 +50,7 @@ function calculateAge(bornOn?: number, sceneDate?: number) {
 
 export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
+  const { showCardLabels } = useSettings();
   const { theme } = useContext(ThemeContext);
   const [hover, setHover] = useState(false);
 
@@ -100,14 +102,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: P
             transition: "filter 0.15s ease-in-out",
             filter: safeModeBlur,
           }}
-        >
-          {actor.bornOn && scene?.releaseDate && (
-            <div className="">
-              <div className="">{calculateAge(actor.bornOn, scene.releaseDate)}</div>
-              <div className="">y/o in this scene</div>
-            </div>
-          )}
-        </ResponsiveImage>
+        ></ResponsiveImage>
       </div>
       <AutoLayout
         gap={5}
@@ -167,10 +162,16 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: P
         <div>
           <Rating onChange={changeRating} value={actor.rating || 0} />
         </div>
-
-        <div>
-          <LabelGroup labels={actor.labels} />
-        </div>
+        {showCardLabels && (
+          <div>
+            <LabelGroup labels={actor.labels} />
+          </div>
+        )}
+        {actor.bornOn && scene?.releaseDate && (
+          <div style={{ fontSize: 13 }}>
+            <div style={{}}>{calculateAge(actor.bornOn, scene.releaseDate)} y/o in this scene</div>
+          </div>
+        )}
       </AutoLayout>
     </Paper>
   );
