@@ -20,7 +20,6 @@ import Window from "./Window";
 async function editScene(
   id: string,
   name: string,
-  description: string,
   rating: number,
   favorite: boolean,
   bookmark: boolean,
@@ -37,7 +36,7 @@ async function editScene(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, description, rating, favorite, bookmark, actors, releaseDate },
+    opts: { name, rating, favorite, bookmark, actors, releaseDate },
   });
 }
 
@@ -144,17 +143,6 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
     });
   };
 
-  const setDescription = (event: React.FormEvent<HTMLTextAreaElement>) => {
-    if (!scene) {
-      return;
-    }
-
-    setScene({
-      ...scene,
-      description: event.currentTarget.value,
-    });
-  };
-
   return (
     <>
       <AddMarkerIcon
@@ -184,7 +172,6 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
                   await editScene(
                     scene?._id,
                     scene?.name,
-                    scene?.description || "",
                     scene?.rating,
                     scene?.favorite,
                     scene?.bookmark,
@@ -211,15 +198,6 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
             onChange={setName}
             placeholder="Enter a scene title"
             type="text"
-          />
-        </div>
-        <div>
-          <Subheading>Description</Subheading>
-          <textarea
-            style={{ width: "100%" }}
-            value={scene?.description || ""}
-            onChange={setDescription}
-            placeholder="Enter a description"
           />
         </div>
         <AutoLayout gap={5} layout="h">

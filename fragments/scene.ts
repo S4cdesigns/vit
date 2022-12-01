@@ -10,7 +10,6 @@ fragment ScenePage on Scene {
   rating
   description
   releaseDate
-  addedOn
   labels {
     _id
     name

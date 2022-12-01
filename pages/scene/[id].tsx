@@ -1,7 +1,5 @@
 import axios from "axios";
-import clsx from "clsx";
 import type { FfprobeData } from "fluent-ffmpeg";
-import { MetadataOptions } from "logform";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import CopyIcon from "mdi-react/ContentCopyIcon";
@@ -13,7 +11,6 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import { useEffect, useState } from "react";
-import { number } from "yargs";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -55,44 +52,6 @@ import {
 import { buildQueryParser } from "../../util/query_parser";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import styles from "./Scene.module.scss";
-
-type MetaDataProps = {
-  label: string;
-  value?: string | number;
-  formatter?: (value: string | number) => string;
-};
-
-const dateFormatter = (value: string | number) => {
-  return new Date(value).toLocaleDateString();
-};
-
-const VideoMetaData = ({ label, value, formatter }: MetaDataProps) => {
-  if (!value) {
-    return null;
-  }
-
-  return (
-    <div>
-      <span>{label}</span>
-      <span style={{ float: "right", marginRight: 70 }}>
-        {formatter ? formatter(value) : value}
-      </span>
-    </div>
-  );
-};
-
-type RawDataProps = {
-  value?: string | number;
-};
-
-const RawData = ({ value }: RawDataProps) => {
-  return (
-    <div style={{ fontSize: 12, opacity: 0.5 }}>
-      <span>{value}</span>
-    </div>
-  );
-};
 
 const queryParser = buildQueryParser({
   t: {
@@ -407,18 +366,7 @@ export default function ScenePage({
                     ) : (
                       <BookmarkBorderIcon onClick={toggleBookmark} className="hover" size={24} />
                     )}
-                    <Rating onChange={changeRating} value={rating}></Rating>
                   </>
-                  <Spacer />
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <Button compact loading={watchLoader} onClick={_watchScene}>
-                      +
-                    </Button>
-                    {watches.length}
-                    <Button compact loading={watchLoader} onClick={_unwatchScene}>
-                      -
-                    </Button>
-                  </div>
                   <MarkerCreator
                     onOpen={() => {
                       const videoEl = document.getElementById(
@@ -441,227 +389,233 @@ export default function ScenePage({
                       await reloadMarkers();
                     }}
                   />
-
-                  <SceneEditor
-                    sceneId={scene._id}
-                    onEdit={() => {
-                      router.replace(router.asPath).catch(() => {});
-                    }}
-                  />
+                  <Spacer />
+                  {!!scene.studio && (
+                    <>
+                      <SceneEditor
+                        sceneId={scene._id}
+                        onEdit={() => {
+                          router.replace(router.asPath).catch(() => {});
+                        }}
+                      />
+                      <Link href={`/studio/${scene.studio._id}`} passHref>
+                        <a className="hover">
+                          <img
+                            style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
+                            src={thumbnailUrl(scene.studio.thumbnail?._id)}
+                            alt={`${scene.studio.name}`}
+                          />
+                        </a>
+                      </Link>
+                    </>
+                  )}
                 </div>
               </Card>
               {/* MAIN INFO */}
-
-              <div style={{ display: "flex", gap: 15 }} className={clsx(styles["scene-meta"])}>
-                <div style={{ flex: 1 }}>
-                  <Card>
-                    <div>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <div style={{ flex: 5 }}>
-                          <CardTitle style={{ marginBottom: 5 }}>{scene.name}</CardTitle>
-                        </div>
-                        {!!scene.studio && (
-                          <>
-                            <Link href={`/studio/${scene.studio._id}`} passHref>
-                              <a className="hover">
-                                {scene.studio.thumbnail ? (
-                                  <img
-                                    style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
-                                    src={thumbnailUrl(scene.studio.thumbnail?._id)}
-                                    alt={`${scene.studio.name}`}
-                                  />
-                                ) : (
-                                  <span>{scene.studio.name}</span>
-                                )}
-                              </a>
-                            </Link>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div style={{ fontSize: 15, opacity: 0.7, textAlign: "justify" }}>
-                      {scene.description}
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                        gap: 20,
-                      }}
+              <Card>
+                <CardTitle>{t("general")}</CardTitle>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                    gap: 20,
+                  }}
+                >
+                  <AutoLayout>
+                    <CardSection title={t("title")}>
+                      <Text>{scene.name}</Text>
+                    </CardSection>
+                    {!!scene.studio && (
+                      <CardSection title="Studio">
+                        <Text>
+                          <Link href={`/studio/${scene.studio._id}`}>
+                            <a>{scene.studio.name}</a>
+                          </Link>
+                        </Text>
+                      </CardSection>
+                    )}
+                    {scene.releaseDate && (
+                      <CardSection title={t("releaseDate")}>
+                        <Text>{new Date(scene.releaseDate).toLocaleDateString()}</Text>
+                      </CardSection>
+                    )}
+                    {scene.description && (
+                      <CardSection title={t("description")}>
+                        <Description>{scene.description}</Description>
+                      </CardSection>
+                    )}
+                    <CardSection title={t("rating")}>
+                      <Rating onChange={changeRating} value={rating}></Rating>
+                    </CardSection>
+                    <CardSection title="Labels">
+                      <LabelGroup
+                        limit={999}
+                        labels={labels}
+                        onAdd={addLabels}
+                        onDelete={async (id: string) => {
+                          if (window.confirm("Really delete this label?")) {
+                            await deleteLabel(id);
+                          }
+                        }}
+                      />
+                    </CardSection>
+                  </AutoLayout>
+                  <AutoLayout>
+                    <CardSection title={t("videoDuration")}>
+                      <Text>{formatDuration(scene.meta.duration)}</Text>
+                    </CardSection>
+                    <CardSection
+                      title={
+                        <>
+                          {t("path")}
+                          <CopyIcon
+                            onClick={() => {
+                              navigator.clipboard.writeText(scene.path).catch(() => {});
+                            }}
+                            className="hover"
+                            style={{ marginLeft: 8 }}
+                            size={16}
+                          />
+                        </>
+                      }
                     >
-                      <AutoLayout>
-                        <CardSection title="">
-                          <LabelGroup
-                            limit={999}
-                            labels={labels}
-                            onAdd={addLabels}
-                            onDelete={async (id: string) => {
-                              if (window.confirm("Really delete this label?")) {
-                                await deleteLabel(id);
-                              }
-                            }}
-                          />
-                        </CardSection>
-                      </AutoLayout>
-                      <div style={{ display: "flex", gap: 5, flexDirection: "row" }}>
-                        <div style={{ flex: 1 }}>
-                          <div
-                            style={{
-                              fontSize: 12,
-                              opacity: 0.5,
-                              border: "1.5px solid",
-                              borderTop: 0,
-                              borderBottom: 0,
-                              borderLeft: 0,
-                              borderImage:
-                                "linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(226, 226, 226, 1) 48%, rgba(255, 255, 255, 0) 100%)",
-                              borderImageSlice: 1,
-                            }}
-                          >
-                            <VideoMetaData
-                              label="Added on"
-                              value={scene.addedOn}
-                              formatter={dateFormatter}
-                            />
-                            <VideoMetaData
-                              label="Released on"
-                              formatter={dateFormatter}
-                              value={scene.addedOn}
-                            />
-                            {!!watches.length && (
-                              <VideoMetaData
-                                label="Last watched"
-                                value={watches[watches.length - 1]}
-                                formatter={dateFormatter}
-                              />
-                            )}
-                            <VideoMetaData
-                              label="Duration"
-                              value={scene.meta?.duration}
-                              formatter={(value) => formatDuration(value as number)}
-                            />
-                          </div>
-                        </div>
-                        <div style={{ flex: 1, textAlign: "right" }}>
-                          <RawData value={prettyBytes(scene.meta.size)} />
-                          <RawData
-                            value={`${scene.meta.dimensions.width}x${scene.meta.dimensions.height}`}
-                          />
-
-                          <RawData value={`${scene.meta.fps.toFixed(2)} Fps`} />
-                          <RawData
-                            value={`${((scene.meta.size / 1000 / scene.meta.duration) * 8).toFixed(
-                              0
-                            )} kBit/s`}
-                          />
-                        </div>
+                      <Text style={{ lineHeight: "150%" }}>{scene.path}</Text>
+                    </CardSection>
+                    <CardSection title={t("fileSize")}>
+                      <div title={`${scene.meta.size} bytes`}>
+                        <Text>{prettyBytes(scene.meta.size)}</Text>
                       </div>
-                      <AutoLayout>
-                        <div style={{ fontSize: 12, opacity: 0.5 }}>{scene.path}</div>
-                        <CardSection title={t("heading.actions")}>
-                          <div>
-                            <Button
-                              onClick={() => {
-                                runFFprobe(scene._id)
-                                  .then(setFFprobeData)
-                                  .catch(() => {});
-                              }}
-                            >
-                              Run FFprobe
-                            </Button>
-                            <Button loading={pluginLoader} onClick={handleRunScenePlugins}>
-                              Run plugins
-                            </Button>
-                            <Window
-                              isOpen={!!ffprobeData}
-                              title="FFprobe result"
-                              onClose={() => setFFprobeData(null)}
-                              actions={
-                                <>
-                                  <Button
-                                    onClick={() => {
-                                      navigator.clipboard
-                                        .writeText(JSON.stringify(ffprobeData, null, 2).trim())
-                                        .catch(() => {});
-                                    }}
-                                  >
-                                    Copy
-                                  </Button>
-                                  <Button onClick={() => setFFprobeData(null)}>Close</Button>
-                                </>
-                              }
-                            >
-                              <Code
-                                style={{
-                                  maxHeight: "50vh",
-                                  overflowX: "scroll",
-                                  overflowY: "scroll",
-                                  maxWidth: 700,
+                    </CardSection>
+                    <CardSection title={t("videoDimensions")}>
+                      <Text>
+                        {scene.meta.dimensions.width}x{scene.meta.dimensions.height}
+                      </Text>
+                    </CardSection>
+                    <CardSection title={t("fps")}>
+                      <Text>{scene.meta.fps.toFixed(2)}</Text>
+                    </CardSection>
+                    <CardSection title={t("bitrate")}>
+                      <Text>
+                        {((scene.meta.size / 1000 / scene.meta.duration) * 8).toFixed(0)} kBit/s
+                      </Text>
+                    </CardSection>
+                    <CardSection title={t("heading.views")}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <Button loading={watchLoader} onClick={_watchScene}>
+                          {watches.length} +
+                        </Button>
+                        <Button loading={watchLoader} onClick={_unwatchScene}>
+                          -
+                        </Button>
+                      </div>
+                      {!!watches.length && (
+                        <Text style={{ marginTop: 8 }}>
+                          Last watched: {new Date(watches[watches.length - 1]).toLocaleString()}
+                        </Text>
+                      )}
+                    </CardSection>
+                    <CardSection title={t("heading.actions")}>
+                      <div>
+                        <Button
+                          onClick={() => {
+                            runFFprobe(scene._id)
+                              .then(setFFprobeData)
+                              .catch(() => {});
+                          }}
+                        >
+                          Run FFprobe
+                        </Button>
+                        <Button loading={pluginLoader} onClick={handleRunScenePlugins}>
+                          Run plugins
+                        </Button>
+                        <Window
+                          isOpen={!!ffprobeData}
+                          title="FFprobe result"
+                          onClose={() => setFFprobeData(null)}
+                          actions={
+                            <>
+                              <Button
+                                onClick={() => {
+                                  navigator.clipboard
+                                    .writeText(JSON.stringify(ffprobeData, null, 2).trim())
+                                    .catch(() => {});
                                 }}
-                                value={ffprobeData}
-                              ></Code>
-                            </Window>
-                            <Button
-                              loading={gridLoader}
-                              onClick={async () => {
-                                setGridLoader(true);
-                                try {
-                                  const res = await axios.get(gridUrl);
-                                  setGrid(true);
-                                } catch (error) {}
-                                setGridLoader(false);
-                              }}
-                            >
-                              Generate grid
-                            </Button>
-                            <Button loading={screenshotLoader} onClick={handleScreenshotScene}>
-                              Use current frame as thumbnail
-                            </Button>
-                          </div>
-                        </CardSection>
-                        {showGrid && (
-                          <div>
-                            <img src={gridUrl} width="100%" />
-                          </div>
-                        )}
-                      </AutoLayout>
-                    </div>
-                  </Card>
+                              >
+                                Copy
+                              </Button>
+                              <Button onClick={() => setFFprobeData(null)}>Close</Button>
+                            </>
+                          }
+                        >
+                          <Code
+                            style={{
+                              maxHeight: "50vh",
+                              overflowX: "scroll",
+                              overflowY: "scroll",
+                              maxWidth: 700,
+                            }}
+                            value={ffprobeData}
+                          ></Code>
+                        </Window>
+                        <Button
+                          loading={gridLoader}
+                          onClick={async () => {
+                            setGridLoader(true);
+                            try {
+                              const res = await axios.get(gridUrl);
+                              setGrid(true);
+                            } catch (error) {}
+                            setGridLoader(false);
+                          }}
+                        >
+                          Generate grid
+                        </Button>
+                        <Button loading={screenshotLoader} onClick={handleScreenshotScene}>
+                          Use current frame as thumbnail
+                        </Button>
+                      </div>
+                    </CardSection>
+                    {showGrid && (
+                      <div>
+                        <img src={gridUrl} width="100%" />
+                      </div>
+                    )}
+                  </AutoLayout>
                 </div>
-
-                {/* ACTORS */}
-                <div style={{ flex: 1 }}>
-                  {!!actors.length && (
-                    <ListContainer size={150}>
-                      {actors.map((actor) => (
-                        <ActorCard
-                          scene={scene}
-                          onFav={(value) => {
-                            editActor(actor._id, (actor) => {
-                              actor.favorite = value;
-                              return actor;
-                            });
-                          }}
-                          onBookmark={(value) => {
-                            editActor(actor._id, (actor) => {
-                              actor.bookmark = !!value;
-                              return actor;
-                            });
-                          }}
-                          onRate={(rating) => {
-                            editActor(actor._id, (actor) => {
-                              actor.rating = rating;
-                              return actor;
-                            });
-                          }}
-                          key={actor._id}
-                          actor={actor}
-                        ></ActorCard>
-                      ))}
-                    </ListContainer>
-                  )}
+              </Card>
+              {/* ACTORS */}
+              {!!actors.length && (
+                <div>
+                  <CardTitle style={{ marginBottom: 20 }}>{t("starring")}</CardTitle>
+                  <ListContainer size={150}>
+                    {actors.map((actor) => (
+                      <ActorCard
+                        scene={scene}
+                        onFav={(value) => {
+                          editActor(actor._id, (actor) => {
+                            actor.favorite = value;
+                            return actor;
+                          });
+                        }}
+                        onBookmark={(value) => {
+                          editActor(actor._id, (actor) => {
+                            actor.bookmark = !!value;
+                            return actor;
+                          });
+                        }}
+                        onRate={(rating) => {
+                          editActor(actor._id, (actor) => {
+                            actor.rating = rating;
+                            return actor;
+                          });
+                        }}
+                        key={actor._id}
+                        actor={actor}
+                      ></ActorCard>
+                    ))}
+                  </ListContainer>
                 </div>
-              </div>
+              )}
               {/* MOVIES */}
               {!!movies.length && (
                 <div>
