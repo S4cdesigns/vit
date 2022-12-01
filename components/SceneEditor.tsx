@@ -1,8 +1,4 @@
-import BookmarkIcon from "mdi-react/BookmarkIcon";
-import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import AddMarkerIcon from "mdi-react/EditIcon";
-import HeartIcon from "mdi-react/HeartIcon";
-import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useEffect, useState } from "react";
 
 import { useWindow } from "../composables/use_window";
@@ -13,16 +9,13 @@ import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import { convertTimestampToDate } from "./ActorEditor";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
-import Rating from "./Rating";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
 async function editScene(
   id: string,
   name: string,
-  rating: number,
-  favorite: boolean,
-  bookmark: boolean,
+  description: string,
   actors: string[],
   releaseDate?: number
 ) {
@@ -36,7 +29,7 @@ async function editScene(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, rating, favorite, bookmark, actors, releaseDate },
+    opts: { name, description, actors, releaseDate },
   });
 }
 
@@ -88,39 +81,6 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
     open();
   };
 
-  const setRating = (value: number) => {
-    if (!scene) {
-      return;
-    }
-
-    setScene({
-      ...scene,
-      rating: value,
-    });
-  };
-
-  const setFav = (value: boolean) => {
-    if (!scene) {
-      return;
-    }
-
-    setScene({
-      ...scene,
-      favorite: value,
-    });
-  };
-
-  const setBookmark = (value: boolean) => {
-    if (!scene) {
-      return;
-    }
-
-    setScene({
-      ...scene,
-      bookmark: value,
-    });
-  };
-
   const setReleaseDate = (releaseDate: number) => {
     if (!scene) {
       return;
@@ -140,6 +100,17 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
     setScene({
       ...scene,
       name: event.currentTarget.value,
+    });
+  };
+
+  const setDescription = (event: React.FormEvent<HTMLTextAreaElement>) => {
+    if (!scene) {
+      return;
+    }
+
+    setScene({
+      ...scene,
+      description: event.currentTarget.value,
     });
   };
 
@@ -172,9 +143,7 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
                   await editScene(
                     scene?._id,
                     scene?.name,
-                    scene?.rating,
-                    scene?.favorite,
-                    scene?.bookmark,
+                    scene?.description || "",
                     selectedActors.map((actor) => actor._id),
                     scene?.releaseDate
                   );
@@ -200,6 +169,16 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
             type="text"
           />
         </div>
+        <div>
+          <Subheading>Description</Subheading>
+          <textarea
+            rows={10}
+            style={{ width: "100%" }}
+            value={scene?.description || ""}
+            onChange={setDescription}
+            placeholder="Enter a description"
+          />
+        </div>
         <AutoLayout gap={5} layout="h">
           <div>
             <Subheading>Release date</Subheading>
@@ -208,38 +187,6 @@ export default function SceneEditor({ onEdit, sceneId }: Props) {
               value={convertTimestampToDate(scene?.releaseDate)}
               onChange={(e) => setReleaseDate(new Date(e.currentTarget.value).getTime())}
             ></input>
-          </div>
-
-          <div>
-            <Rating value={scene?.rating || 0} onChange={setRating} />
-          </div>
-          <div>
-            {scene?.favorite ? (
-              <HeartIcon
-                onClick={() => setFav(false)}
-                className="hover"
-                style={{ fontSize: 28, color: "#ff3355" }}
-              />
-            ) : (
-              <HeartBorderIcon
-                onClick={() => setFav(true)}
-                className="hover"
-                style={{ fontSize: 28, color: "#ff3355" }}
-              />
-            )}
-            {scene?.bookmark ? (
-              <BookmarkIcon
-                onClick={() => setBookmark(false)}
-                className="hover"
-                style={{ fontSize: 28 }}
-              />
-            ) : (
-              <BookmarkBorderIcon
-                onClick={() => setBookmark(true)}
-                className="hover"
-                style={{ fontSize: 28 }}
-              />
-            )}
           </div>
         </AutoLayout>
         <div>
