@@ -29,6 +29,7 @@ import PageWrapper from "../../components/PageWrapper";
 import Rating from "../../components/Rating";
 import MarkerList from "../../components/scene_details/MarkerList";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
+import SceneEditor from "../../components/SceneEditor";
 import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
@@ -57,6 +58,18 @@ const queryParser = buildQueryParser({
     default: null,
   },
 });
+
+async function removeLabel(item: string, label: string): Promise<void> {
+  const q = `
+  mutation($item: String!, $label: String!) {
+    removeLabel(item: $item, label: $label)
+  }`;
+
+  await graphqlQuery(q, {
+    item,
+    label,
+  });
+}
 
 async function updateLabels(sceneId: string, updatedLabels: string[]): Promise<ILabel[]> {
   const q = `
@@ -130,6 +143,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
+/**
+ * TODO: reload after mutation without refreshing the whole page and stopping the video
+ */
 export default function ScenePage({
   scene,
   startAtPosition,
@@ -296,9 +312,8 @@ export default function ScenePage({
   }
 
   async function deleteLabel(id: string) {
-    const newLabels = labels.filter((label) => label._id !== id).map((label) => label._id);
-    const updatedLabels = await updateLabels(scene._id, newLabels);
-    setLabels(updatedLabels);
+    await removeLabel(scene._id, id);
+    setLabels(labels.filter((label) => label._id !== id));
   }
 
   return (
@@ -376,15 +391,23 @@ export default function ScenePage({
                   />
                   <Spacer />
                   {!!scene.studio && (
-                    <Link href={`/studio/${scene.studio._id}`} passHref>
-                      <a className="hover">
-                        <img
-                          style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
-                          src={thumbnailUrl(scene.studio.thumbnail?._id)}
-                          alt={`${scene.studio.name}`}
-                        />
-                      </a>
-                    </Link>
+                    <>
+                      <SceneEditor
+                        sceneId={scene._id}
+                        onEdit={() => {
+                          router.replace(router.asPath).catch(() => {});
+                        }}
+                      />
+                      <Link href={`/studio/${scene.studio._id}`} passHref>
+                        <a className="hover">
+                          <img
+                            style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
+                            src={thumbnailUrl(scene.studio.thumbnail?._id)}
+                            alt={`${scene.studio.name}`}
+                          />
+                        </a>
+                      </Link>
+                    </>
                   )}
                 </div>
               </Card>

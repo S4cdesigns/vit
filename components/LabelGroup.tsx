@@ -40,55 +40,10 @@ export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): J
 
   const slice = expanded ? labels : labels.slice(0, max);
 
+  const AddLabel = () => <Label color="#ffffff">Add + </Label>;
+
   return (
     <div>
-      {onAdd && (
-        <IconButtonMenu
-          counter={0}
-          value={false}
-          activeIcon={AddIcon}
-          inactiveIcon={AddIcon}
-          isLoading={labelLoader}
-          disabled={false}
-          closeDropdown={closeDropdown}
-        >
-          <input
-            type="text"
-            autoFocus
-            style={{ width: "100%", marginBottom: 10 }}
-            placeholder={t("findLabels")}
-            value={labelQuery}
-            onChange={(ev) => setLabelQuery(ev.target.value)}
-          />
-          <Button
-            onClick={() => {
-              onAdd(selectedLabels);
-              setSelectedLabels([]);
-              setLabelQuery("");
-              setCloseDropdown(true);
-            }}
-          >
-            Add selected
-          </Button>
-          <LabelSelector
-            selected={selectedLabels}
-            items={labelList.filter((label) => {
-              if (labels.some((existing) => existing._id === label._id)) {
-                return false;
-              }
-
-              return (
-                label.name.toLowerCase().includes(labelQuery.toLowerCase()) ||
-                label.aliases.some((alias) =>
-                  alias.toLowerCase().includes(labelQuery.toLowerCase())
-                )
-              );
-            })}
-            onChange={setSelectedLabels}
-          />
-        </IconButtonMenu>
-      )}
-
       {slice.map((label) => (
         <Label
           key={label._id}
@@ -98,6 +53,55 @@ export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): J
           {label.name}
         </Label>
       ))}
+      {onAdd && (
+        <div style={{ display: "inline-block" }}>
+          <IconButtonMenu
+            counter={0}
+            value={false}
+            activeIcon={AddLabel}
+            inactiveIcon={AddLabel}
+            isLoading={labelLoader}
+            disabled={false}
+            closeDropdown={closeDropdown}
+          >
+            <input
+              type="text"
+              autoFocus
+              style={{ width: "100%", marginBottom: 10 }}
+              placeholder={t("findLabels")}
+              value={labelQuery}
+              onChange={(ev) => setLabelQuery(ev.target.value)}
+            />
+            <Button
+              onClick={() => {
+                onAdd(selectedLabels);
+                setSelectedLabels([]);
+                setLabelQuery("");
+                setCloseDropdown(true);
+              }}
+            >
+              Add selected
+            </Button>
+            <LabelSelector
+              selected={selectedLabels}
+              items={labelList.filter((label) => {
+                if (labels.some((existing) => existing._id === label._id)) {
+                  return false;
+                }
+
+                return (
+                  label.name.toLowerCase().includes(labelQuery.toLowerCase()) ||
+                  label.aliases.some((alias) =>
+                    alias.toLowerCase().includes(labelQuery.toLowerCase())
+                  )
+                );
+              })}
+              onChange={setSelectedLabels}
+            />
+          </IconButtonMenu>
+        </div>
+      )}
+
       <div style={{ textAlign: "center" }}>
         {max < labels.length && (
           <div
