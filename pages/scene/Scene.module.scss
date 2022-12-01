@@ -1,0 +1,10 @@
+.scene-meta {
+    flex-direction: row;
+}
+
+@media (max-width: 720px) {
+  .scene-meta {
+    flex-direction: column;
+  }
+}
+

@@ -57,6 +57,9 @@ export default function LabelCreator({ onCreate }: Props) {
                   setLoader(true);
                   const newLabel = await createLabel(name, color, aliasInput.split("\n"));
                   onCreate(newLabel);
+                  setName("");
+                  setColor("");
+                  setAliasInput("");
                   close();
                 } catch (error) {}
                 setLoader(false);

@@ -9,6 +9,7 @@ export interface IScene {
   favorite: boolean;
   bookmark: boolean;
   releaseDate?: number;
+  addedOn: number;
   labels: {
     _id: string;
     name: string;

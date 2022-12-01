@@ -10,10 +10,15 @@ type Props = {
   style?: CSSProperties;
   className?: string;
   loading?: boolean;
+  compact: boolean;
   /* TODO: disabled state */
 };
 
-export default function Button({ children, onClick, style, className, loading }: Props) {
+Button.defaultProps = {
+  compact: false,
+};
+
+export default function Button({ children, onClick, style, className, loading, compact }: Props) {
   return (
     <button
       onClick={() => {
@@ -22,7 +27,7 @@ export default function Button({ children, onClick, style, className, loading }:
         }
       }}
       style={style || {}}
-      className={clsx(styles.button, className, {
+      className={clsx(styles.button, compact && styles.compact, className, {
         hover: !loading,
       })}
     >
