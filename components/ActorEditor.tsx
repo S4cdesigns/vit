@@ -138,6 +138,27 @@ export default function ActorEditor({ onEdit, actor }: Props) {
           <CreatableSelect
             isMulti
             value={aliasInput}
+            styles={{
+              container: (baseStyles) => ({
+                ...baseStyles,
+                maxWidth: 400,
+              }),
+              option: (provided) => ({
+                ...provided,
+                color: "black",
+              }),
+              multiValue: (styles, { data }) => {
+                return {
+                  ...styles,
+                  backgroundColor: "black",
+                  borderRadius: 4,
+                };
+              },
+              multiValueLabel: (styles, { data }) => ({
+                ...styles,
+                color: "white",
+              }),
+            }}
             onChange={(options: MultiValue<{ value: string; label: string }>) => {
               setAliasInput(
                 options.map((option) => ({ value: option.value, label: option.label }))

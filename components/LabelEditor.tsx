@@ -98,6 +98,27 @@ export default function LabelEditor({ onEdit, label }: Props) {
           <div>
             <Subheading>Aliases</Subheading>
             <CreatableSelect
+              styles={{
+                container: (baseStyles) => ({
+                  ...baseStyles,
+                  maxWidth: 400,
+                }),
+                option: (provided) => ({
+                  ...provided,
+                  color: "black",
+                }),
+                multiValue: (styles, { data }) => {
+                  return {
+                    ...styles,
+                    backgroundColor: "black",
+                    borderRadius: 4,
+                  };
+                },
+                multiValueLabel: (styles, { data }) => ({
+                  ...styles,
+                  color: "white",
+                }),
+              }}
               isMulti
               value={aliasInput}
               onChange={(options: MultiValue<{ value: string; label: string }>) => {
