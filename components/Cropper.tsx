@@ -1,18 +1,26 @@
-import ReactCrop, { Crop, PixelCrop } from "react-image-crop";
+import ReactCrop, { Crop, PercentCrop, PixelCrop } from "react-image-crop";
+
+import { useSafeMode } from "../composables/use_safe_mode";
 
 type Props = {
   src: string;
-  value: Crop;
-  onChange: (crop: PixelCrop) => void;
+  value: Crop | undefined;
+  onChange: (crop: PixelCrop, percentageCrop: PercentCrop) => void;
+  onLoad: (event) => void;
   aspectRatio?: number;
   circular?: boolean;
 };
 
-export function Cropper({ circular, value, onChange, src, aspectRatio }: Props) {
+export function Cropper({ circular, value, onChange, src, aspectRatio, onLoad }: Props) {
+  const { blur: safeModeBlur } = useSafeMode();
   return (
     <div>
       <ReactCrop circularCrop={circular} crop={value} onChange={onChange} aspect={aspectRatio}>
-        <img src={src} />
+        <img
+          src={src}
+          onLoad={onLoad}
+          style={{ objectFit: "contain", width: "100%", height: "60vh", filter: safeModeBlur }}
+        />
       </ReactCrop>
     </div>
   );
