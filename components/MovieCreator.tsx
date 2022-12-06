@@ -68,6 +68,8 @@ export default function MovieCreator({ onCreate }: Props) {
         <div>
           <Subheading>Movie name</Subheading>
           <input
+            autoFocus
+            style={{ width: "100%" }}
             value={name}
             onChange={(ev) => setName(ev.target.value)}
             placeholder="Enter a movie name"

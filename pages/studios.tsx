@@ -7,25 +7,21 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
-import LabelGroup from "../components/LabelGroup";
 import ListWrapper from "../components/ListWrapper";
 import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
-import Paper from "../components/Paper";
-import ResponsiveImage from "../components/ResponsiveImage";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import StudioCard from "../components/StudioCard";
+import StudioCreator from "../components/StudioCreator";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchStudios, useStudioList } from "../composables/use_studio_list";
-import useUpdateEffect from "../composables/use_update_effect";
 import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
-import { thumbnailUrl } from "../util/thumbnail";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -127,7 +123,7 @@ export default function StudioListPage(props: {
           <Pagination numPages={numPages} current={page} onChange={onPageChange} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Button style={{ marginRight: 10 }}>+ Add studio</Button>
+          <StudioCreator onCreate={async () => await router.replace(router.asPath)} />
           {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
           {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
