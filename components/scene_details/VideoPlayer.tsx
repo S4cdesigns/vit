@@ -175,6 +175,7 @@ export default function VideoPlayer({
 
   return (
     <div
+      onMouseMove={() => setHover(true)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
