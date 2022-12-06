@@ -23,7 +23,10 @@ interface AvailableStreams {
 }
 
 export default {
-  async actors(scene: Scene): Promise<Actor[]> {
+  async actors(scene: Scene, b, c): Promise<Actor[]> {
+    console.log('scene');
+    console.log(b);
+    console.log(c);
     const actors = await Scene.getActors(scene);
     return actors.sort((a, b) => a.name.localeCompare(b.name));
   },

@@ -35,6 +35,10 @@ export async function mountApolloServer(app: express.Application): Promise<void>
 
   const httpServer = http.createServer(app);
 
+  const getTokenForRequest = (req) => {
+    return Promise.resolve("lol");
+  };
+
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
@@ -42,5 +46,15 @@ export async function mountApolloServer(app: express.Application): Promise<void>
   });
   await server.start();
 
-  app.use("/api/ql", graphqlUploadExpress(), cors, express.json(), expressMiddleware(server));
+  app.use(
+    "/api/ql",
+    graphqlUploadExpress(),
+    cors,
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({
+        token: await getTokenForRequest(req),
+      }),
+    })
+  );
 }
