@@ -74,8 +74,6 @@ export default {
       if (!actorInDb) throw new Error(`Actor ${actor} not found`);
     }
 
-    console.log(args.crop);
-
     for (const label of args.labels || []) {
       const labelInDb = await Label.getById(label);
 
@@ -159,7 +157,6 @@ export default {
         image.meta.dimensions.width = args.crop.width;
         image.meta.dimensions.height = args.crop.height;
       } else {
-        console.log("not cropping");
         const dims = getImageDimensions(outPath);
         image.meta.dimensions.width = dims.width;
         image.meta.dimensions.height = dims.height;
