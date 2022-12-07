@@ -136,6 +136,24 @@ export namespace Izzy {
       );
       return res.data.items;
     }
+
+    // Queries an index by multiple keys
+    async queryBulk(index: string, keys: readonly string[] | null): Promise<Record<string, T[]>> {
+      logger.silly(`Querying index ${index} by ${keys?.join(",")} from collection: ${this.name}`);
+      const { data } = await Axios.post(
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/query-bulk`,
+        {
+          name: this.name,
+          index,
+          keys,
+        }
+      );
+
+      // console.log("query bulk result");
+      // console.log(JSON.stringify(data, null, 2));
+
+      return data;
+    }
   }
 
   // Creates new collection, will be successful when the collection already exists

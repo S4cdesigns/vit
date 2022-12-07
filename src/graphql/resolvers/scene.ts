@@ -1,6 +1,7 @@
 import { getImageDimensions } from "../../binaries/imagemagick";
 import { collections } from "../../database";
 import { FFProbeContainers } from "../../ffmpeg/ffprobe";
+import { IzzyContext } from "../../middlewares/apollo";
 import { CopyMP4Transcoder } from "../../transcode/copyMp4";
 import { SceneStreamTypes } from "../../transcode/transcoder";
 import Actor from "../../types/actor";
@@ -23,18 +24,17 @@ interface AvailableStreams {
 }
 
 export default {
-  async actors(scene: Scene, b, c): Promise<Actor[]> {
-    console.log('scene');
-    console.log(b);
-    console.log(c);
-    const actors = await Scene.getActors(scene);
+  async actors(scene: Scene, _: any, context: IzzyContext): Promise<Actor[]> {
+    const dataSource = context.sceneDataSource;
+    const actors = await dataSource.getActorsForScene(scene);
     return actors.sort((a, b) => a.name.localeCompare(b.name));
   },
   async images(scene: Scene): Promise<Image[]> {
     return await Image.getByScene(scene._id);
   },
-  async labels(scene: Scene): Promise<Label[]> {
-    const labels = await Scene.getLabels(scene);
+  async labels(scene: Scene, _: any, context: IzzyContext): Promise<Label[]> {
+    const dataSource = context.labelDataSource;
+    const labels = await dataSource.getLabelsForScene(scene);
     return labels.sort((a, b) => a.name.localeCompare(b.name));
   },
   async thumbnail(scene: Scene): Promise<Image | null> {
@@ -62,6 +62,7 @@ export default {
     return image;
   },
   async studio(scene: Scene): Promise<Studio | null> {
+    // TODO: DataLoader
     if (scene.studio) return Studio.getById(scene.studio);
     return null;
   },
@@ -76,6 +77,7 @@ export default {
     return Scene.getMovies(scene);
   },
   async watches(scene: Scene): Promise<number[]> {
+    // TODO: DataLoader
     return (await SceneView.getByScene(scene._id)).map((v) => v.date);
   },
   async availableStreams(scene: Scene): Promise<AvailableStreams[]> {

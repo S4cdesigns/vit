@@ -26,6 +26,10 @@ export default class ActorReference {
     return collections.actorReferences.query("item-index", item);
   }
 
+  static async getByItemBulk(item: readonly string[]): Promise<Record<string, ActorReference[]>> {
+    return collections.actorReferences.queryBulk("item-index", item);
+  }
+
   static async getByType(type: string): Promise<ActorReference[]> {
     return collections.actorReferences.query("type-index", type);
   }

@@ -1,12 +1,19 @@
-import { ApolloServer } from "@apollo/server";
+import { ApolloServer, BaseContext } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 
+import { LabelDataSource } from "../graphql/datasources/LabelDataSource";
+import { SceneDataSource } from "../graphql/datasources/SceneDataSource";
 import schema from "../graphql/types";
 import cors from "./cors";
+
+export interface IzzyContext extends BaseContext {
+  sceneDataSource: SceneDataSource;
+  labelDataSource: LabelDataSource;
+}
 
 /* const apolloLogger: ApolloServerPlugin = {
   requestDidStart(_requestContext): GraphQLRequestListener {
@@ -35,10 +42,6 @@ export async function mountApolloServer(app: express.Application): Promise<void>
 
   const httpServer = http.createServer(app);
 
-  const getTokenForRequest = (req) => {
-    return Promise.resolve("lol");
-  };
-
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
@@ -53,7 +56,10 @@ export async function mountApolloServer(app: express.Application): Promise<void>
     express.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => ({
-        token: await getTokenForRequest(req),
+        // https://www.apollographql.com/docs/apollo-server/data/fetching-data/#batching-and-caching
+        // https://levelup.gitconnected.com/solve-n-1-query-problem-in-graphql-with-dataloaders-18e16ac17b21
+        sceneDataSource: new SceneDataSource(),
+        labelDataSource: new LabelDataSource(),
       }),
     })
   );
