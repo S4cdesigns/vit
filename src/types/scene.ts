@@ -440,6 +440,7 @@ export default class Scene {
   }
 
   static async getActors(scene: Scene): Promise<Actor[]> {
+    console.log(' !!!!!!!!!!!!!!!!!!!!!!  EXPENSIVE ACTORS RESOLUTION !!!!!!!!!!!!!!!!!!!!!!!!!!! ');
     const references = await ActorReference.getByItem(scene._id);
     return (await collections.actors.getBulk(references.map((r) => r.actor))).sort((a, b) =>
       a.name.localeCompare(b.name)

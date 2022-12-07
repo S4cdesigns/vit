@@ -1,4 +1,5 @@
 import { ICountry } from "../../data/countries";
+import { IzzyContext } from "../../middlewares/apollo";
 import Actor from "../../types/actor";
 import { getNationality } from "../../types/countries";
 import CustomField, { CustomFieldTarget } from "../../types/custom_field";
@@ -77,7 +78,7 @@ export default {
   age(actor: Actor): number | null {
     return Actor.getAge(actor);
   },
-  async collabs(actor: Actor): Promise<Actor[]> {
+  async collabs(actor: Actor, _: any, context: IzzyContext): Promise<Actor[]> {
     const collabs = await Actor.getCollabs(actor);
     const actors = collabs.map((c) => c.actors).flat();
     const set = createObjectSet(actors, "_id");

@@ -12,7 +12,6 @@ import Marker from "../../types/marker";
 import Movie from "../../types/movie";
 import Scene from "../../types/scene";
 import Studio from "../../types/studio";
-import SceneView from "../../types/watch";
 import { handleError, logger } from "../../utils/logger";
 import { getExtension } from "../../utils/string";
 
@@ -33,13 +32,13 @@ export default {
     return await Image.getByScene(scene._id);
   },
   async labels(scene: Scene, _: any, context: IzzyContext): Promise<Label[]> {
-    const dataSource = context.labelDataSource;
+    const dataSource = context.sceneDataSource;
     const labels = await dataSource.getLabelsForScene(scene);
     return labels.sort((a, b) => a.name.localeCompare(b.name));
   },
-  async thumbnail(scene: Scene): Promise<Image | null> {
-    if (scene.thumbnail) return await Image.getById(scene.thumbnail);
-    return null;
+  async thumbnail(scene: Scene, _: any, ctx: IzzyContext): Promise<Image | null> {
+    const thumb = await ctx.sceneDataSource.getThumbnailForScene(scene);
+    return thumb || null;
   },
   async preview(scene: Scene): Promise<Image | null> {
     if (!scene.preview) {
@@ -76,9 +75,8 @@ export default {
   async movies(scene: Scene): Promise<Movie[]> {
     return Scene.getMovies(scene);
   },
-  async watches(scene: Scene): Promise<number[]> {
-    // TODO: DataLoader
-    return (await SceneView.getByScene(scene._id)).map((v) => v.date);
+  async watches(scene: Scene, _: any, ctx: IzzyContext): Promise<number[]> {
+    return ctx.sceneDataSource.getWatchesForScene(scene);
   },
   async availableStreams(scene: Scene): Promise<AvailableStreams[]> {
     if (!scene.path) {
