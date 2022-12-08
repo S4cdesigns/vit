@@ -95,6 +95,19 @@ export default function StudioListPage(props: {
       sortDir,
     }
   );
+
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+      // labels: [], // TODO:
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchStudios,
     initialPage: props.page,
@@ -102,17 +115,14 @@ export default function StudioListPage(props: {
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-      // labels: [], // TODO:
-    });
+    updateQueryParserStore();
     await fetchStudios(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   return (
     <PageWrapper title={t("foundStudios", { numItems })}>
@@ -120,7 +130,7 @@ export default function StudioListPage(props: {
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundStudios", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <StudioCreator onCreate={async () => await router.replace(router.asPath)} />
@@ -188,7 +198,7 @@ export default function StudioListPage(props: {
           ))}
         </ListWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>

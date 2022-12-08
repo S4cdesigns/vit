@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
 import IconButtonMenu from "../components/IconButtonMenu";
@@ -22,14 +23,13 @@ import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SceneCard from "../components/SceneCard";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import useLabelList from "../composables/use_label_list";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchScenes, useSceneList } from "../composables/use_scene_list";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
 import { buildQueryParser } from "../util/query_parser";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -115,17 +115,26 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
     querySettings: [query, favorite, bookmark, sortBy, sortDir, JSON.stringify(selectedLabels)],
   });
 
-  async function refresh(): Promise<void> {
+  const updateQueryParserStore = (nextPage?: number) => {
     queryParser.store(router, {
       q: query,
       favorite,
       bookmark,
       sortBy,
       sortDir,
-      page,
+      page: nextPage || page,
       rating,
       labels: selectedLabels,
     });
+  };
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
+
+  async function refresh(): Promise<void> {
+    updateQueryParserStore();
     await fetchScenes(page);
   }
 
@@ -137,7 +146,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundScenes", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <AutoLayout layout="h" gap={10}>
           <input
@@ -237,7 +246,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
           ))}
         </ListWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>
