@@ -7,22 +7,22 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
 import ListWrapper from "../components/ListWrapper";
+import MovieBulkCreator from "../components/MovieBulkCreator";
 import MovieCard from "../components/MovieCard";
+import MovieCreator from "../components/MovieCreator";
 import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import { fetchMovies, useMovieList } from "../composables/use_movie_list";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { IMovie } from "../types/movie";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
-import MovieCreator from "../components/MovieCreator";
-import MovieBulkCreator from "../components/MovieBulkCreator";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -88,6 +88,18 @@ export default function MovieListPage(props: { page: number; initial: IPaginatio
       sortDir,
     }
   );
+
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchMovies,
     initialPage: props.page,
@@ -95,16 +107,14 @@ export default function MovieListPage(props: { page: number; initial: IPaginatio
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-    });
+    updateQueryParserStore();
     await fetchMovies(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   return (
     <PageWrapper title={t("foundMovies", { numItems })}>
@@ -112,11 +122,11 @@ export default function MovieListPage(props: { page: number; initial: IPaginatio
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMovies", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <MovieCreator onCreate={() => onPageChange(0)} />
-          <MovieBulkCreator onCreate={() => onPageChange(0)} />
+          <MovieCreator onCreate={() => pageChanged(0)} />
+          <MovieBulkCreator onCreate={() => pageChanged(0)} />
           {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
         </div>
@@ -181,7 +191,7 @@ export default function MovieListPage(props: { page: number; initial: IPaginatio
           ))}
         </ListWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>

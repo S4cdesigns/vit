@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import ContentWrapper from "../components/ContentWrapper";
 import IconButtonFilter from "../components/IconButtonFilter";
@@ -26,6 +27,7 @@ import Pagination from "../components/Pagination";
 import Paper from "../components/Paper";
 import Rating from "../components/Rating";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import { fetchImages, useImageList } from "../composables/use_image_list";
 import useLabelList from "../composables/use_label_list";
 import { usePaginatedList } from "../composables/use_paginated_list";
@@ -34,8 +36,6 @@ import { IImage } from "../types/image";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
 import { imageUrl, thumbnailUrl } from "../util/thumbnail";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -117,6 +117,20 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
       include: selectedLabels,
     }
   );
+
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+      rating,
+      labels: selectedLabels,
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchImages,
     initialPage: props.page,
@@ -132,18 +146,14 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-      rating,
-      labels: selectedLabels,
-    });
+    updateQueryParserStore();
     await fetchImages(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   const hasNoLabels = !labelLoader && !labelList.length;
 
@@ -153,7 +163,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundImages", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <ImageUploader onUpload={prependImages} />
@@ -266,7 +276,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
           />
         </ContentWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>

@@ -1,3 +1,5 @@
+import React from "react";
+
 import AutoLayout from "./AutoLayout";
 import Paper from "./Paper";
 
@@ -39,6 +41,24 @@ export default function Pagination({ current, numPages, onChange }: Props) {
     return null;
   }
 
+  const jumpTo = (event: React.SyntheticEvent<HTMLInputElement>) => {
+    const value = parseInt(event.currentTarget.value);
+
+    if (!value || isNaN(value)) {
+      return;
+    }
+
+    let actualValue = value - 1;
+    if (actualValue >= numPages) {
+      return;
+    }
+
+    if (actualValue <= 0) {
+      actualValue = 0;
+    }
+    onChange?.(actualValue);
+  };
+
   return (
     <AutoLayout layout="h" gap={10}>
       {arr.map((x, i) => {
@@ -68,6 +88,7 @@ export default function Pagination({ current, numPages, onChange }: Props) {
           </div>
         );
       })}
+      <input type="number" onChange={jumpTo} placeholder="Jump to page" />
     </AutoLayout>
   );
 }

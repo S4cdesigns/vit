@@ -112,6 +112,19 @@ export default function MarkerListPage(props: {
     }
   );
 
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+      rating,
+      labels: selectedLabels,
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchMarkers,
     initialPage: props.page,
@@ -119,18 +132,14 @@ export default function MarkerListPage(props: {
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-      rating,
-      labels: selectedLabels,
-    });
+    updateQueryParserStore();
     await fetchMarkers(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   const hasNoLabels = !labelLoader && !labelList.length;
 
@@ -139,7 +148,7 @@ export default function MarkerListPage(props: {
       <div style={{ marginBottom: 20, display: "flex", alignItems: "center" }}>
         <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundMarkers", { numItems })}</div>
         <Spacer />
-        <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
+        <Pagination numPages={numPages} current={page} onChange={pageChanged} />
       </div>
 
       <div
@@ -247,7 +256,7 @@ export default function MarkerListPage(props: {
         />
       </ListWrapper>
       <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
-        <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+        <Pagination numPages={numPages} current={page} onChange={pageChanged} />
       </div>
     </PageWrapper>
   );
