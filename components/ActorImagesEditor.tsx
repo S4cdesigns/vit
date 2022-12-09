@@ -182,13 +182,26 @@ const ImageUploader = ({ onCancel, onUpload, actorId, type }: ImageUploaderProps
   };
 
   const resetCrop = (resetDimensions: { width: number; height: number }) => {
+    let aspect = 3 / 4;
+
+    switch (type) {
+      case "hero":
+        aspect = 2.75 / 1;
+        break;
+      case "avatar":
+        aspect = 1 / 1;
+        break;
+    }
+
+    // maintain aspect ratio - probably not working with that library easily
+    // https://github.com/DominicTobias/react-image-crop/issues/514
     const crop = centerCrop(
       makeAspectCrop(
         {
           unit: "%",
           width: 100,
         },
-        type === "hero" ? 2.75 / 1 : 3 / 4,
+        aspect,
         resetDimensions.width,
         resetDimensions.height
       ),

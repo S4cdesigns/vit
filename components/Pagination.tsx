@@ -1,4 +1,4 @@
-import React from "react";
+import React, { KeyboardEvent, useMemo } from "react";
 
 import AutoLayout from "./AutoLayout";
 import Paper from "./Paper";
@@ -42,7 +42,7 @@ export default function Pagination({ current, numPages, onChange }: Props) {
   }
 
   const jumpTo = (event: React.SyntheticEvent<HTMLInputElement>) => {
-    const value = parseInt(event.currentTarget.value);
+    const value = parseInt(event.target.value);
 
     if (!value || isNaN(value)) {
       return;
@@ -57,6 +57,14 @@ export default function Pagination({ current, numPages, onChange }: Props) {
       actualValue = 0;
     }
     onChange?.(actualValue);
+  };
+
+  const handleKeyboardEvent = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.code !== "Enter") {
+      return;
+    }
+
+    jumpTo(e);
   };
 
   return (
@@ -88,7 +96,7 @@ export default function Pagination({ current, numPages, onChange }: Props) {
           </div>
         );
       })}
-      <input type="number" onChange={jumpTo} placeholder="Jump to page" />
+      <input type="text" onKeyUp={handleKeyboardEvent} placeholder="Jump to page" />
     </AutoLayout>
   );
 }
