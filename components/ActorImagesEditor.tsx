@@ -22,7 +22,7 @@ import {
   setActorHero,
   setActorThumbnail,
 } from "../util/mutations/actor";
-import { thumbnailUrl } from "../util/thumbnail";
+import { imageUrl } from "../util/thumbnail";
 import Button from "./Button";
 import { Cropper } from "./Cropper";
 import FileInput from "./FileInput";
@@ -94,8 +94,6 @@ type ActorImages = {
   avatar?: ActorImage;
 };
 
-// type ActorImages = Pick<IActor, "_id" | "altThumbnail" | "thumbnail" | "hero" | "avatar">;
-
 async function loadActor(actorId: string): Promise<ActorImages> {
   const q = `
   query ($id: String!) {
@@ -140,20 +138,20 @@ async function loadActor(actorId: string): Promise<ActorImages> {
 }
 
 type Props = {
-  onEdit: () => void;
   actorId: string;
 };
 
 type ImageUploaderProps = {
   onCancel: () => void;
-  onUpload: (imageId: string) => void;
+  onUpload: (crop: PixelCrop) => void;
   actorId: string;
   type: string;
+  src: any;
 };
 
-const ImageUploader = ({ onCancel, onUpload, actorId, type }: ImageUploaderProps) => {
+// should only do cropping and onUpload should emit new crop dimensions to the parent component
+const ImageCropper = ({ onCancel, onUpload, type, src }: ImageUploaderProps) => {
   const [loading, setLoading] = useState(false);
-  const [fileToUpload, setFileToUpload] = useState<File>();
   // actual dimensions of the image
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [renderedDimensions, setRenderedDimensions] = useState({ width: 0, height: 0 });
@@ -213,22 +211,8 @@ const ImageUploader = ({ onCancel, onUpload, actorId, type }: ImageUploaderProps
     convertCrop(crop);
   };
 
-  const upload = async () => {
-    if (fileToUpload) {
-      setLoading(true);
-      const result = await uploadImage(
-        { file: fileToUpload, name: fileToUpload.name },
-        realCrop,
-        actorId
-      );
-      setLoading(false);
-      onUpload(result._id);
-    }
-  };
-
   const doCancel = () => {
     onCancel();
-    setFileToUpload(undefined);
     setImageData(undefined);
     setCrop({ unit: "%", width: 100, height: 100, x: 0, y: 0 });
     setRealCrop({ unit: "px", width: 100, height: 100, x: 0, y: 0 });
@@ -241,40 +225,147 @@ const ImageUploader = ({ onCancel, onUpload, actorId, type }: ImageUploaderProps
 
   return (
     <>
-      {fileToUpload ? (
-        <div style={{ height: "100%" }}>
-          <div style={{ height: "80%" }}>
-            <div style={{ height: "90%", textAlign: "center" }}>
-              <Cropper
-                src={imageData}
-                onLoad={onLoad}
-                value={crop}
-                onChange={(pixels: PixelCrop, percentage: PercentCrop) =>
-                  transformCrop(pixels, percentage)
-                }
-              />
-            </div>
+      <div style={{ height: "100%" }}>
+        <div style={{ height: "80%" }}>
+          <div style={{ height: "90%", textAlign: "center" }}>
+            <Cropper
+              src={src}
+              onLoad={onLoad}
+              value={crop}
+              onChange={(pixels: PixelCrop, percentage: PercentCrop) =>
+                transformCrop(pixels, percentage)
+              }
+            />
           </div>
-          <div style={{ height: "10%" }}>
-            <Button loading={loading} onClick={upload}>
-              Upload
+        </div>
+        <div style={{ height: "10%" }}>
+          <Button loading={loading} onClick={() => onUpload(crop)}>
+            Upload
+          </Button>
+          <Button onClick={() => resetCrop(renderedDimensions)}>Reset crop</Button>
+          <Button onClick={doCancel}>Cancel</Button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+type ImageEditorProps = {
+  type: string;
+  image?: ActorImage;
+  onRemove: () => void;
+  onChange: (
+    file: File,
+    buffer: ArrayBuffer,
+    type: string,
+    name: string,
+    width: number,
+    height: number
+  ) => void;
+};
+
+const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps) => {
+  const { blur: safeModeBlur } = useSafeMode();
+  return (
+    <>
+      {image?._id ? (
+        <div>
+          <div>
+            <img
+              src={imageUrl(image._id)}
+              style={{ filter: safeModeBlur, objectFit: "contain", width: "100%", height: "30vh" }}
+            />
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <Button onClick={onRemove} style={{}}>
+              Remove
             </Button>
-            <Button onClick={() => resetCrop(renderedDimensions)}>Reset crop</Button>
-            <Button onClick={doCancel}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                await fetch(imageUrl(image._id)).then(async function (res) {
+                  const blob = await res.blob();
+                  const file = new File([blob], image.name, {
+                    type: res.headers.get("Content-Type") || "image/jpeg",
+                  });
+
+                  const reader = new FileReader();
+                  reader.onload = function (e) {
+                    const image = new Image();
+
+                    image.onload = (event) => {
+                      const img = event.currentTarget as HTMLImageElement;
+                      const height = img.height;
+                      const width = img.width;
+
+                      onChange(file, reader.result, type, image.name, width, height);
+                    };
+
+                    image.src = reader.result;
+                  };
+                  reader.readAsDataURL(blob);
+                });
+              }}
+              style={{}}
+            >
+              Edit
+            </Button>
+
+            <FileInput
+              onChange={(files) => {
+                if (files && files.length) {
+                  const fileReader = new FileReader();
+                  fileReader.onload = () => {
+                    if (!fileReader.result) {
+                      return;
+                    }
+                    const image = new Image();
+
+                    image.onload = (event) => {
+                      const img = event.currentTarget as HTMLImageElement;
+                      const height = img.height;
+                      const width = img.width;
+
+                      onChange(files[0], fileReader.result, type, image.name, width, height);
+                    };
+
+                    image.src = fileReader.result;
+                  };
+                  fileReader.readAsDataURL(files[0]);
+                }
+              }}
+            >
+              Change {type}
+            </FileInput>
+            {/* 
+            <Button onClick={onChange} style={{}}>
+              Change {type}
+            </Button>
+          */}
           </div>
         </div>
       ) : (
-        <div style={{ height: "100%", position: "relative" }}>
+        <div>
           <div
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%,-50%)",
+              height: "30vh",
+              background: `repeating-linear-gradient(
+                  45deg,
+                  #a0a0a005,
+                  #a0a0a005 10px,
+                  #a0a0a010 10px,
+                  #a0a0a010 20px
+                )`,
+              border: "2px solid #a0a0a020",
             }}
-          >
+          ></div>
+          <div style={{ textAlign: "center" }}>
             <FileInput
               onChange={(files) => {
+                // files[0]
+                // dimensions
+                // imageData
+                //
+                /*
                 setFileToUpload(files[0]);
 
                 if (files && files.length) {
@@ -299,70 +390,25 @@ const ImageUploader = ({ onCancel, onUpload, actorId, type }: ImageUploaderProps
                   };
                   fileReader.readAsDataURL(files[0]);
                 }
+                */
               }}
-            />
-          </div>
-          <Button style={{ position: "absolute", bottom: 0, left: 0 }} onClick={doCancel}>
-            Cancel
-          </Button>
-        </div>
-      )}
-    </>
-  );
-};
+            >
+              Set {type}
+            </FileInput>
 
-type ImageEditorProps = {
-  type: string;
-  image?: ActorImage;
-  onRemove: () => void;
-  onChange: () => void;
-};
-
-const ImageEditor = ({ type, image, onRemove, onChange }: ImageEditorProps) => {
-  const { blur: safeModeBlur } = useSafeMode();
-  return (
-    <>
-      {image?._id ? (
-        <div>
-          <div>
-            <img
-              src={thumbnailUrl(image._id)}
-              style={{ filter: safeModeBlur, objectFit: "contain", width: "100%", height: "20vh" }}
-            />
-          </div>
-          <div>
-            <Button onClick={onRemove} style={{}}>
-              Remove
-            </Button>
+            {/* 
             <Button onClick={onChange} style={{}}>
               Change {type}
             </Button>
+            */}
           </div>
-        </div>
-      ) : (
-        <div
-          style={{
-            height: "100%",
-            background: `repeating-linear-gradient(
-                  45deg,
-                  #a0a0a005,
-                  #a0a0a005 10px,
-                  #a0a0a010 10px,
-                  #a0a0a010 20px
-                )`,
-            border: "2px solid #a0a0a020",
-          }}
-        >
-          <Button onClick={onChange} style={{}}>
-            Change {type}
-          </Button>
         </div>
       )}
     </>
   );
 };
 
-export default function ActorImagesEditor({ onEdit, actorId }: Props) {
+export default function ActorImagesEditor({ actorId }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
   const [loading, setLoader] = useState(false);
@@ -372,43 +418,82 @@ export default function ActorImagesEditor({ onEdit, actorId }: Props) {
   const [altThumbnail, setAltThumbnail] = useState<ActorImage>();
   const [thumbnail, setThumbnail] = useState<ActorImage>();
 
-  const [newImage, setNewImage] = useState<string>();
-  const [currentFile, setCurrentFile] = useState();
+  const [fileToUpload, setFileToUpload] = useState<{
+    file: File;
+    buffer: ArrayBuffer;
+    type: string;
+    name: string;
+  }>();
+  const [crop, setCrop] = useState<PixelCrop>();
 
   async function removeImage(type: string): Promise<void> {
-    alert("remove");
-  }
-
-  async function changeImage(type: string): Promise<void> {
-    setNewImage(type);
-  }
-
-  async function onImageUpload(type: string, id: string, name: string) {
     switch (type) {
       case "avatar":
-        await setActorAvatar(actorId, id);
-        setAvatar({ _id: id, name: "foo" });
-        setNewImage(undefined);
+        await setActorAvatar(actorId, null);
+        setAvatar(undefined);
+        setFileToUpload(undefined);
         break;
       case "thumbnail":
-        await setActorThumbnail(actorId, id);
-        setThumbnail({ _id: id, name: "foo" });
-        setNewImage(undefined);
+        await setActorThumbnail(actorId, null);
+        setThumbnail(undefined);
+        setFileToUpload(undefined);
         break;
       case "altThumbnail":
-        await setActorAltThumbnail(actorId, id);
-        setAltThumbnail({ _id: id, name: "foo" });
-        setNewImage(undefined);
+        await setActorAltThumbnail(actorId, null);
+        setAltThumbnail(undefined);
+        setFileToUpload(undefined);
         break;
       case "hero":
-        await setActorHero(actorId, id);
-        setHero({ _id: id, name: "foo" });
-        setNewImage(undefined);
+        await setActorHero(actorId, null);
+        setHero(undefined);
+        setFileToUpload(undefined);
         break;
+    }
+
+    alert(type);
+  }
+
+  function changeImage(file: File, buffer: ArrayBuffer, type: string, name: string): void {
+    setFileToUpload({ file, buffer, type, name });
+  }
+
+  async function onImageUpload(crop: PixelCrop, type: string) {
+    if (!fileToUpload?.file) {
+      return;
+    }
+
+    const uploadedImage = await uploadImage({ file: fileToUpload?.file, name: "foo" });
+
+    switch (type) {
+      case "avatar": {
+        const updatedImage = await setActorAvatar(actorId, uploadedImage._id);
+        setAvatar(updatedImage);
+        setFileToUpload(undefined);
+        break;
+      }
+      case "thumbnail": {
+        const updatedImage = await setActorThumbnail(actorId, uploadedImage._id);
+        setThumbnail(updatedImage);
+        setFileToUpload(undefined);
+        break;
+      }
+      case "altThumbnail": {
+        const updatedImage = await setActorAltThumbnail(actorId, uploadedImage._id);
+        setAltThumbnail(updatedImage);
+        setFileToUpload(undefined);
+        break;
+      }
+      case "hero": {
+        const updatedImage = await setActorHero(actorId, uploadedImage._id);
+        setHero(updatedImage);
+        setFileToUpload(undefined);
+        break;
+      }
     }
   }
 
   useEffect(() => {
+    setLoader(true);
     loadActor(actorId)
       .then((result) => {
         if (result.avatar) {
@@ -437,7 +522,8 @@ export default function ActorImagesEditor({ onEdit, actorId }: Props) {
       })
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => setLoader(false));
   }, []);
 
   return (
@@ -450,7 +536,7 @@ export default function ActorImagesEditor({ onEdit, actorId }: Props) {
         isOpen={isOpen}
         title={t("actions.edit")}
         actions={
-          !newImage && (
+          !fileToUpload && (
             <>
               <Button onClick={close}>Close</Button>
             </>
@@ -458,48 +544,49 @@ export default function ActorImagesEditor({ onEdit, actorId }: Props) {
         }
       >
         <div style={{ width: "80vw", height: "70vh" }}>
-          {newImage ? (
+          {fileToUpload ? (
             <div style={{ height: "100%" }}>
-              <ImageUploader
-                type={newImage}
+              <ImageCropper
+                src={fileToUpload.buffer}
+                type={fileToUpload.type}
                 actorId={actorId}
-                onCancel={() => setNewImage(undefined)}
-                onUpload={(id: string) => onImageUpload(newImage, id)}
-              ></ImageUploader>
+                onCancel={() => setFileToUpload(undefined)}
+                onUpload={(crop: PixelCrop) => onImageUpload(crop, fileToUpload.type)}
+              ></ImageCropper>
             </div>
           ) : (
             <div style={{ height: "100%" }}>
-              <div style={{ height: "50%", marginBottom: 10 }}>
-                <ImageEditor
+              <div style={{ height: "50%", marginBottom: 20 }}>
+                <ImageEditControls
                   type="hero"
                   image={hero}
-                  onChange={async () => changeImage("hero")}
+                  onChange={changeImage}
                   onRemove={async () => removeImage("hero")}
                 />
               </div>
               <div style={{ height: "50%" }}>
                 <div style={{ display: "flex", flexDirection: "row", gap: 10, height: "100%" }}>
                   <div style={{ flex: 1 }}>
-                    <ImageEditor
+                    <ImageEditControls
                       type="avatar"
                       image={avatar}
-                      onChange={async () => changeImage("avatar")}
+                      onChange={changeImage}
                       onRemove={async () => removeImage("avatar")}
                     />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <ImageEditor
+                    <ImageEditControls
                       type="thumbnail"
                       image={thumbnail}
-                      onChange={async () => changeImage("thumbnail")}
+                      onChange={changeImage}
                       onRemove={async () => removeImage("thumbnail")}
                     />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <ImageEditor
+                    <ImageEditControls
                       type="altThumbnail"
                       image={altThumbnail}
-                      onChange={async () => changeImage("altThumbnail")}
+                      onChange={changeImage}
                       onRemove={async () => removeImage("altThumbnail")}
                     />
                   </div>

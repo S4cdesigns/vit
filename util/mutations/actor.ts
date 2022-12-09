@@ -3,8 +3,12 @@ import axios from "axios";
 import { graphqlQuery } from "../gql";
 import { gqlIp } from "../ip";
 
-export async function setActorThumbnail(actorId: string, imageId: string) {
-  await graphqlQuery(
+type UpdateActorResponse = {
+  updateActors: { avatar: { _id: string; name: string } }[];
+};
+
+export async function setActorThumbnail(actorId: string, imageId: string | null) {
+  const { updateActors } = await graphqlQuery<UpdateActorResponse>(
     `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
       updateActors(ids: $ids, opts: $opts) {
         thumbnail {
@@ -19,10 +23,12 @@ export async function setActorThumbnail(actorId: string, imageId: string) {
       },
     }
   );
+
+  return updateActors[0].avatar;
 }
 
-export async function setActorAltThumbnail(actorId: string, imageId: string) {
-  await graphqlQuery(
+export async function setActorAltThumbnail(actorId: string, imageId: string | null) {
+  const { updateActors } = await graphqlQuery<UpdateActorResponse>(
     `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
       updateActors(ids: $ids, opts: $opts) {
         altThumbnail {
@@ -37,14 +43,17 @@ export async function setActorAltThumbnail(actorId: string, imageId: string) {
       },
     }
   );
+
+  return updateActors[0].avatar;
 }
 
-export async function setActorAvatar(actorId: string, imageId: string) {
-  await graphqlQuery(
+export async function setActorAvatar(actorId: string, imageId: string | null) {
+  const { updateActors } = await graphqlQuery<UpdateActorResponse>(
     `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
       updateActors(ids: $ids, opts: $opts) {
         avatar {
           _id
+          name
         }
       }
     }`,
@@ -55,10 +64,12 @@ export async function setActorAvatar(actorId: string, imageId: string) {
       },
     }
   );
+
+  return updateActors[0].avatar;
 }
 
-export async function setActorHero(actorId: string, imageId: string) {
-  await graphqlQuery(
+export async function setActorHero(actorId: string, imageId: string | null) {
+  const { updateActors } = await graphqlQuery<UpdateActorResponse>(
     `mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
       updateActors(ids: $ids, opts: $opts) {
         hero {
@@ -73,6 +84,8 @@ export async function setActorHero(actorId: string, imageId: string) {
       },
     }
   );
+
+  return updateActors[0].avatar;
 }
 
 export async function runActorPlugins(actorId: string): Promise<void> {
