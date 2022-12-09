@@ -111,6 +111,7 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
           <Spacer />
           {selectedLabels.length > 0 && (
             <Button
+              style={{ backgroundColor: "#ab1b1b" }}
               className="hover"
               onClick={async () => {
                 if (window.confirm(`Really delete ${selectedLabels.length} labels?`)) {
@@ -120,7 +121,6 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
               }}
             >
               Delete {selectedLabels.length} labels
-              <DeleteIcon />
             </Button>
           )}
           <Button loading={loading} onClick={refresh}>
