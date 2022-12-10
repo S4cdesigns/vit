@@ -17,8 +17,8 @@ const defaultProps = {
 
 async function autocompleteActors(query: string): Promise<{ _id: string; name: string }[]> {
   const q = `
-  query($query: ActorAutocompleteQuery) {
-    autocompleteActors(query: $query) {
+  query($query: ActorSearchQuery!) {
+    getActors(query: $query) {
         items {
           _id
           name
@@ -27,13 +27,13 @@ async function autocompleteActors(query: string): Promise<{ _id: string; name: s
   }
 `;
 
-  const { autocompleteActors } = await graphqlQuery<{
-    autocompleteActors: { items: { _id: string; name: string }[] };
+  const { getActors } = await graphqlQuery<{
+    getActors: { items: { _id: string; name: string }[] };
   }>(q, {
-    query: { term: query },
+    query: { query },
   });
 
-  return autocompleteActors.items;
+  return getActors.items;
 }
 
 export default function ActorDropdownChoice({ selectedActors, onChange }: Props) {
