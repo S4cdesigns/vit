@@ -45,7 +45,7 @@ export async function exitIzzy(): Promise<void> {
   }
 }
 
-export async function izzyHasMinVersion(): Promise<boolean> {
+export async function izzyHasRequiredVersion(): Promise<boolean> {
   const version = await izzyVersion().catch(() => null);
   if (!version) {
     return false;
