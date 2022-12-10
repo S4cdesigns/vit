@@ -34,6 +34,7 @@ specifiers:
   clsx: ^1.1.1
   color: ^3.0.0
   cross-env: ^7.0.3
+  dataloader: ^2.1.0
   dotenv: ^10.0.0
   elasticsearch: ^16.7.1
   eslint: ^7.32.0
@@ -103,6 +104,7 @@ dependencies:
   cli-progress: 3.11.2
   clsx: 1.2.1
   color: 3.2.1
+  dataloader: 2.1.0
   dotenv: 10.0.0
   elasticsearch: 16.7.3
   execa: 4.1.0
@@ -3020,6 +3022,10 @@ packages:
       es5-ext: 0.10.62
       type: 1.2.0
     dev: true
+
+  /dataloader/2.1.0:
+    resolution: {integrity: sha512-qTcEYLen3r7ojZNgVUaRggOI+KM7jrKxXeSHhogh/TWxYMeONEMqY+hmkobiYQozsGIyg9OYVzO4ZIfoB4I0pQ==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
