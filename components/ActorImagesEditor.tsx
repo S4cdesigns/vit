@@ -134,10 +134,11 @@ type ImageUploaderProps = {
   onUpload: (blob: Blob) => void;
   src?: ArrayBuffer;
   type: imageTypes;
+  loading: boolean;
 };
 
 // should only do cropping and onUpload should emit new crop dimensions to the parent component
-const ImageCropper = ({ onCancel, onUpload, src, type }: ImageUploaderProps) => {
+const ImageCropper = ({ onCancel, onUpload, src, type, loading }: ImageUploaderProps) => {
   const cropperRef = useRef<CropperRef>(null);
 
   const doCrop = () => {
@@ -192,7 +193,9 @@ const ImageCropper = ({ onCancel, onUpload, src, type }: ImageUploaderProps) => 
           </div>
         </div>
         <div style={{ height: "10%" }}>
-          <Button onClick={doCrop}>Upload</Button>
+          <Button onClick={doCrop} loading={loading}>
+            Upload
+          </Button>
           <Button onClick={onCancel}>Cancel</Button>
         </div>
       </div>
@@ -201,7 +204,7 @@ const ImageCropper = ({ onCancel, onUpload, src, type }: ImageUploaderProps) => 
 };
 
 type ImageEditorProps = {
-  type: string;
+  type: imageTypes;
   image?: ActorImage;
   onRemove: () => void;
   onChange: (buffer: ArrayBuffer, type: imageTypes, name: string) => void;
@@ -255,11 +258,6 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
             >
               Change {type}
             </FileInput>
-            {/* 
-            <Button onClick={onChange} style={{}}>
-              Change {type}
-            </Button>
-          */}
           </div>
         </div>
       ) : (
@@ -280,36 +278,16 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
           <div style={{ textAlign: "center" }}>
             <FileInput
               onChange={(files) => {
-                // files[0]
-                // dimensions
-                // imageData
-                //
-                /*
-                setFileToUpload(files[0]);
-
                 if (files && files.length) {
                   const fileReader = new FileReader();
                   fileReader.onload = () => {
                     if (!fileReader.result) {
                       return;
                     }
-                    const image = new Image();
-
-                    image.onload = (event) => {
-                      const img = event.currentTarget as HTMLImageElement;
-                      const height = img.height;
-                      const width = img.width;
-
-                      setDimensions({ height, width });
-                      resetCrop({ height, width });
-                    };
-
-                    image.src = fileReader.result;
-                    setImageData(fileReader.result);
+                    onChange(fileReader.result as ArrayBuffer, type, files[0].name);
                   };
                   fileReader.readAsDataURL(files[0]);
                 }
-                */
               }}
             >
               Set {type}
@@ -331,6 +309,7 @@ export default function ActorImagesEditor({ actorId }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
   const [loading, setLoader] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [avatar, setAvatar] = useState<ActorImage>();
   const [hero, setHero] = useState<ActorImage>();
@@ -362,6 +341,7 @@ export default function ActorImagesEditor({ actorId }: Props) {
         break;
       case "hero":
         await setActorHero(actorId, null);
+        console.log("remove hero");
         setHero(undefined);
         setFileToUpload(undefined);
         break;
@@ -377,30 +357,32 @@ export default function ActorImagesEditor({ actorId }: Props) {
       return;
     }
 
+    setUploading(true);
     const uploadedImage = await uploadImage({ blob: blob, name: fileToUpload.name }, actorId);
+    setUploading(false);
 
     switch (type) {
       case "avatar": {
-        const updatedImage = await setActorAvatar(actorId, uploadedImage._id);
-        setAvatar(updatedImage);
+        const newImage = await setActorAvatar(actorId, uploadedImage._id);
+        setAvatar(newImage);
         setFileToUpload(undefined);
         break;
       }
       case "thumbnail": {
-        const updatedImage = await setActorThumbnail(actorId, uploadedImage._id);
-        setThumbnail(updatedImage);
+        const newImage = await setActorThumbnail(actorId, uploadedImage._id);
+        setThumbnail(newImage);
         setFileToUpload(undefined);
         break;
       }
       case "altThumbnail": {
-        const updatedImage = await setActorAltThumbnail(actorId, uploadedImage._id);
-        setAltThumbnail(updatedImage);
+        const newImage = await setActorAltThumbnail(actorId, uploadedImage._id);
+        setAltThumbnail(newImage);
         setFileToUpload(undefined);
         break;
       }
       case "hero": {
-        const updatedImage = await setActorHero(actorId, uploadedImage._id);
-        setHero(updatedImage);
+        const newImage = await setActorHero(actorId, uploadedImage._id);
+        setHero(newImage);
         setFileToUpload(undefined);
         break;
       }
@@ -464,6 +446,7 @@ export default function ActorImagesEditor({ actorId }: Props) {
               <ImageCropper
                 type={fileToUpload.type}
                 src={fileToUpload.buffer}
+                loading={uploading}
                 onCancel={() => setFileToUpload(undefined)}
                 onUpload={(blob: Blob) => onImageUpload(blob, fileToUpload.type)}
               ></ImageCropper>

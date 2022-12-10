@@ -4,7 +4,12 @@ import { graphqlQuery } from "../gql";
 import { gqlIp } from "../ip";
 
 type UpdateActorResponse = {
-  updateActors: { avatar: { _id: string; name: string } }[];
+  updateActors: {
+    avatar: { _id: string; name: string };
+    thumbnail: { _id: string; name: string };
+    altThumbnail: { _id: string; name: string };
+    hero: { _id: string; name: string };
+  }[];
 };
 
 export async function setActorThumbnail(actorId: string, imageId: string | null) {
@@ -24,7 +29,7 @@ export async function setActorThumbnail(actorId: string, imageId: string | null)
     }
   );
 
-  return updateActors[0].avatar;
+  return updateActors[0].thumbnail;
 }
 
 export async function setActorAltThumbnail(actorId: string, imageId: string | null) {
@@ -44,7 +49,7 @@ export async function setActorAltThumbnail(actorId: string, imageId: string | nu
     }
   );
 
-  return updateActors[0].avatar;
+  return updateActors[0].altThumbnail;
 }
 
 export async function setActorAvatar(actorId: string, imageId: string | null) {
@@ -85,7 +90,7 @@ export async function setActorHero(actorId: string, imageId: string | null) {
     }
   );
 
-  return updateActors[0].avatar;
+  return updateActors[0].hero;
 }
 
 export async function runActorPlugins(actorId: string): Promise<void> {
