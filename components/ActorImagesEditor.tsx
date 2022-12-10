@@ -3,7 +3,13 @@ import "react-advanced-cropper/dist/style.css";
 import axios from "axios";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useRef, useState } from "react";
-import { FixedCropper, FixedCropperRef, ImageRestriction } from "react-advanced-cropper";
+import {
+  CircleStencil,
+  Cropper,
+  CropperRef,
+  ImageRestriction,
+  RectangleStencil,
+} from "react-advanced-cropper";
 
 import { useSafeMode } from "../composables/use_safe_mode";
 import { useWindow } from "../composables/use_window";
@@ -21,6 +27,8 @@ import { imageUrl } from "../util/thumbnail";
 import Button from "./Button";
 import FileInput from "./FileInput";
 import Window from "./Window";
+
+type imageTypes = "avatar" | "thumbnail" | "altThumbnail" | "hero";
 
 async function uploadImage(image: { blob: Blob; name: string }, actorId?: string) {
   const query = `
@@ -125,11 +133,12 @@ type ImageUploaderProps = {
   onCancel: () => void;
   onUpload: (blob: Blob) => void;
   src?: ArrayBuffer;
+  type: imageTypes;
 };
 
 // should only do cropping and onUpload should emit new crop dimensions to the parent component
-const ImageCropper = ({ onCancel, onUpload, src }: ImageUploaderProps) => {
-  const cropperRef = useRef<FixedCropperRef>(null);
+const ImageCropper = ({ onCancel, onUpload, src, type }: ImageUploaderProps) => {
+  const cropperRef = useRef<CropperRef>(null);
 
   const doCrop = () => {
     if (cropperRef.current) {
@@ -145,25 +154,40 @@ const ImageCropper = ({ onCancel, onUpload, src }: ImageUploaderProps) => {
     }
   };
 
-  // TODO: aspectRatio per type
-  // TODO: how to set stencilSize? Not really sure yet
+  let aspect;
+
+  switch (type) {
+    case "hero":
+      aspect = 2.75 / 1;
+      break;
+    case "thumbnail":
+    case "altThumbnail":
+      aspect = 3 / 4;
+      break;
+    case "avatar":
+      aspect = 1 / 1;
+      break;
+  }
+
+  let stencil = RectangleStencil;
+
+  if (type === "avatar") {
+    stencil = CircleStencil;
+  }
+
   return (
     <>
       <div style={{ height: "100%" }}>
         <div style={{ height: "80%" }}>
           <div style={{ height: "90%", textAlign: "center" }}>
-            <FixedCropper
+            <Cropper
+              stencilComponent={stencil}
               src={src}
               ref={cropperRef}
               stencilProps={{
-                handlers: false,
-                lines: false,
-                movable: false,
-                resizable: false,
-                aspectRatio: 2.75 / 1,
+                aspectRatio: aspect,
               }}
-              stencilSize={{ width: 1280, height: 640 }}
-              imageRestriction={ImageRestriction.stencil}
+              imageRestriction={ImageRestriction.fitArea}
             />
           </div>
         </div>
@@ -180,7 +204,7 @@ type ImageEditorProps = {
   type: string;
   image?: ActorImage;
   onRemove: () => void;
-  onChange: (buffer: ArrayBuffer, type: string, name: string) => void;
+  onChange: (buffer: ArrayBuffer, type: imageTypes, name: string) => void;
 };
 
 const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps) => {
@@ -315,7 +339,7 @@ export default function ActorImagesEditor({ actorId }: Props) {
 
   const [fileToUpload, setFileToUpload] = useState<{
     buffer: ArrayBuffer;
-    type: string;
+    type: imageTypes;
     name: string;
   }>();
 
@@ -344,7 +368,7 @@ export default function ActorImagesEditor({ actorId }: Props) {
     }
   }
 
-  function changeImage(buffer: ArrayBuffer, type: string, name: string): void {
+  function changeImage(buffer: ArrayBuffer, type: imageTypes, name: string): void {
     setFileToUpload({ buffer, type, name });
   }
 
@@ -438,6 +462,7 @@ export default function ActorImagesEditor({ actorId }: Props) {
           {fileToUpload ? (
             <div style={{ height: "100%" }}>
               <ImageCropper
+                type={fileToUpload.type}
                 src={fileToUpload.buffer}
                 onCancel={() => setFileToUpload(undefined)}
                 onUpload={(blob: Blob) => onImageUpload(blob, fileToUpload.type)}
