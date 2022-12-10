@@ -184,7 +184,7 @@ export default function ActorProfile(props: Props) {
       <Button loading={pluginLoader} onClick={triggerPlugins}>
         Run Plugins
       </Button>
-      <ActorImagesEditor actorId={props.actorId} onEdit={() => alert("edit")} />
+      <ActorImagesEditor actorId={props.actorId} onClose={refreshData} />
     </div>
   );
 }
