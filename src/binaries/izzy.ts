@@ -32,7 +32,7 @@ export async function resetIzzy(): Promise<void> {
   }
 }
 
-export const minIzzyVersion = "0.3.0";
+export const requiredIzzyVersion = "0.3 || 0.4";
 
 export async function exitIzzy(): Promise<void> {
   logger.verbose("Closing izzy");
@@ -50,7 +50,7 @@ export async function izzyHasMinVersion(): Promise<boolean> {
   if (!version) {
     return false;
   }
-  return semver.gte(version, minIzzyVersion);
+  return semver.satisfies(version, requiredIzzyVersion);
 }
 
 export async function izzyVersion(): Promise<string> {
