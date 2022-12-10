@@ -1,4 +1,5 @@
 import { IActor } from "./actor";
+import { IMarker } from "./marker";
 import { IMovie } from "./movie";
 
 export interface IScene {
@@ -36,14 +37,7 @@ export interface IScene {
       _id: string;
     };
   };
-  markers: {
-    _id: string;
-    name: string;
-    time: number;
-    thumbnail?: {
-      _id: string;
-    };
-  }[];
+  markers: IMarker[];
   path: string;
   watches: number[];
 }
