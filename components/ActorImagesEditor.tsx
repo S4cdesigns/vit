@@ -126,10 +126,6 @@ async function loadActor(actorId: string): Promise<ActorImages> {
   };
 }
 
-type Props = {
-  actorId: string;
-};
-
 type ImageUploaderProps = {
   onCancel: () => void;
   onUpload: (blob: Blob) => void;
@@ -318,7 +314,12 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
   );
 };
 
-export default function ActorImagesEditor({ actorId }: Props) {
+type ActorImagesEditorProps = {
+  actorId: string;
+  onClose?: () => void;
+};
+
+export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEditorProps) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
   const [loading, setLoader] = useState(false);
@@ -328,6 +329,11 @@ export default function ActorImagesEditor({ actorId }: Props) {
   const [hero, setHero] = useState<ActorImage>();
   const [altThumbnail, setAltThumbnail] = useState<ActorImage>();
   const [thumbnail, setThumbnail] = useState<ActorImage>();
+
+  const doClose = () => {
+    close();
+    onClose?.();
+  };
 
   const [fileToUpload, setFileToUpload] = useState<{
     buffer: ArrayBuffer;
@@ -446,13 +452,13 @@ export default function ActorImagesEditor({ actorId }: Props) {
         Manage images
       </Button>
       <Window
-        onClose={close}
+        onClose={doClose}
         isOpen={isOpen}
         title={t("actions.edit")}
         actions={
           !fileToUpload && (
             <>
-              <Button onClick={close}>Close</Button>
+              <Button onClick={doClose}>Close</Button>
             </>
           )
         }
