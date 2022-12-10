@@ -11,6 +11,7 @@ type Props = {
   circular?: boolean;
 };
 
+// deprecated, we migrated to react-advanced-cropper
 export function Cropper({ circular, value, onChange, src, aspectRatio, onLoad }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
   return (
