@@ -9,7 +9,8 @@ ADD . /app
 RUN cd /app && \
     npm i -g pnpm &&
     pnpm ci && \
-    pnpm run transpile:prod
+    pnpm run transpile:prod &&
+    pnpm run build
 
 FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
 
