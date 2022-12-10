@@ -113,8 +113,10 @@ export async function onActorCreate(
     const localExtractFields = await buildFieldExtractor();
     for (const key in pluginResult.custom) {
       const fields = localExtractFields(key);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      if (fields.length) actor.customFields[fields[0]] = pluginResult.custom[key];
+      if (fields.length) {
+        // @ts-ignore
+        actor.customFields[fields[0]] = pluginResult.custom[key];
+      }
     }
   }
 

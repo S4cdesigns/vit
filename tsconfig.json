@@ -29,6 +29,7 @@
     "*.test.ts",
     "testx",
     "vitest.config.ts",
-    "test"
+    "test",
+    "gulpfile.ts"
   ]
 }

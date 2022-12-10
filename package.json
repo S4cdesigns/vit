@@ -15,7 +15,7 @@
     "prod:once": "node version && cross-env NODE_ENV=production node build",
     "test": "vitest run --no-threads",
     "coverage": "vitest run --coverage --no-threads",
-    "build:app": "next build",
+    "build": "next build",
     "build:generic": "gulp buildGeneric",
     "build:all": "gulp buildAll",
     "build:armv7": "gulp buildArmv7",
