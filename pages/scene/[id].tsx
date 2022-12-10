@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -175,6 +175,8 @@ export default function ScenePage({
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
   const { startPlayback, currentTime } = useVideoControls();
+
+  const sortedMarkers = useMemo(() => markers.slice().sort((a, b) => a.time - b.time), [markers]);
 
   const {
     actors,
@@ -647,7 +649,7 @@ export default function ScenePage({
               <ListWrapper loading={false} noResults={scene.markers.length === 0}>
                 {/* TODO: update marker list on delete */}
                 <MarkerList
-                  markers={scene.markers}
+                  markers={sortedMarkers}
                   onClick={(marker) => {
                     startPlayback(marker.time);
                     window.scrollTo({
