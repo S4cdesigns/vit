@@ -125,7 +125,6 @@ export async function onMovieCreate(
     const localExtractFields = await buildFieldExtractor();
     for (const key in pluginResult.custom) {
       const fields = localExtractFields(key);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       if (fields.length) {
         // TODO:
         // @ts-ignore
