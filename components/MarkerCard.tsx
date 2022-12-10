@@ -63,7 +63,7 @@ export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props)
           transition: "filter 0.15s ease-in-out",
           filter: safeModeBlur,
         }}
-      ></ResponsiveImage>
+      />
       <AutoLayout
         gap={5}
         layout="h"
@@ -113,9 +113,9 @@ export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props)
             From scene: <a href={`/scene/${marker.scene._id}`}>{marker.scene.name}</a>
           </div>
         )}
-        <div>{<Rating onChange={changeRating} value={marker.rating || 0} />}</div>
 
-        <div>{<LabelGroup labels={marker.labels} />}</div>
+        <Rating onChange={changeRating} value={marker.rating || 0} />
+        <LabelGroup labels={marker.labels} />
       </AutoLayout>
     </Paper>
   );
