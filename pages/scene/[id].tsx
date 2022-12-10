@@ -117,6 +117,7 @@ export default function ScenePage({
   const [rating, setRating] = useState(scene.rating);
   const [markers, setMarkers] = useState(scene.markers);
   const [ffprobeData, setFFprobeData] = useState<FfprobeData | null>(null);
+  const [pausedByMarker, setPausedByMarker] = useState(false);
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
@@ -127,7 +128,7 @@ export default function ScenePage({
   const gridUrl = `/api/media/scene/${scene._id}/grid`;
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
-  const { startPlayback, currentTime } = useVideoControls();
+  const { startPlayback, currentTime, paused } = useVideoControls();
 
   const {
     actors,
@@ -314,6 +315,9 @@ export default function ScenePage({
                       ) as HTMLVideoElement | null;
                       if (videoEl) {
                         videoEl.pause();
+                        if (!paused) {
+                          setPausedByMarker(true);
+                        }
                       }
                     }}
                     sceneId={scene._id}
@@ -322,9 +326,10 @@ export default function ScenePage({
                       const videoEl = document.getElementById(
                         "video-player"
                       ) as HTMLVideoElement | null;
-                      if (videoEl) {
+                      if (videoEl && pausedByMarker) {
                         videoEl.play().catch(() => {});
                       }
+                      setPausedByMarker(false);
 
                       await reloadMarkers();
                     }}
