@@ -7,9 +7,9 @@ import argv from "./args";
 import { createBackup } from "./backup";
 import {
   exitIzzy,
-  izzyHasMinVersion,
+  izzyHasRequiredVersion,
   izzyVersion,
-  minIzzyVersion,
+  requiredIzzyVersion,
   spawnIzzy,
 } from "./binaries/izzy";
 import { getConfig, watchConfig } from "./config";
@@ -77,8 +77,8 @@ export default async (): Promise<Vault> => {
   vault.setupMessage = "Loading database...";
 
   async function checkIzzyVersion() {
-    if (!(await izzyHasMinVersion())) {
-      logger.error(`Izzy does not satisfy min version: ${minIzzyVersion}`);
+    if (!(await izzyHasRequiredVersion())) {
+      logger.error(`Izzy does not satisfy version: ${requiredIzzyVersion}`);
       logger.info(
         "Use --update-izzy, delete izzy(.exe) and restart or download manually from https://gitlab.com/porn-vault/izzy/-/releases"
       );
