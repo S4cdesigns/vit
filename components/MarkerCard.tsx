@@ -2,10 +2,8 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import { useContext } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
-import { ThemeContext } from "../pages/_app";
 import { IMarker } from "../types/marker";
 import { bookmarkMarker, favoriteMarker, rateMarker } from "../util/mutations/marker";
 import { thumbnailUrl } from "../util/thumbnail";
@@ -37,7 +35,6 @@ type Props = {
 
 export default function MarkerCard({ marker, onFav, onBookmark, onRate }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
-  const { theme } = useContext(ThemeContext);
 
   async function toggleFav(): Promise<void> {
     const newValue = !marker.favorite;
