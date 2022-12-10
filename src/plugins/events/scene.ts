@@ -148,8 +148,10 @@ export async function onSceneCreate(
     const localExtractFields = await buildFieldExtractor();
     for (const key in pluginResult.custom) {
       const fields = localExtractFields(key);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      if (fields.length) scene.customFields[fields[0]] = pluginResult.custom[key];
+      if (fields.length) {
+        // @ts-ignore
+        scene.customFields[fields[0]] = pluginResult.custom[key];
+      }
     }
   }
 

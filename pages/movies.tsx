@@ -120,7 +120,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
         </div>
-        <AutoLayout layout="h" gap={10}>
+        <AutoLayout wrap layout="h" gap={10}>
           <input
             type="text"
             onKeyDown={(ev) => {
