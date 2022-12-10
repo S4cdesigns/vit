@@ -7,6 +7,7 @@ import {
   CircleStencil,
   Cropper,
   CropperRef,
+  DefaultSize,
   ImageRestriction,
   RectangleStencil,
 } from "react-advanced-cropper";
@@ -176,17 +177,29 @@ const ImageCropper = ({ onCancel, onUpload, src, type, loading }: ImageUploaderP
     stencil = CircleStencil;
   }
 
+  const defaultSize = ({
+    imageSize,
+    visibleArea,
+  }: {
+    imageSize: { width: number; height: number };
+    visibleArea: { width: number; height: number };
+  }) => {
+    return { width: (visibleArea || imageSize).width, height: (visibleArea || imageSize).height };
+  };
+
   return (
     <>
       <div style={{ height: "100%" }}>
         <div style={{ height: "80%" }}>
           <div style={{ height: "90%", textAlign: "center" }}>
             <Cropper
+              defaultSize={defaultSize as DefaultSize}
               stencilComponent={stencil}
               src={src}
               ref={cropperRef}
               stencilProps={{
                 aspectRatio: aspect,
+                grid: true,
               }}
               imageRestriction={ImageRestriction.fitArea}
             />
@@ -323,6 +336,10 @@ export default function ActorImagesEditor({ actorId }: Props) {
   }>();
 
   async function removeImage(type: string): Promise<void> {
+    if (!window.confirm(`Are your sure to remove the ${type} image?`)) {
+      return;
+    }
+
     switch (type) {
       case "avatar":
         await setActorAvatar(actorId, null);
