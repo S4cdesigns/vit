@@ -96,7 +96,14 @@ export default function Pagination({ current, numPages, onChange }: Props) {
           </div>
         );
       })}
-      <input type="text" onKeyUp={handleKeyboardEvent} placeholder="Jump to page" />
+      <input
+        style={{
+          maxWidth: 120,
+        }}
+        type="text"
+        onKeyUp={handleKeyboardEvent}
+        placeholder="Jump to page"
+      />
     </AutoLayout>
   );
 }

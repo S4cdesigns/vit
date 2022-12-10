@@ -148,7 +148,7 @@ export default function SceneListPage(props: { page: number; initial: IPaginatio
           <Spacer />
           <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
-        <AutoLayout layout="h" gap={10}>
+        <AutoLayout wrap layout="h" gap={10}>
           <input
             type="text"
             onKeyDown={(ev) => {
