@@ -439,8 +439,6 @@ export default function ActorImagesEditor({ actorId }: Props) {
             <div style={{ height: "100%" }}>
               <ImageCropper
                 src={fileToUpload.buffer}
-                type={fileToUpload.type}
-                actorId={actorId}
                 onCancel={() => setFileToUpload(undefined)}
                 onUpload={(blob: Blob) => onImageUpload(blob, fileToUpload.type)}
               ></ImageCropper>
