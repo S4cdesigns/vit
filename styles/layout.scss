@@ -1,3 +1,5 @@
+@import "./color.scss";
+
 $topbar-height: 54px;
 
 .mobile-sidebar-toggle {
@@ -71,33 +73,27 @@ $topbar-height: 54px;
   display: flex;
   align-items: center;
   grid-area: topbar;
-  background: white;
   position: fixed;
   width: 100%;
   height: $topbar-height;
   box-shadow: 0 0.6px 1.3px rgba(0, 0, 0, 0.06), 0 5px 10px rgba(0, 0, 0, 0.12);
   z-index: 100;
+  background: lighten($bg, 5%);
 }
 
 .dark {
   .topbar {
-    background: #1d1d25;
+    background: lighten($bg-dark, 5%);
   }
 
   .sidebar {
-    border-color: #222222;
-
-    .inner {
-      .link {
-        background: #14151d;
-      }
-    }
+    border-color: lighten($bg-dark, 5%);
   }
 }
 
 .sidebar {
   grid-area: sidebar;
-  border-right: 1px solid #e6e6e6;
+  border-right: 1px solid darken($bg, 5%);
   height: 100%;
   min-height: 100vh;
 

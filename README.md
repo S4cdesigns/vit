@@ -17,6 +17,29 @@ Support on [Patreon](https://www.patreon.com/pornvault)
 
 - Fork & create a new branch, give it the name of your feature you're implementing (e.g. "my-new-feature") & submit a pull request
 
+Setup
+
+```bash
+npm i -g pnpm
+pnpm install
+```
+
+Run dev server
+
+```bash
+pnpm run mon --skip-compaction
+```
+
+Run lint & tests
+
+```bash
+pnpm lint
+```
+
+```bash
+ES_TEST_URL=http://localhost:9200 pnpm test
+```
+
 ## Features
 
 - Cross-platform (Win, Linux, Mac)
