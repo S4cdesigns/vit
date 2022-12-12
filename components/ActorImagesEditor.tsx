@@ -3,16 +3,9 @@ import "react-advanced-cropper/dist/style.css";
 import axios from "axios";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  CircleStencil,
-  Cropper,
-  CropperRef,
-  DefaultSize,
-  ImageRestriction,
-  RectangleStencil,
-} from "react-advanced-cropper";
 
 import { useSafeMode } from "../composables/use_safe_mode";
+import { ACTOR_SMALL, ACTOR_TALL, SQUARE, useSettings } from "../composables/use_settings";
 import { useWindow } from "../composables/use_window";
 import { imageCardFragment } from "../fragments/image";
 import { IImage } from "../types/image";
@@ -26,6 +19,7 @@ import {
 } from "../util/mutations/actor";
 import { imageUrl } from "../util/thumbnail";
 import Button from "./Button";
+import { ImageCropper } from "./Cropper";
 import FileInput from "./FileInput";
 import Window from "./Window";
 
@@ -125,92 +119,6 @@ async function loadActor(actorId: string): Promise<ActorImages> {
     avatar: getActorById.avatar,
   };
 }
-
-type ImageUploaderProps = {
-  onCancel: () => void;
-  onUpload: (blob: Blob) => void;
-  src?: ArrayBuffer;
-  type: imageTypes;
-  loading: boolean;
-};
-
-// should only do cropping and onUpload should emit new crop dimensions to the parent component
-const ImageCropper = ({ onCancel, onUpload, src, type, loading }: ImageUploaderProps) => {
-  const cropperRef = useRef<CropperRef>(null);
-
-  const doCrop = () => {
-    if (cropperRef.current) {
-      const canvas = cropperRef.current?.getCanvas();
-      if (canvas == null) {
-        return;
-      }
-      canvas.toBlob((blob) => {
-        if (blob !== null) {
-          onUpload(blob);
-        }
-      });
-    }
-  };
-
-  let aspect;
-
-  switch (type) {
-    case "hero":
-      aspect = 2.75 / 1;
-      break;
-    case "thumbnail":
-    case "altThumbnail":
-      aspect = 3 / 4;
-      break;
-    case "avatar":
-      aspect = 1 / 1;
-      break;
-  }
-
-  let stencil = RectangleStencil;
-
-  if (type === "avatar") {
-    stencil = CircleStencil;
-  }
-
-  const defaultSize = ({
-    imageSize,
-    visibleArea,
-  }: {
-    imageSize: { width: number; height: number };
-    visibleArea: { width: number; height: number };
-  }) => {
-    return { width: (visibleArea || imageSize).width, height: (visibleArea || imageSize).height };
-  };
-
-  return (
-    <>
-      <div style={{ height: "100%" }}>
-        <div style={{ height: "80%" }}>
-          <div style={{ height: "90%", textAlign: "center" }}>
-            <Cropper
-              defaultSize={defaultSize as DefaultSize}
-              stencilComponent={stencil}
-              src={src}
-              ref={cropperRef}
-              stencilProps={{
-                aspectRatio: aspect,
-                grid: true,
-              }}
-              imageRestriction={ImageRestriction.fitArea}
-            />
-          </div>
-        </div>
-        <div style={{ height: "10%" }}>
-          <Button onClick={doCrop} loading={loading}>
-            Upload
-          </Button>
-          <Button onClick={onCancel}>Cancel</Button>
-        </div>
-      </div>
-    </>
-  );
-};
 
 type ImageEditorProps = {
   type: imageTypes;
@@ -324,8 +232,10 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
   const { isOpen, close, open } = useWindow();
   const [loading, setLoader] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { actorAspectRatio, actorImageAspect } = useSettings();
 
   const [avatar, setAvatar] = useState<ActorImage>();
+  const [aspect, setAspect] = useState<number>(9 / 16);
   const [hero, setHero] = useState<ActorImage>();
   const [altThumbnail, setAltThumbnail] = useState<ActorImage>();
   const [thumbnail, setThumbnail] = useState<ActorImage>();
@@ -446,6 +356,21 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
       .finally(() => setLoader(false));
   }, []);
 
+  useEffect(() => {
+    switch (fileToUpload?.type) {
+      case "hero":
+        setAspect(2.75 / 1);
+        break;
+      case "thumbnail":
+      case "altThumbnail":
+        setAspect(actorImageAspect.numericValue);
+        break;
+      case "avatar":
+        setAspect(1 / 1);
+        break;
+    }
+  }, [fileToUpload?.type]);
+
   return (
     <>
       <Button onClick={open} className="hover">
@@ -467,7 +392,7 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
           {fileToUpload ? (
             <div style={{ height: "100%" }}>
               <ImageCropper
-                type={fileToUpload.type}
+                aspectRatio={aspect}
                 src={fileToUpload.buffer}
                 loading={uploading}
                 onCancel={() => setFileToUpload(undefined)}

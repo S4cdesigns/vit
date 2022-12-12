@@ -50,7 +50,7 @@ function calculateAge(bornOn?: number, sceneDate?: number) {
 
 export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
-  const { showCardLabels } = useSettings();
+  const { showCardLabels, actorImageAspect } = useSettings();
   const { theme } = useContext(ThemeContext);
   const [hover, setHover] = useState(false);
 
@@ -95,7 +95,7 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: P
     <Paper style={{ position: "relative" }}>
       <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         <ResponsiveImage
-          aspectRatio="3 / 4"
+          aspectRatio={actorImageAspect.cssValue}
           href={`/actor/${actor._id}`}
           src={thumbSrc}
           imgStyle={{

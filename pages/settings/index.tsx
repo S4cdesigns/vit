@@ -11,6 +11,7 @@ import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
 import Credits from "../../components/Credits";
 import PageWrapper from "../../components/PageWrapper";
+import ImageSettings from "../../components/settings/image_settings";
 import Text from "../../components/Text";
 import { useScanStatus } from "../../composables/use_scan_status";
 import { getFullStatus, StatusData } from "../../util/status";
@@ -142,6 +143,9 @@ export default function SettingsPage() {
           }}
         >
           <AutoLayout>
+            <SettingsSection title="Image Settings">
+              <ImageSettings />
+            </SettingsSection>
             {!!scanStatus && (
               <SettingsSection title="Scan folders">
                 <CardSection title={t("heading.videos")}>
