@@ -1,5 +1,16 @@
+@import "../styles/color.scss";
+
 .paper {
   border-width: 1px;
   border-style: solid;
   border-radius: 8px;
+  background-color: lighten($bg, 5%);
+  border-color: #dadada;
+}
+
+:global(.dark) {
+  .paper {
+    background-color: lighten($bg-dark, 3%);
+    border-color: #2e2e3b;
+  }
 }

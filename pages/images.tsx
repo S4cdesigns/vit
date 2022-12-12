@@ -168,7 +168,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
         <div style={{ display: "flex", alignItems: "center" }}>
           <ImageUploader onUpload={prependImages} />
         </div>
-        <AutoLayout layout="h" gap={10}>
+        <AutoLayout wrap layout="h" gap={10}>
           <input
             type="text"
             onKeyDown={(ev) => {

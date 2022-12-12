@@ -30,6 +30,7 @@ import { usePaginatedList } from "../composables/use_paginated_list";
 import { IMarker } from "../types/marker";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
+import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {
@@ -151,14 +152,7 @@ export default function MarkerListPage(props: {
         <Pagination numPages={numPages} current={page} onChange={pageChanged} />
       </div>
 
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 10,
-        }}
+      <AutoLayout wrap layout="h" gap={10}
       >
         <input
           type="text"
@@ -229,7 +223,7 @@ export default function MarkerListPage(props: {
         />
         <Spacer />
         <Button onClick={refresh}>{t("refresh")}</Button>
-      </div>
+      </AutoLayout>
 
       <ListWrapper loading={false} noResults={false}>
         <MarkerList
