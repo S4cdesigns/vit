@@ -223,7 +223,7 @@ export default function MarkerListPage(props: {
         />
         <Spacer />
         <Button onClick={refresh}>{t("refresh")}</Button>
-      </div>
+      </AutoLayout>
 
       <ListWrapper loading={false} noResults={false}>
         <MarkerList

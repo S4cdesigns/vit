@@ -9,10 +9,10 @@
   opacity: 0.75;
 
   &:hover {
-    background: rgba(127, 127, 127, 0.2);
+    background: rgba(127, 127, 127, 0.1);
   }
 
   &.active {
-    background: rgba(127, 127, 127, 0.1);
+    background: rgba(127, 127, 127, 0.2);
   }
 }

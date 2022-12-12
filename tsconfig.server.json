@@ -9,7 +9,6 @@
     "composables",
     "build",
     "types",
-    "gulpfile.ts",
     "fragments",
     "locale",
     "util",
