@@ -20,11 +20,13 @@ export default function MarkerList({
 }: Props) {
   return (
     <>
+      {/* Do not refactor the onClick this to shorthand form */}
+      {/* MarkerCard is relying on the onClick property to be undefined or actually set */}
       {markers.map((marker) => (
         <MarkerCard
           key={marker._id}
           marker={marker}
-          onClick={() => onClick?.(marker)}
+          onClick={onClick === undefined ? undefined : () => onClick?.(marker)}
           onDelete={() => onDelete?.()}
           onBookmark={(value) => onBookmark?.(marker, value)}
           onRate={(value) => onRate?.(marker, value)}

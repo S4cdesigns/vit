@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import React, { useEffect, useRef, useState } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
-import { ACTOR_SMALL, ACTOR_TALL, SQUARE, useSettings } from "../composables/use_settings";
+import { useSettings } from "../composables/use_settings";
 import { useWindow } from "../composables/use_window";
 import { imageCardFragment } from "../fragments/image";
 import { IImage } from "../types/image";
