@@ -16,11 +16,9 @@ const defaultProps = {
 };
 
 export default function ActorDropdownChoice({ selectedActors, onChange }: Props) {
-  console.log('selected', selectedActors);
   const loadOptions = (inputValue: string, callback: (options: SelectableActor[]) => void) => {
     fetchActors(0, { query: inputValue })
       .then((result) => {
-        console.log(result);
         callback(result.items);
       })
       .catch((error) => {

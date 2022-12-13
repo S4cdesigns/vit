@@ -43,7 +43,6 @@ export default function SettingsContextProvider(props: Props) {
   };
 
   const toggleSceneAspectRatio = (ratio: SCENE_RATIO) => {
-    console.log('toggle', ratio);
     window.localStorage.setItem("pm_sceneRatio", ratio.toString());
     setSceneAspectRatio(ratio);
   };

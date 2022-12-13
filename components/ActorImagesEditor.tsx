@@ -274,7 +274,6 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
         break;
       case "hero":
         await setActorHero(actorId, null);
-        console.log("remove hero");
         setHero(undefined);
         setFileToUpload(undefined);
         break;

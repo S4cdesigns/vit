@@ -158,7 +158,6 @@ export default {
         image.meta.dimensions.width = args.crop.width;
         image.meta.dimensions.height = args.crop.height;
       } else {
-        console.log("not cropping");
         const dims = getImageDimensions(outPath);
         image.meta.dimensions.width = dims.width;
         image.meta.dimensions.height = dims.height;
