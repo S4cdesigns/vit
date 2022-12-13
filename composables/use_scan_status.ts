@@ -9,7 +9,7 @@ type ScanFolder = {
   enable: boolean;
 };
 
-export async function getScanStatus(): Promise<{
+type ScanStatus = {
   folders: {
     videos: ScanFolder[];
     images: ScanFolder[];
@@ -17,8 +17,10 @@ export async function getScanStatus(): Promise<{
   isScanning: boolean;
   nextScanDate: string | null;
   nextScanTimestamp: number | null;
-}> {
-  const { data } = await axios.get("/api/scan/status");
+};
+
+export async function getScanStatus(): Promise<ScanStatus> {
+  const { data } = await axios.get<ScanStatus>("/api/scan/status");
   return data;
 }
 
@@ -35,7 +37,7 @@ export function useScanStatus() {
       return;
     }
     await axios.post("/api/scan");
-    mutate();
+    mutate().catch(() => {});
   }
 
   return {

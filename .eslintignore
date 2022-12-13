@@ -2,3 +2,4 @@ node_modules
 test
 *.spec.ts
 testx
+vitest.config.ts

@@ -167,7 +167,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieSpine(movie._id, img._id);
-                    router.replace(router.asPath);
+                    await router.replace(router.asPath);
                   }}
                   accept={[".png", ".jpg", ".jpeg", ".webp"]}
                 >
@@ -206,7 +206,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieFrontCover(movie._id, img._id);
-                    router.replace(router.asPath);
+                    await router.replace(router.asPath);
                   }}
                   accept={[".png", ".jpg", ".jpeg", ".webp"]}
                 >
@@ -252,7 +252,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieBackCover(movie._id, img._id);
-                    router.replace(router.asPath);
+                    await router.replace(router.asPath);
                   }}
                   accept={[".png", ".jpg", ".jpeg", ".webp"]}
                 >

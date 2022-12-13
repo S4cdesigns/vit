@@ -1,4 +1,4 @@
-import { Dirent } from "fs";
+import type { Dirent } from "fs";
 import { basename, resolve } from "path";
 
 import { handleError, logger } from "../logger";
@@ -87,7 +87,7 @@ export async function walk(options: IWalkOptions): Promise<void | string> {
           logger.debug(`Pushed folder ${path}`);
           folderStack.push(path);
         } else if (extensionIsIncluded(filename, options.extensions)) {
-          logger.silly(`Found file ${file}`);
+          logger.silly(`Found file ${file.name}`);
           const res = await options.cb(path);
           if (res) {
             return path;
