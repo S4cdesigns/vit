@@ -11,20 +11,16 @@ import IconButtonMenu from "./IconButtonMenu";
 import Label from "./Label";
 import LabelSelector from "./LabelSelector";
 
-type Props = {
+const AddLabel = () => <Label color="#ffffff">Add + </Label>;
+
+type AddLabelMenuProps = {
   labels: { _id: string; name: string; color?: string }[];
-  limit?: number;
-  onAdd?: (labels: string[]) => void;
-  onDelete?: (label: string) => void;
+  onAdd: (labels: string[]) => void;
 };
 
-export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): JSX.Element {
-  const max = limit || 5;
-  const t = useTranslations();
-
+function AddLabelMenu({ onAdd, labels }: AddLabelMenuProps) {
   const { labels: labelList, loading: labelLoader } = useLabelList();
-
-  const [expanded, setExpanded] = useState(false);
+  const t = useTranslations();
   const [labelQuery, setLabelQuery] = useState("");
   const [selectedLabels, setSelectedLabels] = useState<string[]>(labels.map((label) => label._id));
 
@@ -38,9 +34,67 @@ export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): J
     setCloseDropdown(false);
   }, [closeDropdown]);
 
-  const slice = expanded ? labels : labels.slice(0, max);
+  return (
+    <div style={{ display: "inline-block" }}>
+      <IconButtonMenu
+        counter={0}
+        value={false}
+        activeIcon={AddLabel}
+        inactiveIcon={AddLabel}
+        isLoading={labelLoader}
+        disabled={false}
+        closeDropdown={closeDropdown}
+      >
+        <input
+          type="text"
+          autoFocus
+          style={{ width: "100%", marginBottom: 10 }}
+          placeholder={t("findLabels")}
+          value={labelQuery}
+          onChange={(ev) => setLabelQuery(ev.target.value)}
+        />
+        <Button
+          onClick={() => {
+            onAdd(selectedLabels);
+            setSelectedLabels([]);
+            setLabelQuery("");
+            setCloseDropdown(true);
+          }}
+        >
+          Add selected
+        </Button>
+        <LabelSelector
+          selected={selectedLabels}
+          items={labelList.filter((label) => {
+            if (labels.some((existing) => existing._id === label._id)) {
+              return false;
+            }
 
-  const AddLabel = () => <Label color="#ffffff">Add + </Label>;
+            return (
+              label.name.toLowerCase().includes(labelQuery.toLowerCase()) ||
+              label.aliases.some((alias) => alias.toLowerCase().includes(labelQuery.toLowerCase()))
+            );
+          })}
+          onChange={setSelectedLabels}
+        />
+      </IconButtonMenu>
+    </div>
+  );
+}
+
+type Props = {
+  labels: { _id: string; name: string; color?: string }[];
+  limit?: number;
+  onAdd?: (labels: string[]) => void;
+  onDelete?: (label: string) => void;
+};
+
+export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): JSX.Element {
+  const max = limit || 5;
+  const t = useTranslations();
+
+  const [expanded, setExpanded] = useState(false);
+  const slice = expanded ? labels : labels.slice(0, max);
 
   return (
     <div>
@@ -53,55 +107,7 @@ export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): J
           {label.name}
         </Label>
       ))}
-      {onAdd && (
-        <div style={{ display: "inline-block" }}>
-          <IconButtonMenu
-            counter={0}
-            value={false}
-            activeIcon={AddLabel}
-            inactiveIcon={AddLabel}
-            isLoading={labelLoader}
-            disabled={false}
-            closeDropdown={closeDropdown}
-          >
-            <input
-              type="text"
-              autoFocus
-              style={{ width: "100%", marginBottom: 10 }}
-              placeholder={t("findLabels")}
-              value={labelQuery}
-              onChange={(ev) => setLabelQuery(ev.target.value)}
-            />
-            <Button
-              onClick={() => {
-                onAdd(selectedLabels);
-                setSelectedLabels([]);
-                setLabelQuery("");
-                setCloseDropdown(true);
-              }}
-            >
-              Add selected
-            </Button>
-            <LabelSelector
-              selected={selectedLabels}
-              items={labelList.filter((label) => {
-                if (labels.some((existing) => existing._id === label._id)) {
-                  return false;
-                }
-
-                return (
-                  label.name.toLowerCase().includes(labelQuery.toLowerCase()) ||
-                  label.aliases.some((alias) =>
-                    alias.toLowerCase().includes(labelQuery.toLowerCase())
-                  )
-                );
-              })}
-              onChange={setSelectedLabels}
-            />
-          </IconButtonMenu>
-        </div>
-      )}
-
+      {onAdd && <AddLabelMenu onAdd={onAdd} labels={labels} />}
       <div style={{ textAlign: "center" }}>
         {max < labels.length && (
           <div
