@@ -93,7 +93,7 @@ export default function VideoPlayer({
 
   // handle triggers for skipping the current playhead
   useEffect(() => {
-    if (typeof newPlaybackTime === "undefined" || isNaN(newPlaybackTime)) {
+    if (!newPlaybackTime) {
       return;
     }
 
