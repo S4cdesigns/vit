@@ -39,6 +39,7 @@ export default function VideoPlayer({
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
   const {
     setCurrentTime,
+    setNewPlaybackTime,
     currentTime,
     paused,
     startPlayback,
@@ -225,7 +226,7 @@ export default function VideoPlayer({
               const xCoordInClickTarget = ev.nativeEvent.offsetX;
               const percent = xCoordInClickTarget / clickTargetWidth;
               const vid = videoEl.current!;
-              startPlayback(vid.duration * percent);
+              setNewPlaybackTime(vid.duration * percent);
             }}
             className={styles.seekbar}
           >
