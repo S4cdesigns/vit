@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import EditIcon from "mdi-react/PencilIcon";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
 
+import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import ILabel from "../types/label";
@@ -43,6 +43,8 @@ type Props = {
 
 export default function ActorEditor({ onEdit, actor }: Props) {
   const t = useTranslations();
+  const selectStyle = useSelectStyle();
+
   const { isOpen, close, open } = useWindow();
   const [name, setName] = useState(actor.name);
   const [aliasInput, setAliasInput] = useState(
@@ -105,6 +107,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
         <div>
           <Subheading>Aliases</Subheading>
           <CreatableSelect
+            styles={selectStyle}
             isMulti
             value={aliasInput}
             onChange={(options: MultiValue<{ value: string; label: string }>) => {

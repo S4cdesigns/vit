@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
 import IconButtonMenu from "../components/IconButtonMenu";
@@ -22,14 +23,13 @@ import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SceneCard from "../components/SceneCard";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import useLabelList from "../composables/use_label_list";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchScenes, useSceneList } from "../composables/use_scene_list";
 import { IPaginationResult } from "../types/pagination";
 import { IScene } from "../types/scene";
 import { buildQueryParser } from "../util/query_parser";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {

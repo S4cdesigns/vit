@@ -4,8 +4,8 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useContext, useMemo, useState } from "react";
-import { useSafeMode } from "../composables/use_safe_mode";
 
+import { useSafeMode } from "../composables/use_safe_mode";
 import { ThemeContext } from "../pages/_app";
 import { IActor } from "../types/actor";
 import { bookmarkActor, favoriteActor, rateActor } from "../util/mutations/actor";

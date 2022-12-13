@@ -6,8 +6,8 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import Link from "next/link";
 import { useContext } from "react";
-import { useSafeMode } from "../composables/use_safe_mode";
 
+import { useSafeMode } from "../composables/use_safe_mode";
 import { ThemeContext } from "../pages/_app";
 import { IScene } from "../types/scene";
 import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";

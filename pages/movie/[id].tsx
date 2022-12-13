@@ -4,35 +4,35 @@ import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
+import Button from "../../components/Button";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
 import Description from "../../components/Description";
+import FileInput from "../../components/FileInput";
 import LabelGroup from "../../components/LabelGroup";
 import ListWrapper from "../../components/ListWrapper";
 import PageWrapper from "../../components/PageWrapper";
 import Rating from "../../components/Rating";
+import ResponsiveImage from "../../components/ResponsiveImage";
 import SceneCard from "../../components/SceneCard";
+import Spacer from "../../components/Spacer";
 import { useActorList } from "../../composables/use_actor_list";
 import { useSceneList } from "../../composables/use_scene_list";
 import { actorCardFragment } from "../../fragments/actor";
 import { sceneCardFragment } from "../../fragments/scene";
 import { IMovie } from "../../types/movie";
 import { graphqlQuery } from "../../util/gql";
-import { formatDuration } from "../../util/string";
-import { thumbnailUrl } from "../../util/thumbnail";
-import Button from "../../components/Button";
-import FileInput from "../../components/FileInput";
-import { useRouter } from "next/router";
 import { uploadImage } from "../../util/mutations/image";
 import { setMovieBackCover, setMovieFrontCover, setMovieSpine } from "../../util/mutations/movie";
-import ResponsiveImage from "../../components/ResponsiveImage";
-import Spacer from "../../components/Spacer";
+import { formatDuration } from "../../util/string";
+import { thumbnailUrl } from "../../util/thumbnail";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `
@@ -167,7 +167,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieSpine(movie._id, img._id);
-                    router.replace(router.asPath);
+                    await router.replace(router.asPath);
                   }}
                   accept={[".png", ".jpg", ".jpeg", ".webp"]}
                 >
@@ -206,7 +206,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieFrontCover(movie._id, img._id);
-                    router.replace(router.asPath);
+                    await router.replace(router.asPath);
                   }}
                   accept={[".png", ".jpg", ".jpeg", ".webp"]}
                 >
@@ -252,7 +252,7 @@ export default function ScenePage({ movie }: { movie: IMovie }) {
                     /* TODO: don't show as image */
                     const img = await uploadImage({ file, name: file.name });
                     await setMovieBackCover(movie._id, img._id);
-                    router.replace(router.asPath);
+                    await router.replace(router.asPath);
                   }}
                   accept={[".png", ".jpg", ".jpeg", ".webp"]}
                 >

@@ -32,6 +32,7 @@ type Props = {
 export default function ActorCreator({ onCreate }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
+  const selectStyle = useSelectStyle();
 
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");

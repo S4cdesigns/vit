@@ -70,7 +70,7 @@ export default function ViewHistoryItem({ date, scene }: Props) {
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",
             overflow: "hidden",
-            //color: titleColor,
+            // color: titleColor,
             fontWeight: 600,
             fontSize: 16,
           }}
