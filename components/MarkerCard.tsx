@@ -6,7 +6,6 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useState } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
-import { useSettings } from "../composables/use_settings";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
 import { bookmarkMarker, favoriteMarker, rateMarker } from "../util/mutations/marker";
@@ -51,7 +50,6 @@ export default function MarkerCard({
   const [fav, setFav] = useState<boolean>(marker.favorite);
   const [bookmark, setBookmark] = useState<boolean>(marker.bookmark);
   const [rating, setRating] = useState<number>(marker.rating);
-  const { showCardLabels } = useSettings();
 
   async function toggleFav(): Promise<void> {
     const newValue = !fav;
@@ -213,7 +211,7 @@ export default function MarkerCard({
         )}
         <div>{<Rating onChange={changeRating} value={rating || 0} />}</div>
 
-        {showCardLabels && marker.labels && <div>{<LabelGroup labels={marker.labels} />}</div>}
+        {marker.labels && <div>{<LabelGroup labels={marker.labels} />}</div>}
       </AutoLayout>
     </Paper>
   );

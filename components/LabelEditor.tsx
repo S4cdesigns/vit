@@ -1,21 +1,37 @@
 import Color from "color";
+import BookmarkIcon from "mdi-react/BookmarkIcon";
+import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import AddMarkerIcon from "mdi-react/EditIcon";
-import { useState } from "react";
-import { MultiValue } from "react-select";
-import CreatableSelect from "react-select/creatable";
+import HeartIcon from "mdi-react/HeartIcon";
+import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import { useEffect, useState } from "react";
 
 import { useWindow } from "../composables/use_window";
-import ILabel from "../types/label";
+import { markerPageFragment } from "../fragments/marker";
+import Actor from "../src/graphql/mutations/actor";
+import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
+import { formatDuration } from "../util/string";
+import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
+import Rating from "./Rating";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function editLabel(id: string, name: string, color?: string, aliases?: string[]) {
+async function editMarker(
+  id: string,
+  name: string,
+  rating: number,
+  favorite: boolean,
+  bookmark: boolean,
+  labels: string[],
+  actors: string[]
+) {
   const query = `
-  mutation ($ids: [String!]!, $opts: LabelUpdateOpts!) {
-    updateLabels(ids: $ids, opts: $opts) {
+  mutation ($ids: [String!]!, $opts: MarkerUpdateOpts!) {
+    updateMarkers(ids: $ids, opts: $opts) {
       _id
     }
   }
@@ -23,51 +39,129 @@ async function editLabel(id: string, name: string, color?: string, aliases?: str
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, color, aliases },
+    opts: { name, rating, favorite, bookmark, labels, actors },
   });
 }
 
 type Props = {
   onEdit: () => void;
-  label: ILabel;
+  markerId: string;
 };
 
-export default function LabelEditor({ onEdit, label }: Props) {
+export default function MarkerEditor({ onEdit, markerId }: Props) {
+  const [marker, setMarker] = useState<IMarker>();
   const [loading, setLoader] = useState(false);
-  const [name, setName] = useState(label.name);
-  const [aliasInput, setAliasInput] = useState(
-    label.aliases.map((alias) => ({ value: alias, label: alias }))
-  );
-
-  const [color, setColor] = useState(label.color);
+  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
+  const [selectedActors, setSelectedActors] = useState<readonly SelectableActor[]>([]);
   const { isOpen, close, open } = useWindow();
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const loadMarker = async () => {
+      const q = `
+  query ($id: String!) {
+    getMarkerById(id: $id) {
+      ...MarkerPage
+    }
+  }
+  ${markerPageFragment}
+  `;
+
+      const { getMarkerById } = await graphqlQuery<{
+        getMarkerById: IMarker;
+      }>(q, {
+        id: markerId,
+      });
+
+      setMarker(getMarkerById);
+      setSelectedLabels(getMarkerById?.labels || []);
+      setSelectedActors(getMarkerById?.actors || []);
+    };
+
+    setLoader(true);
+    loadMarker()
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => setLoader(false));
+  }, [markerId, isOpen]);
+
+  const doOpen = () => {
+    open();
+  };
+
+  const setRating = (value: number) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      rating: value,
+    });
+  };
+
+  const setFav = (value: boolean) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      favorite: value,
+    });
+  };
+
+  const setBookmark = (value: boolean) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      bookmark: value,
+    });
+  };
+  const setName = (event: React.FormEvent<HTMLInputElement>) => {
+    if (!marker) {
+      return;
+    }
+
+    setMarker({
+      ...marker,
+      name: event.currentTarget.value,
+    });
+  };
 
   return (
     <>
-      <AddMarkerIcon
-        className="hover"
-        size={24}
-        onClick={(e) => {
-          e.stopPropagation();
-          open();
-        }}
-      />
+      <AddMarkerIcon className="hover" size={24} onClick={doOpen} />
       <Window
         onClose={close}
         isOpen={isOpen}
-        title={`Edit label ${label.name}`}
+        title={`Edit marker at ${formatDuration(marker?.time || 0)}`}
         actions={
           <>
             <Button
               loading={loading}
               onClick={async () => {
                 try {
+                  if (!marker) {
+                    return;
+                  }
+
                   setLoader(true);
-                  await editLabel(
-                    label._id,
-                    name,
-                    color,
-                    aliasInput.map((opt) => opt.value)
+                  await editMarker(
+                    marker?._id,
+                    marker?.name,
+                    marker?.rating,
+                    marker?.favorite,
+                    marker?.bookmark,
+                    selectedLabels.map((label) => label._id),
+                    selectedActors.map((actor) => actor._id)
                   );
                   onEdit();
                   close();
@@ -84,60 +178,54 @@ export default function LabelEditor({ onEdit, label }: Props) {
       >
         <div>
           <input
-            autoFocus
             style={{ width: "100%" }}
-            value={name}
-            onChange={(event: React.FormEvent<HTMLInputElement>) => {
-              setName(event.currentTarget.value);
-            }}
-            placeholder="Enter a label name"
+            value={marker?.name || ""}
+            onChange={setName}
+            placeholder="Enter a marker title"
             type="text"
           />
         </div>
-        <AutoLayout gap={5} layout="v">
+        <AutoLayout gap={5} layout="h">
           <div>
-            <Subheading>Aliases</Subheading>
-            <CreatableSelect
-              styles={{
-                container: (baseStyles) => ({
-                  ...baseStyles,
-                  maxWidth: 400,
-                }),
-                option: (provided) => ({
-                  ...provided,
-                  color: "black",
-                }),
-                multiValue: (styles, { data }) => {
-                  return {
-                    ...styles,
-                    backgroundColor: "black",
-                    borderRadius: 4,
-                  };
-                },
-                multiValueLabel: (styles, { data }) => ({
-                  ...styles,
-                  color: "white",
-                }),
-              }}
-              isMulti
-              value={aliasInput}
-              onChange={(options: MultiValue<{ value: string; label: string }>) => {
-                setAliasInput(
-                  options.map((option) => ({ value: option.value, label: option.label }))
-                );
-              }}
-            />
+            <Rating value={marker?.rating || 0} onChange={setRating} />
           </div>
-
           <div>
-            <Subheading>Color</Subheading>
-            <input
-              type="color"
-              value={color}
-              onChange={(event) => setColor(event.currentTarget.value)}
-            />
+            {marker?.favorite ? (
+              <HeartIcon
+                onClick={() => setFav(false)}
+                className="hover"
+                style={{ fontSize: 28, color: "#ff3355" }}
+              />
+            ) : (
+              <HeartBorderIcon
+                onClick={() => setFav(true)}
+                className="hover"
+                style={{ fontSize: 28, color: "#ff3355" }}
+              />
+            )}
+            {marker?.bookmark ? (
+              <BookmarkIcon
+                onClick={() => setBookmark(false)}
+                className="hover"
+                style={{ fontSize: 28 }}
+              />
+            ) : (
+              <BookmarkBorderIcon
+                onClick={() => setBookmark(true)}
+                className="hover"
+                style={{ fontSize: 28 }}
+              />
+            )}
           </div>
         </AutoLayout>
+        <div>
+          <Subheading>Actors</Subheading>
+          <ActorDropdownChoice selectedActors={selectedActors} onChange={setSelectedActors} />
+        </div>
+        <div>
+          <Subheading>Labels</Subheading>
+          <LabelDropdownChoice selectedLabels={selectedLabels} onChange={setSelectedLabels} />
+        </div>
       </Window>
     </>
   );

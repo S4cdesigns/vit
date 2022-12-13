@@ -1,8 +1,8 @@
 import { MultiValue } from "react-select";
 import AsyncSelect from "react-select/async";
 
+import { fetchActors } from "../composables/use_actor_list";
 import IActor from "../types/label";
-import { graphqlQuery } from "../util/gql";
 
 export type SelectableActor = Pick<IActor, "_id" | "name">;
 
@@ -15,34 +15,17 @@ const defaultProps = {
   selectedLabels: [],
 };
 
-async function autocompleteActors(query: string): Promise<{ _id: string; name: string }[]> {
-  const q = `
-  query($query: ActorSearchQuery!) {
-    getActors(query: $query) {
-        items {
-          _id
-          name
-        }
-     }
-  }
-`;
-
-  const { getActors } = await graphqlQuery<{
-    getActors: { items: { _id: string; name: string }[] };
-  }>(q, {
-    query: { query },
-  });
-
-  return getActors.items;
-}
-
 export default function ActorDropdownChoice({ selectedActors, onChange }: Props) {
-  const loadOptions = async (
-    inputValue: string,
-    callback: (options: SelectableActor[]) => void
-  ) => {
-    const result = await autocompleteActors(inputValue);
-    callback(result);
+  console.log('selected', selectedActors);
+  const loadOptions = (inputValue: string, callback: (options: SelectableActor[]) => void) => {
+    fetchActors(0, { query: inputValue })
+      .then((result) => {
+        console.log(result);
+        callback(result.items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (

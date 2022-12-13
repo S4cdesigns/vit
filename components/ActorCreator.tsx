@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useWindow } from "../composables/use_window";
-import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
@@ -32,7 +31,6 @@ type Props = {
 export default function ActorCreator({ onCreate }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
-  const selectStyle = useSelectStyle();
 
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");

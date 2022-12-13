@@ -1,27 +1,23 @@
-import DeleteIcon from "mdi-react/DeleteIcon";
+import EditIcon from "mdi-react/EditIcon";
 import { useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
 import ILabel from "../types/label";
 import AutoLayout from "./AutoLayout";
-import LabelEditor from "./LabelEditor";
 import Paper from "./Paper";
 
 type Props = {
   items: ILabel[];
   selected: string[];
   onChange?: (x: string[]) => void;
-  onEdit?: (updatedLabel: ILabel) => void;
   editEnabled: boolean;
 };
 
 LabelSelector.defaultProps = {
   editEnabled: false,
-  onEdit: undefined,
-  onDelete: undefined,
 };
 
-export default function LabelSelector({ items, selected, onChange, editEnabled, onEdit }: Props) {
+export default function LabelSelector({ items, selected, onChange, editEnabled }: Props) {
   const { theme } = useContext(ThemeContext);
 
   function isSelected(labelId: string): boolean {
@@ -60,26 +56,10 @@ export default function LabelSelector({ items, selected, onChange, editEnabled, 
               : "white",
           }}
         >
-          <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500, width: "100%" }}>
+          <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500 }}>
             <AutoLayout layout="h">
-              <div
-                style={{
-                  flex: 6,
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {label.name}{" "}
-                {label.aliases?.length > 0 && (
-                  <span style={{ fontSize: 12 }}>({label.aliases.join(",")})</span>
-                )}
-              </div>
-              <div style={{ flex: 1 }}>
-                {editEnabled && (
-                  <LabelEditor label={label} onEdit={() => onEdit && onEdit(label)} />
-                )}
-              </div>
+              <div>{label.name}</div>
+              <div>{editEnabled && <EditIcon className="hover" />}</div>
             </AutoLayout>
           </div>
         </Paper>
