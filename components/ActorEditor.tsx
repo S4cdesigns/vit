@@ -7,9 +7,11 @@ import CreatableSelect from "react-select/creatable";
 import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
+import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
 import ExternalLinksEditor from "./ExternalLinksEditor";
+import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
@@ -17,7 +19,8 @@ async function editActor(
   id: string,
   name: string,
   aliases: string[],
-  externalLinks: { url: string; text: string }[]
+  externalLinks: { url: string; text: string }[],
+  labels: String[]
 ) {
   const query = `
   mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
@@ -29,7 +32,7 @@ async function editActor(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, aliases, externalLinks },
+    opts: { name, aliases, externalLinks, labels },
   });
 }
 
@@ -46,6 +49,10 @@ export default function ActorEditor({ onEdit, actor }: Props) {
   const [name, setName] = useState(actor.name);
   const [aliasInput, setAliasInput] = useState(
     actor.aliases.map((alias) => ({ value: alias, label: alias }))
+  );
+
+  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>(
+    actor.labels || []
   );
   const [externalLinks, setExternalLinks] = useState(actor.externalLinks);
   const [loading, setLoader] = useState(false);
@@ -68,7 +75,8 @@ export default function ActorEditor({ onEdit, actor }: Props) {
                     actor._id,
                     name,
                     aliasInput.map((alias) => alias.value),
-                    externalLinks
+                    externalLinks,
+                    selectedLabels.map((label) => label._id)
                   );
                   onEdit();
                   close();
@@ -108,6 +116,10 @@ export default function ActorEditor({ onEdit, actor }: Props) {
               );
             }}
           />
+        </div>
+        <div>
+          <Subheading>Labels</Subheading>
+          <LabelDropdownChoice selectedLabels={selectedLabels} onChange={setSelectedLabels} />
         </div>
         <ExternalLinksEditor value={externalLinks} onChange={setExternalLinks} />
       </Window>

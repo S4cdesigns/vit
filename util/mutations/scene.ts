@@ -95,3 +95,16 @@ export async function bookmarkScene(sceneId: string, value: Date | null): Promis
     },
   });
 }
+
+export async function screenshotScene(sceneId: string, time: number): Promise<void> {
+  const mutation = `
+  mutation($id: String!, $sec: Float!) {
+    screenshotScene(id: $id, sec: $sec) {
+      bookmark
+    }
+  }`;
+  await graphqlQuery(mutation, {
+    id: sceneId,
+    sec: time,
+  });
+}

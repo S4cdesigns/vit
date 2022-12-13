@@ -46,8 +46,15 @@ fragment ScenePage on Scene {
     _id
     name
     time
+    favorite
+    bookmark
+    rating
     thumbnail {
       _id
+    }
+    labels {
+      _id
+      name
     }
   }
 }

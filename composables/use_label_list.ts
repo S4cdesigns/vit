@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 
-async function fetchLabels() {
+export async function fetchLabels() {
   const q = `
   {
     getLabels {

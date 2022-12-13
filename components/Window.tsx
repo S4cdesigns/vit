@@ -29,6 +29,7 @@ export default function Window({ children, isOpen, title, onClose, actions }: Pr
         <>
           {isOpen && (
             <div
+              onClick={(event) => event.stopPropagation()}
               style={{
                 zIndex: 999,
                 position: "fixed",

@@ -42,6 +42,7 @@ export default function FavoritesCard() {
   const [skip, setSkip] = useState(0);
   const [items, setItems] = useState<IActor[]>([]);
   const [done, setDone] = useState(false);
+  const { blur: safeModeBlur } = useSafeMode();
 
   async function nextPage() {
     const { actors } = await getActors(skip);
@@ -79,6 +80,7 @@ export default function FavoritesCard() {
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gridGap: 4,
+          filter: safeModeBlur,
         }}
       >
         {content()}
