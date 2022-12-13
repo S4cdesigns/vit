@@ -32,12 +32,14 @@ export default `
     skip: Int
     take: Int
     page: Int
+    scene: String
 
     rawQuery: Json
   }
 
   extend type Query {
     getMarkers(query: MarkerSearchQuery!, seed: String): MarkerSearchResults!
+    getMarkerById(id: String!): Marker
   }
 
   input MarkerUpdateOpts {

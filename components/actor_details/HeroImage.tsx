@@ -12,10 +12,10 @@ export default function HeroImage({ imageId }: Props) {
   return (
     <>
       {imageId && (
-        <div style={{ position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "relative", filter: safeModeBlur }}>
           <img
             width="100%"
-            style={{ aspectRatio: String(2.75), filter: safeModeBlur }}
+            style={{ aspectRatio: String(2.75) }}
             src={`/api/media/image/${imageId}?password=null`}
           />
         </div>

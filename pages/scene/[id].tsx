@@ -5,7 +5,6 @@ import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import CopyIcon from "mdi-react/ContentCopyIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
-import AddMarkerIcon from "mdi-react/PlaylistAddIcon";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,16 +22,19 @@ import Code from "../../components/Code";
 import Description from "../../components/Description";
 import LabelGroup from "../../components/LabelGroup";
 import ListContainer from "../../components/ListContainer";
+import ListWrapper from "../../components/ListWrapper";
+import MarkerCreator from "../../components/MarkerCreator";
 import MovieCard from "../../components/MovieCard";
 import PageWrapper from "../../components/PageWrapper";
-import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
+import MarkerList from "../../components/scene_details/MarkerList";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
 import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
+import { useVideoControls } from "../../composables/use_video_control";
 import { scenePageFragment } from "../../fragments/scene";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
@@ -41,11 +43,19 @@ import {
   favoriteScene,
   rateScene,
   runScenePlugins,
+  screenshotScene,
   unwatchScene,
   watchScene,
 } from "../../util/mutations/scene";
+import { buildQueryParser } from "../../util/query_parser";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
+
+const queryParser = buildQueryParser({
+  t: {
+    default: null,
+  },
+});
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -67,6 +77,8 @@ async function runFFprobe(sceneId: string) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { t } = queryParser.parse(ctx.query);
+
   const q = `
   query ($id: String!) {
     getSceneById(id: $id) {
@@ -85,11 +97,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       scene: getSceneById,
+      startAtPosition: t,
     },
   };
 };
 
-export default function ScenePage({ scene }: { scene: IScene }) {
+export default function ScenePage({
+  scene,
+  startAtPosition,
+}: {
+  scene: IScene;
+  startAtPosition?: number;
+}) {
   const router = useRouter();
   const t = useTranslations();
 
@@ -98,15 +117,18 @@ export default function ScenePage({ scene }: { scene: IScene }) {
   const [rating, setRating] = useState(scene.rating);
   const [markers, setMarkers] = useState(scene.markers);
   const [ffprobeData, setFFprobeData] = useState<FfprobeData | null>(null);
+  const [pausedByMarker, setPausedByMarker] = useState(false);
 
   const [watches, setWatches] = useState<number[]>(scene.watches);
   const [watchLoader, setWatchLoader] = useState(false);
+  const [screenshotLoader, setScreenshotLoader] = useState(false);
 
   const [pluginLoader, setPluginLoader] = useState(false);
 
   const gridUrl = `/api/media/scene/${scene._id}/grid`;
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
+  const { startPlayback, currentTime, paused } = useVideoControls();
 
   const {
     actors,
@@ -151,6 +173,32 @@ export default function ScenePage({ scene }: { scene: IScene }) {
       numPages: 1,
     });
   }, [scene]);
+
+  async function reloadMarkers(): Promise<void> {
+    const q = `
+  query ($id: String!) {
+    getSceneById(id: $id) {
+      markers {
+        _id
+        name
+        time
+        thumbnail {
+          _id,
+          name
+        }
+      }
+    }
+  }
+  `;
+
+    const { getSceneById } = await graphqlQuery<{
+      getSceneById: IScene;
+    }>(q, {
+      id: scene._id,
+    });
+
+    setMarkers(getSceneById.markers);
+  }
 
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
@@ -198,10 +246,23 @@ export default function ScenePage({ scene }: { scene: IScene }) {
     setPluginLoader(false);
   }
 
+  async function handleScreenshotScene() {
+    setScreenshotLoader(true);
+    try {
+      await screenshotScene(scene._id, currentTime);
+      router.replace(router.asPath).catch(() => {});
+    } catch (error) {
+      console.error(error);
+    }
+    setScreenshotLoader(false);
+  }
+
   return (
     <PageWrapper padless title={scene.name}>
       <AutoLayout>
         <VideoPlayer
+          scene={scene}
+          startAtPosition={startAtPosition}
           duration={scene.meta.duration}
           markers={markers.map((marker) => ({
             ...marker,
@@ -247,8 +308,32 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                       <BookmarkBorderIcon onClick={toggleBookmark} className="hover" size={24} />
                     )}
                   </>
-                  {/* TODO: */}
-                  <AddMarkerIcon className="hover" size={24} />
+                  <MarkerCreator
+                    onOpen={() => {
+                      const videoEl = document.getElementById(
+                        "video-player"
+                      ) as HTMLVideoElement | null;
+                      if (videoEl) {
+                        videoEl.pause();
+                        if (!paused) {
+                          setPausedByMarker(true);
+                        }
+                      }
+                    }}
+                    sceneId={scene._id}
+                    actors={scene.actors}
+                    onCreate={async () => {
+                      const videoEl = document.getElementById(
+                        "video-player"
+                      ) as HTMLVideoElement | null;
+                      if (videoEl && pausedByMarker) {
+                        videoEl.play().catch(() => {});
+                      }
+                      setPausedByMarker(false);
+
+                      await reloadMarkers();
+                    }}
+                  />
                   <Spacer />
                   {!!scene.studio && (
                     <Link href={`/studio/${scene.studio._id}`} passHref>
@@ -413,6 +498,9 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                         >
                           Generate grid
                         </Button>
+                        <Button loading={screenshotLoader} onClick={handleScreenshotScene}>
+                          Use current frame as thumbnail
+                        </Button>
                       </div>
                     </CardSection>
                     {showGrid && (
@@ -482,41 +570,21 @@ export default function ScenePage({ scene }: { scene: IScene }) {
                 </div>
               )}
               {/* MARKERS */}
-              {!!markers.length && (
-                <div>
-                  <CardTitle style={{ marginBottom: 20 }}>{t("marker", { numItems: 2 })}</CardTitle>
-                  <ListContainer size={200}>
-                    {markers
-                      .sort((a, b) => a.time - b.time)
-                      .map((marker) => (
-                        <Paper key={marker._id}>
-                          <img
-                            onClick={() => {
-                              const videoEl = document.getElementById(
-                                "video-player"
-                              ) as HTMLVideoElement | null;
-                              if (videoEl) {
-                                videoEl.currentTime = marker.time;
-                                videoEl.play().catch(() => {});
-                                window.scrollTo({
-                                  left: 0,
-                                  top: 0,
-                                  behavior: "smooth",
-                                });
-                              }
-                            }}
-                            className="hover"
-                            width="100%"
-                            height="100%"
-                            style={{ objectFit: "cover" }}
-                            src={thumbnailUrl(marker.thumbnail?._id)}
-                            alt={marker.name}
-                          />
-                        </Paper>
-                      ))}
-                  </ListContainer>
-                </div>
-              )}
+              <CardTitle>Markers</CardTitle>
+              <ListWrapper loading={false} noResults={scene.markers.length === 0}>
+                {/* TODO: update marker list on delete */}
+                <MarkerList
+                  markers={scene.markers}
+                  onClick={(marker) => {
+                    startPlayback(marker.time);
+                    window.scrollTo({
+                      left: 0,
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                />
+              </ListWrapper>
             </AutoLayout>
           </div>
         </div>
