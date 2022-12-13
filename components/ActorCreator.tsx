@@ -1,9 +1,9 @@
-import Color from "color";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Select from "react-select";
 
 import useLabelList from "../composables/use_label_list";
+import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
@@ -34,6 +34,7 @@ type Props = {
 export default function ActorCreator({ onCreate }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
+  const selectStyle = useSelectStyle();
 
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");
@@ -103,27 +104,7 @@ export default function ActorCreator({ onCreate }: Props) {
             onChange={setSelectedLabels}
             closeMenuOnSelect={false}
             isClearable
-            styles={{
-              container: (provided) => ({
-                ...provided,
-                maxWidth: 400,
-              }),
-              option: (provided) => ({
-                ...provided,
-                color: "black",
-              }),
-              multiValue: (styles, { data }) => {
-                return {
-                  ...styles,
-                  backgroundColor: data.color || "black",
-                  borderRadius: 4,
-                };
-              },
-              multiValueLabel: (styles, { data }) => ({
-                ...styles,
-                color: new Color(data.color || "#000000").isLight() ? "black" : "white",
-              }),
-            }}
+            styles={selectStyle}
             filterOption={({ data: label }, query) =>
               label.name.toLowerCase().includes(query) ||
               label.aliases.some((alias) => alias.toLowerCase().includes(query))
