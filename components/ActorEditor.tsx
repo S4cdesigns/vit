@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import EditIcon from "mdi-react/PencilIcon";
 import moment from "moment";
 import { useTranslations } from "next-intl";
@@ -6,6 +5,7 @@ import { useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
 
+import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";
@@ -54,6 +54,8 @@ type Props = {
 
 export default function ActorEditor({ onEdit, actor }: Props) {
   const t = useTranslations();
+  const selectStyle = useSelectStyle();
+
   const { isOpen, close, open } = useWindow();
   const [name, setName] = useState(actor.name);
   const [bornOn, setBornOn] = useState(actor.bornOn);
@@ -136,6 +138,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
         <div>
           <Subheading>Aliases</Subheading>
           <CreatableSelect
+            styles={selectStyle}
             isMulti
             value={aliasInput}
             styles={{

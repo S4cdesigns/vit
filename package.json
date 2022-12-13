@@ -15,7 +15,7 @@
     "test": "vitest run --no-threads",
     "coverage": "vitest run --coverage --no-threads",
     "build": "next build",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint --quiet --fix \"./**/*.{ts,tsx}\""
   },
   "repository": {
