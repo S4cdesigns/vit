@@ -1,8 +1,8 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import useSWR from "swr";
-import AutoLayout from "../components/AutoLayout";
 
+import AutoLayout from "../components/AutoLayout";
 import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import ViewHistoryItem from "../components/ViewHistoryItem";

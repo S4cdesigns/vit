@@ -28,6 +28,7 @@ import PageWrapper from "../../components/PageWrapper";
 import Paper from "../../components/Paper";
 import Rating from "../../components/Rating";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
+import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
 import { useActorList } from "../../composables/use_actor_list";
@@ -45,7 +46,6 @@ import {
 } from "../../util/mutations/scene";
 import { formatDuration } from "../../util/string";
 import { thumbnailUrl } from "../../util/thumbnail";
-import Spacer from "../../components/Spacer";
 
 async function runFFprobe(sceneId: string) {
   const q = `

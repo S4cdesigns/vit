@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
 import LabelGroup from "../components/LabelGroup";
@@ -16,6 +17,7 @@ import Pagination from "../components/Pagination";
 import Paper from "../components/Paper";
 import ResponsiveImage from "../components/ResponsiveImage";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import StudioCard from "../components/StudioCard";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchStudios, useStudioList } from "../composables/use_studio_list";
@@ -24,8 +26,6 @@ import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
 import { thumbnailUrl } from "../util/thumbnail";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const queryParser = buildQueryParser({
   q: {

@@ -3,8 +3,8 @@ import PauseIcon from "mdi-react/PauseIcon";
 import PlayIcon from "mdi-react/PlayIcon";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
 import { useEffect, useRef, useState } from "react";
-import { useSafeMode } from "../../composables/use_safe_mode";
 
+import { useSafeMode } from "../../composables/use_safe_mode";
 import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
 import Marker from "../Marker";

@@ -16,6 +16,7 @@ import { useMemo, useState } from "react";
 
 import ActorCard from "../components/ActorCard";
 import ActorCreator from "../components/ActorCreator";
+import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import { CountrySelector } from "../components/CountrySelector";
 import IconButtonFilter from "../components/IconButtonFilter";
@@ -26,14 +27,13 @@ import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
+import Spacer from "../components/Spacer";
 import { fetchActors, useActorList } from "../composables/use_actor_list";
 import useLabelList from "../composables/use_label_list";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { IActor } from "../types/actor";
 import { IPaginationResult } from "../types/pagination";
 import { buildQueryParser } from "../util/query_parser";
-import Spacer from "../components/Spacer";
-import AutoLayout from "../components/AutoLayout";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 

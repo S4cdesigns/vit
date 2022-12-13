@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import AutoLayout from "../AutoLayout";
 
+import AutoLayout from "../AutoLayout";
 import Card from "../Card";
 
 type Props = {

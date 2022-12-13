@@ -3,8 +3,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { useSelectStyle } from "../composables/use_select_style";
 
+import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";

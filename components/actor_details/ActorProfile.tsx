@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import Button from "../../components/Button";
+import { useSafeMode } from "../../composables/use_safe_mode";
 import {
   bookmarkActor,
   favoriteActor,
@@ -19,7 +20,6 @@ import Flag from "../Flag";
 import Rating from "../Rating";
 import styles from "./ActorProfile.module.scss";
 import ExternalLink from "./ExternalLink";
-import { useSafeMode } from "../../composables/use_safe_mode";
 
 type Props = {
   actorId: string;
