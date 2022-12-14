@@ -1,4 +1,5 @@
 node_modules
-test/**/*
+test
 *.spec.ts
-
+testx
+vitest.config.ts

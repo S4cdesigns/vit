@@ -107,7 +107,6 @@ export async function searchMarkers(
   const query = searchQuery(options.query, ["name", "actorNames^1.5", "labelNames", "sceneName"]);
   const _shuffle = shuffle(shuffleSeed, query, options.sortBy);
 
-  console.log(JSON.stringify(options.rawQuery, null, 2));
   return performSearch<IMarkerSearchDoc, typeof options>({
     index: indexMap.markers,
     options,

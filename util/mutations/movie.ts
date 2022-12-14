@@ -1,6 +1,6 @@
 import axios from "axios";
-import { graphqlQuery } from "../gql";
 
+import { graphqlQuery } from "../gql";
 import { gqlIp } from "../ip";
 
 export async function setMovieSpine(movieId: string, imageId: string) {

@@ -5,24 +5,24 @@ import SettingsIcon from "mdi-react/CogIcon";
 import MovieIcon from "mdi-react/FilmstripBoxMultipleIcon";
 import UnsafeModeIcon from "mdi-react/FireIcon";
 import SafeModeIcon from "mdi-react/FlowerIcon";
+import ViewHistoryIcon from "mdi-react/HistoryIcon";
 import ImageIcon from "mdi-react/ImageIcon";
 import LabelsIcon from "mdi-react/LabelIcon";
 import MarkerIcon from "mdi-react/PlaylistStarIcon";
 import SceneIcon from "mdi-react/VideocamIcon";
 import DarkThemeIcon from "mdi-react/WeatherNightIcon";
 import LightThemeIcon from "mdi-react/WhiteBalanceSunnyIcon";
-import ViewHistoryIcon from "mdi-react/HistoryIcon";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { Fragment, ReactNode, useContext } from "react";
 
+import { useSafeMode } from "../../composables/use_safe_mode";
 import { useVersion } from "../../composables/use_version";
 import { ThemeContext } from "../../pages/_app";
 import Flag from "../Flag";
 import Paper from "../Paper";
-import SidebarLink from "./SidebarLink";
 import Spacer from "../Spacer";
-import { useSafeMode } from "../../composables/use_safe_mode";
+import SidebarLink from "./SidebarLink";
 
 const links: (
   | { divider: true }

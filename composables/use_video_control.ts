@@ -21,6 +21,7 @@ export const VideoContext = createContext<{
   // currently played back scene
   scene?: IScene;
   setCurrentTime: (time: number) => void;
+  setNewPlaybackTime: (time: number) => void;
   startPlayback: (time?: number) => void;
   togglePlayback: () => void;
   setPaused: (paused: boolean) => void;
@@ -33,6 +34,7 @@ export const VideoContext = createContext<{
   currentTarget: PlaybackTarget.BROWSER,
   paused: false,
   setCurrentTime: (time: number) => {},
+  setNewPlaybackTime: (time: number) => {},
   startPlayback: (time?: number) => {},
   togglePlayback: () => {},
   setPaused: (paused: boolean) => {},

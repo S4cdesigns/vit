@@ -288,7 +288,7 @@ export default function ScenePage({
     setPluginLoader(true);
     try {
       await runScenePlugins(scene._id);
-      router.replace(router.asPath).catch(() => {});
+      await router.replace(router.asPath);
     } catch (error) {
       console.error(error);
     }

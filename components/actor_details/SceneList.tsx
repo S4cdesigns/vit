@@ -133,7 +133,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
           </span>
         )}
       </CardTitle>
-      <AutoLayout layout="h" gap={10}>
+      <AutoLayout wrap layout="h" gap={10}>
         <input
           type="text"
           style={{ maxWidth: 120 }}

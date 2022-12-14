@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import EditIcon from "mdi-react/PencilIcon";
 import moment from "moment";
 import { useTranslations } from "next-intl";
@@ -6,8 +5,10 @@ import { useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
 
+import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
+import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
@@ -30,8 +31,7 @@ async function editActor(
   name: string,
   aliases: string[],
   externalLinks: { url: string; text: string }[],
-  labels: String[],
-  bornOn?: number
+  labels: String[]
 ) {
   const query = `
   mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
@@ -43,7 +43,7 @@ async function editActor(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, aliases, externalLinks, labels, bornOn },
+    opts: { name, aliases, externalLinks, labels },
   });
 }
 
@@ -54,6 +54,8 @@ type Props = {
 
 export default function ActorEditor({ onEdit, actor }: Props) {
   const t = useTranslations();
+  const selectStyle = useSelectStyle();
+
   const { isOpen, close, open } = useWindow();
   const [name, setName] = useState(actor.name);
   const [bornOn, setBornOn] = useState(actor.bornOn);
@@ -86,8 +88,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
                     name,
                     aliasInput.map((alias) => alias.value),
                     externalLinks,
-                    selectedLabels.map((label) => label._id),
-                    bornOn
+                    selectedLabels.map((label) => label._id)
                   );
                   onEdit();
                   close();
@@ -136,6 +137,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
         <div>
           <Subheading>Aliases</Subheading>
           <CreatableSelect
+            styles={selectStyle}
             isMulti
             value={aliasInput}
             styles={{

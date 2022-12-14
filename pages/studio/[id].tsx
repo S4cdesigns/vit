@@ -1,6 +1,7 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useEffect } from "react";
+
 import AutoLayout from "../../components/AutoLayout";
 import CardTitle from "../../components/CardTitle";
 import ListWrapper from "../../components/ListWrapper";
@@ -11,7 +12,6 @@ import { usePaginatedList } from "../../composables/use_paginated_list";
 import { useSceneList } from "../../composables/use_scene_list";
 import { useStudioList } from "../../composables/use_studio_list";
 import { studioCardFragment } from "../../fragments/studio";
-
 import { IStudio } from "../../types/studio";
 import { graphqlQuery } from "../../util/gql";
 import { thumbnailUrl } from "../../util/thumbnail";

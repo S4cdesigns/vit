@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useWindow } from "../composables/use_window";
-import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
