@@ -1,4 +1,7 @@
+import { useMemo } from "react";
+
 import { useSafeMode } from "../composables/use_safe_mode";
+import { formatDuration } from "../util/string";
 
 const SINGLE_PREVIEW_SPRITE_WIDTH = 160;
 
@@ -7,6 +10,7 @@ type Props = {
   absolutePosition?: number;
   percentagePosition?: number;
   thumbnail: string;
+  duration: number;
 };
 
 export default function ScenePreview({
@@ -16,6 +20,7 @@ export default function ScenePreview({
   show,
   // percentage value on the seekbar (0 - 1)
   percentagePosition,
+  duration,
 }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
 
@@ -24,9 +29,17 @@ export default function ScenePreview({
   }
 
   // total number of pixels of the scenePreview image: 16000px
-  let imageOffset = Math.floor((percentagePosition || 0) * 100) * SINGLE_PREVIEW_SPRITE_WIDTH;
+  let imageOffset = useMemo(
+    () => Math.floor((percentagePosition || 0) * 100) * SINGLE_PREVIEW_SPRITE_WIDTH,
+    [duration, percentagePosition]
+  );
   imageOffset += SINGLE_PREVIEW_SPRITE_WIDTH;
   const positionProperty = `calc(100% - ${imageOffset}px)`;
+
+  const currentPosition = useMemo(
+    () => Math.floor((percentagePosition || 0) * duration),
+    [duration, percentagePosition]
+  );
 
   return (
     <div
@@ -40,6 +53,22 @@ export default function ScenePreview({
         backgroundImage: `url(${thumbnail})`,
         backgroundPositionX: positionProperty,
       }}
-    ></div>
+    >
+      <div
+        style={{
+          background: "#000000bb",
+          borderRadius: 5,
+          padding: 2,
+          width: 80,
+          height: 20,
+          position: "absolute",
+          bottom: -23,
+          left: 50,
+          textAlign: "center",
+        }}
+      >
+        {formatDuration(currentPosition)}
+      </div>
+    </div>
   );
 }
