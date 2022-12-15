@@ -60,8 +60,8 @@ export default function MarkerCard({
   }
 
   async function toggleBookmark(): Promise<void> {
-    const newValue = !bookmark;
-    setBookmark(newValue);
+    const newValue = marker.bookmark ? null : new Date();
+    setBookmark(!!newValue);
     await bookmarkMarker(marker._id, newValue);
     onBookmark && onBookmark(newValue);
   }
