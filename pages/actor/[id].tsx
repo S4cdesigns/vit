@@ -58,6 +58,18 @@ const queryParser = buildQueryParser({
   },
 });
 
+async function removeActor(id: string) {
+  const query = `
+  mutation ($ids: [String!]!) {
+    removeActors(ids: $ids)
+  }
+ `;
+
+  await graphqlQuery(query, {
+    ids: [id],
+  });
+}
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `
   query ($id: String!) {
@@ -136,6 +148,15 @@ export default function ActorPage({ actor }: { actor: IActor }) {
   });
   const [src, setSrc] = useState<string | null>(null); */
 
+  const doDeleteActor = async () => {
+    if (window.confirm("Really delete?")) {
+      await removeActor(actor._id);
+      router.push("/actors").catch((error) => {
+        console.error(error);
+      });
+    }
+  };
+
   const leftCol = (
     <AutoLayout gap={10}>
       {/* ACTION BAR */}
@@ -143,7 +164,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
         <AutoLayout gap={10} layout="h">
           <Spacer />
           <ActorEditor onEdit={async () => await router.replace(router.asPath)} actor={actor} />
-          <DeleteIcon />
+          <DeleteIcon className="hover" onClick={doDeleteActor} />
         </AutoLayout>
       </Card>
       <Card style={{ padding: "20px 10px" }}>
