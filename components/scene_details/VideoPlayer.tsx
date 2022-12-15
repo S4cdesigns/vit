@@ -279,6 +279,7 @@ export default function VideoPlayer({
             />
           ))}
           <ScenePreview
+            duration={duration}
             show={hoverSeekBar}
             absolutePosition={mousePosition.x}
             percentagePosition={mousePosition.percent}
