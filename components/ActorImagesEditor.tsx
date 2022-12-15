@@ -129,6 +129,7 @@ type ImageEditorProps = {
 
 const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps) => {
   const { blur: safeModeBlur } = useSafeMode();
+
   return (
     <>
       {image?._id ? (
@@ -154,7 +155,6 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
                   reader.readAsDataURL(blob);
                 });
               }}
-              style={{}}
             >
               Edit
             </Button>
@@ -191,7 +191,7 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
                 )`,
               border: "2px solid #a0a0a020",
             }}
-          ></div>
+          />
           <div style={{ textAlign: "center" }}>
             <FileInput
               onChange={(files) => {
@@ -209,12 +209,6 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
             >
               Set {type}
             </FileInput>
-
-            {/* 
-            <Button onClick={onChange} style={{}}>
-              Change {type}
-            </Button>
-            */}
           </div>
         </div>
       )}
@@ -230,9 +224,9 @@ type ActorImagesEditorProps = {
 export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEditorProps) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
-  const [loading, setLoader] = useState(false);
+  const [_loading, setLoader] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const { actorAspectRatio, actorImageAspect } = useSettings();
+  const { actorImageAspect } = useSettings();
 
   const [avatar, setAvatar] = useState<ActorImage>();
   const [aspect, setAspect] = useState<number>(9 / 16);
@@ -396,7 +390,7 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
                 loading={uploading}
                 onCancel={() => setFileToUpload(undefined)}
                 onUpload={(blob: Blob) => onImageUpload(blob, fileToUpload.type)}
-              ></ImageCropper>
+              />
             </div>
           ) : (
             <div style={{ height: "100%" }}>

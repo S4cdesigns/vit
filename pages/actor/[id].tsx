@@ -186,27 +186,6 @@ export default function ActorPage({ actor }: { actor: IActor }) {
 
   const rightCol = (
     <AutoLayout>
-      {/*   <Window isOpen title="Set avatar">
-        <div>
-          <input
-            type="file"
-            onChange={(ev) => {
-              const fileReader = new FileReader();
-
-              fileReader.onload = (ev) => {
-                setSrc(ev.target!.result!.toString());
-              };
-
-              fileReader.readAsDataURL(ev.target.files![0]);
-            }}
-          />
-        </div>
-        {src && (
-          <div style={{ maxWidth: 720 }}>
-            <AvatarCropper src={src} onChange={setCrop} value={crop}></AvatarCropper>
-          </div>
-        )}
-      </Window> */}
       <Card>
         <div style={{ fontSize: 20 }}>{t("stats")}</div>
         <ActorStats
