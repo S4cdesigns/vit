@@ -2,6 +2,7 @@ import { MultiValue } from "react-select";
 import AsyncSelect from "react-select/async";
 
 import { fetchActors } from "../composables/use_actor_list";
+import { useSelectStyle } from "../composables/use_select_style";
 import IActor from "../types/label";
 
 export type SelectableActor = Pick<IActor, "_id" | "name">;
@@ -16,6 +17,7 @@ const defaultProps = {
 };
 
 export default function ActorDropdownChoice({ selectedActors, onChange }: Props) {
+  const selectStyle = useSelectStyle();
   const loadOptions = (inputValue: string, callback: (options: SelectableActor[]) => void) => {
     fetchActors(0, { query: inputValue })
       .then((result) => {
@@ -34,28 +36,7 @@ export default function ActorDropdownChoice({ selectedActors, onChange }: Props)
       }}
       closeMenuOnSelect={false}
       isClearable
-      styles={{
-        container: (provided) => ({
-          ...provided,
-          maxWidth: 400,
-        }),
-        option: (provided) => ({
-          ...provided,
-          color: "black",
-        }),
-        multiValue: (styles, { data }) => {
-          return {
-            ...styles,
-            backgroundColor: data.color || "black",
-            borderRadius: 4,
-          };
-        },
-        multiValueLabel: (styles, { data }) => ({
-          ...styles,
-          // color: new Color(data.color || "#000000").isLight() ? "black" : "white",
-          color: "white",
-        }),
-      }}
+      styles={selectStyle}
       filterOption={({ data: actor }, query) => actor.name.toLowerCase().includes(query)}
       isMulti
       defaultOptions={selectedActors}

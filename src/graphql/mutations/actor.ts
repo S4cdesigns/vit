@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { getConfig } from "../../config";
 import { ApplyActorLabelsEnum } from "../../config/schema";
 import { collections } from "../../database";
@@ -61,6 +63,14 @@ export default {
     _: unknown,
     args: { name: string; aliases?: string[]; labels?: string[] }
   ): Promise<Actor> {
+    if (args.name.length === 0) {
+      throw new GraphQLError("An actor name must not be empty", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
+    }
+
     const config = getConfig();
     const aliases = filterInvalidAliases(args.aliases || []);
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useWindow } from "../composables/use_window";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
+import InputError from "./InputError";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
@@ -29,9 +30,20 @@ export default function StudioCreator({ onCreate }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
+  const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
 
   const [loading, setLoader] = useState(false);
+
+  const reset = () => {
+    setName("");
+    setError(undefined);
+  };
+
+  const doClose = () => {
+    reset();
+    close();
+  };
 
   return (
     <>
@@ -39,7 +51,7 @@ export default function StudioCreator({ onCreate }: Props) {
         + {t("actions.add")}
       </Button>
       <Window
-        onClose={close}
+        onClose={doClose}
         isOpen={isOpen}
         title={t("actions.add")}
         actions={
@@ -51,16 +63,21 @@ export default function StudioCreator({ onCreate }: Props) {
                   setLoader(true);
                   await createStudio(name);
                   onCreate();
-                  close();
-                  setName("");
-                } catch (error) {}
+                  doClose();
+                } catch (error) {
+                  if (error instanceof Error) {
+                    setError(error.message);
+                  } else {
+                    setError("An error occurred");
+                  }
+                }
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
               Create
             </Button>
-            <Button onClick={close}>Close</Button>
+            <Button onClick={doClose}>Close</Button>
           </>
         }
       >
@@ -74,6 +91,7 @@ export default function StudioCreator({ onCreate }: Props) {
             placeholder="Enter a studio name"
             type="text"
           />
+          {error && <InputError message={error} />}
         </div>
       </Window>
     </>
