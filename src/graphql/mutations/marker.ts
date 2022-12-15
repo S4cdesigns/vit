@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { getConfig } from "../../config/index";
 import { collections } from "../../database";
 import { extractLabels } from "../../extractor";
@@ -78,7 +80,19 @@ export default {
   ): Promise<Marker> {
     const _scene = await Scene.getById(scene);
     if (!_scene) {
-      throw new Error("Scene not found");
+      throw new GraphQLError("Scene not found", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
+    }
+
+    if (name.length === 0) {
+      throw new GraphQLError("A marker name must not be empty", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
     }
 
     const marker = new Marker(name, scene, time);

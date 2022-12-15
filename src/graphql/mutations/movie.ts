@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { collections } from "../../database";
 import { onMovieCreate } from "../../plugins/events/movie";
 import { indexMovies, removeMovie } from "../../search/movie";
@@ -24,6 +26,14 @@ type IMovieUpdateOpts = Partial<{
 
 export default {
   async addMovie(_: unknown, args: { name: string; scenes: string[] }): Promise<Movie> {
+    if (args.name.length === 0) {
+      throw new GraphQLError("A movie name must not be empty", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
+    }
+
     let movie = new Movie(args.name);
 
     if (args.scenes) {

@@ -6,6 +6,7 @@ import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import InputError from "./InputError";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
@@ -34,10 +35,23 @@ type Props = {
 export default function LabelCreator({ onCreate }: Props) {
   const t = useTranslations();
   const [loading, setLoader] = useState(false);
+  const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");
   const [color, setColor] = useState("#000000");
   const { isOpen, close, open } = useWindow();
+
+  const reset = () => {
+    setName("");
+    setError(undefined);
+    setAliasInput("");
+    setColor("#000000");
+  };
+
+  const doClose = () => {
+    reset();
+    close();
+  };
 
   return (
     <>
@@ -45,7 +59,7 @@ export default function LabelCreator({ onCreate }: Props) {
         + {t("actions.add")}
       </Button>
       <Window
-        onClose={close}
+        onClose={doClose}
         isOpen={isOpen}
         title={`Create label`}
         actions={
@@ -57,15 +71,21 @@ export default function LabelCreator({ onCreate }: Props) {
                   setLoader(true);
                   const newLabel = await createLabel(name, color, aliasInput.split("\n"));
                   onCreate(newLabel);
-                  close();
-                } catch (error) {}
+                  doClose();
+                } catch (error) {
+                  if (error instanceof Error) {
+                    setError(error.message);
+                  } else {
+                    setError("An error occurred");
+                  }
+                }
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
               Create
             </Button>
-            <Button onClick={close}>Close</Button>
+            <Button onClick={doClose}>Close</Button>
           </>
         }
       >
@@ -80,6 +100,7 @@ export default function LabelCreator({ onCreate }: Props) {
             placeholder="Enter a label name"
             type="text"
           />
+          {error && <InputError message={error} />}
         </div>
 
         <AutoLayout gap={5} layout="v">

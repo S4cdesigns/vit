@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 
 import { useWindow } from "../composables/use_window";
 import { markerPageFragment } from "../fragments/marker";
-import Actor from "../src/graphql/mutations/actor";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
 import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import InputError from "./InputError";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Rating from "./Rating";
 import Subheading from "./Subheading";
@@ -51,6 +51,7 @@ type Props = {
 export default function MarkerEditor({ onEdit, markerId }: Props) {
   const [marker, setMarker] = useState<IMarker>();
   const [loading, setLoader] = useState(false);
+  const [error, setError] = useState<string | undefined>();
   const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
   const [selectedActors, setSelectedActors] = useState<readonly SelectableActor[]>([]);
   const { isOpen, close, open } = useWindow();
@@ -173,7 +174,13 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
                   );
                   onEdit();
                   close();
-                } catch (error) {}
+                } catch (error) {
+                  if (error instanceof Error) {
+                    setError(error.message);
+                  } else {
+                    setError("An error occurred");
+                  }
+                }
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
@@ -192,6 +199,7 @@ export default function MarkerEditor({ onEdit, markerId }: Props) {
             placeholder="Enter a marker title"
             type="text"
           />
+          {error && <InputError message={error} />}
         </div>
         <AutoLayout gap={5} layout="h">
           <div>

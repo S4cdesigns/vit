@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { getConfig } from "../../config";
 import { collections } from "../../database";
 import { buildExtractor } from "../../extractor";
@@ -101,6 +103,14 @@ export default {
     _: unknown,
     args: { name: string; aliases?: string[]; color?: string }
   ): Promise<Label> {
+    if (args.name.length === 0) {
+      throw new GraphQLError("A label name must not be empty", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
+    }
+
     const aliases = filterInvalidAliases(args.aliases || []);
     const label = new Label(args.name, aliases);
     if (args.color) {

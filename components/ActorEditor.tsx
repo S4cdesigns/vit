@@ -8,11 +8,9 @@ import CreatableSelect from "react-select/creatable";
 import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
 import { IActor } from "../types/actor";
-import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
-import { CountrySelector } from "./CountrySelector";
 import ExternalLinksEditor from "./ExternalLinksEditor";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
@@ -140,27 +138,6 @@ export default function ActorEditor({ onEdit, actor }: Props) {
             styles={selectStyle}
             isMulti
             value={aliasInput}
-            styles={{
-              container: (baseStyles) => ({
-                ...baseStyles,
-                maxWidth: 400,
-              }),
-              option: (provided) => ({
-                ...provided,
-                color: "black",
-              }),
-              multiValue: (styles, { data }) => {
-                return {
-                  ...styles,
-                  backgroundColor: "black",
-                  borderRadius: 4,
-                };
-              },
-              multiValueLabel: (styles, { data }) => ({
-                ...styles,
-                color: "white",
-              }),
-            }}
             onChange={(options: MultiValue<{ value: string; label: string }>) => {
               setAliasInput(
                 options.map((option) => ({ value: option.value, label: option.label }))

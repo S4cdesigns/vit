@@ -177,7 +177,9 @@ export default function ScenePage({
   const [gridLoader, setGridLoader] = useState(false);
   const { startPlayback, currentTime, paused } = useVideoControls();
 
-  const sortedMarkers = useMemo(() => markers.slice().sort((a, b) => a.time - b.time), [markers]);
+  // useMemo seems to have problems when adding new markers
+  // const sortedMarkers = useMemo(() => markers.slice().sort((a, b) => a.time - b.time), [markers]);
+  const sortedMarkers = markers.slice().sort((a, b) => a.time - b.time);
 
   const {
     actors,
