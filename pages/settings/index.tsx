@@ -151,14 +151,14 @@ export default function SettingsPage() {
                 <CardSection title={t("heading.videos")}>
                   <ul>
                     {scanStatus.folders?.videos.map((folder) => (
-                      <li>{folder.path}</li>
+                      <li key={folder.path}>{folder.path}</li>
                     ))}
                   </ul>
                 </CardSection>
                 <CardSection title={t("heading.images")}>
                   <ul>
                     {scanStatus.folders?.images.map((folder) => (
-                      <li>{folder.path}</li>
+                      <li key={folder.path}>{folder.path}</li>
                     ))}
                   </ul>
                 </CardSection>

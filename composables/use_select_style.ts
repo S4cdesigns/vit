@@ -2,24 +2,24 @@ import { CSSProperties, useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
 
-export function useSelectStyle() {
+export function useSelectStyle<T>() {
   const { theme } = useContext(ThemeContext);
 
   return {
-    control: (provided: CSSProperties) => ({
+    control: (provided: T) => ({
       ...provided,
       backgroundColor: theme === "dark" ? "#09090c" : "#fafafa",
       border: theme === "dark" ? "2px solid #09090c" : "2px solid #d0d0d0",
     }),
-    menu: (provided: CSSProperties) => ({
+    menu: (provided: T) => ({
       ...provided,
       backgroundColor: theme === "dark" ? "#111111" : "#fafafa",
     }),
-    container: (provided: CSSProperties) => ({
+    container: (provided: T) => ({
       ...provided,
       maxWidth: 400,
     }),
-    option: (provided: CSSProperties) => ({
+    option: (provided: T) => ({
       ...provided,
       backgroundColor: theme === "dark" ? "#111111" : "#fafafa",
       color: theme === "dark" ? "#fafafa" : "#111111",
@@ -28,14 +28,14 @@ export function useSelectStyle() {
         filter: theme === "dark" ? "brightness(1.25)" : "brightness(0.8)",
       },
     }),
-    multiValue: (provided: CSSProperties) => {
+    multiValue: (provided: T) => {
       return {
         ...provided,
         backgroundColor: "#3142da",
         borderRadius: 4,
       };
     },
-    multiValueLabel: (provided: CSSProperties) => ({
+    multiValueLabel: (provided: T) => ({
       ...provided,
       color: "white",
     }),
