@@ -124,12 +124,24 @@ type ImageEditorProps = {
   type: imageTypes;
   image?: ActorImage;
   onRemove: () => void;
-  onChange: (buffer: ArrayBuffer, type: imageTypes, name: string) => void;
+  onChange: (buffer: string, type: imageTypes, name: string) => void;
 };
 
 const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps) => {
   const { blur: safeModeBlur } = useSafeMode();
 
+  const handleOnChange = (event: ProgressEvent<FileReader>) => {
+    const fileReader = event.target as FileReader;
+    if (!fileReader.result || !image) {
+      return;
+    }
+    if (fileReader.result instanceof ArrayBuffer) {
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(fileReader.result)));
+      onChange(base64, type, image.name);
+    } else {
+      onChange(fileReader.result, type, image.name);
+    }
+  };
   return (
     <>
       {image?._id ? (
@@ -149,9 +161,7 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
                 await fetch(imageUrl(image._id)).then(async function (res) {
                   const blob = await res.blob();
                   const reader = new FileReader();
-                  reader.onload = function (e) {
-                    onChange(reader.result as ArrayBuffer, type, image.name);
-                  };
+                  reader.onload = handleOnChange;
                   reader.readAsDataURL(blob);
                 });
               }}
@@ -163,12 +173,7 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
               onChange={(files) => {
                 if (files && files.length) {
                   const fileReader = new FileReader();
-                  fileReader.onload = () => {
-                    if (!fileReader.result) {
-                      return;
-                    }
-                    onChange(fileReader.result as ArrayBuffer, type, image.name);
-                  };
+                  fileReader.onload = handleOnChange;
                   fileReader.readAsDataURL(files[0]);
                 }
               }}
@@ -197,12 +202,7 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
               onChange={(files) => {
                 if (files && files.length) {
                   const fileReader = new FileReader();
-                  fileReader.onload = () => {
-                    if (!fileReader.result) {
-                      return;
-                    }
-                    onChange(fileReader.result as ArrayBuffer, type, files[0].name);
-                  };
+                  fileReader.onload = handleOnChange;
                   fileReader.readAsDataURL(files[0]);
                 }
               }}
@@ -240,7 +240,7 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
   };
 
   const [fileToUpload, setFileToUpload] = useState<{
-    buffer: ArrayBuffer;
+    buffer: string;
     type: imageTypes;
     name: string;
   }>();
@@ -274,7 +274,7 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
     }
   }
 
-  function changeImage(buffer: ArrayBuffer, type: imageTypes, name: string): void {
+  function changeImage(buffer: string, type: imageTypes, name: string): void {
     setFileToUpload({ buffer, type, name });
   }
 
