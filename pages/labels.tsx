@@ -91,7 +91,7 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
   const numItems: number = filteredLabels.length;
 
   return (
-    <PageWrapper title={"Labels"}>
+    <PageWrapper title={t("foundLabels", { numItems })}>
       <AutoLayout>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundLabels", { numItems })}</div>

@@ -72,6 +72,8 @@ export default {
     "{numItems, plural, =0 {Keine Studios gefunden} one {1 Studio gefunden} other {{numItems} Studios gefunden} }",
   foundMarkers:
     "{numItems, plural, =0 {Keine Marker gefunden} one {1 Marker gefunden} other {{numItems} Marker gefunden} }",
+  foundLabels:
+    "{numItems, plural, =0 {Keine Labels gefunden} one {1 Label gefunden} other {{numItems} Labels gefunden} }",
 
   title: "Titel",
   path: "Dateipfad",
