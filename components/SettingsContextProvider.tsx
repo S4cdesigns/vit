@@ -1,12 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 
-import {
-  ACTOR_RATIO,
-  ACTOR_TALL,
-  SCENE_RATIO,
-  SettingsContext,
-  WIDE,
-} from "../composables/use_settings";
+import { ACTOR_RATIO, SCENE_RATIO, SettingsContext } from "../composables/use_settings";
 
 type Props = {
   children: ReactNode;
@@ -14,8 +8,8 @@ type Props = {
 
 export default function SettingsContextProvider(props: Props) {
   const [showCardLabels, setShowCardLabels] = useState(true);
-  const [sceneAspectRatio, setSceneAspectRatio] = useState<SCENE_RATIO>(WIDE);
-  const [actorAspectRatio, setActorAspectRatio] = useState<ACTOR_RATIO>(ACTOR_TALL);
+  const [sceneAspectRatio, setSceneAspectRatio] = useState<SCENE_RATIO>("4:3");
+  const [actorAspectRatio, setActorAspectRatio] = useState<ACTOR_RATIO>("3:4");
 
   useEffect(() => {
     const storageValue = window.localStorage.getItem("pm_showCardLabels");

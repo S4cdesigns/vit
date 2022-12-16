@@ -17,7 +17,7 @@ type imageTypes = "avatar" | "thumbnail" | "altThumbnail" | "hero";
 type ImageCropperProps = {
   onCancel: () => void;
   onUpload: (blob: Blob) => void;
-  src?: ArrayBuffer;
+  src?: string;
   aspectRatio: number;
   loading: boolean;
 };
