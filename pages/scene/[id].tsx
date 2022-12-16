@@ -654,9 +654,10 @@ export default function ScenePage({
               {/* MARKERS */}
               <CardTitle>Markers</CardTitle>
               <ListWrapper loading={false} noResults={scene.markers.length === 0}>
-                {/* TODO: update marker list on delete */}
                 <MarkerList
                   markers={sortedMarkers}
+                  onDelete={reloadMarkers}
+                  onEdit={reloadMarkers}
                   onClick={(marker) => {
                     startPlayback(marker.time);
                     window.scrollTo({
