@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useMemo } from "react";
+import React, { KeyboardEvent, useMemo, useState } from "react";
 
 import AutoLayout from "./AutoLayout";
 import Paper from "./Paper";
@@ -35,6 +35,7 @@ type Props = {
 };
 
 export default function Pagination({ current, numPages, onChange }: Props) {
+  const [jumpToPageValue, setJumpToPageValue] = useState(!current ? "" : (current + 1).toString());
   const arr = pagination(current, numPages);
 
   if (numPages < 2) {
@@ -42,7 +43,7 @@ export default function Pagination({ current, numPages, onChange }: Props) {
   }
 
   const jumpTo = (event: React.SyntheticEvent<HTMLInputElement>) => {
-    const value = parseInt(event.target.value);
+    const value = parseInt((event.target as HTMLInputElement).value);
 
     if (!value || isNaN(value)) {
       return;
@@ -100,8 +101,10 @@ export default function Pagination({ current, numPages, onChange }: Props) {
         style={{
           maxWidth: 120,
         }}
+        value={jumpToPageValue}
         type="text"
         onKeyUp={handleKeyboardEvent}
+        onChange={(e) => setJumpToPageValue(e.target.value)}
         placeholder="Jump to page"
       />
     </AutoLayout>
