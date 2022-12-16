@@ -1,4 +1,4 @@
-import { CSSProperties, useContext } from "react";
+import { useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
 
@@ -28,6 +28,12 @@ export function useSelectStyle<T>() {
         filter: theme === "dark" ? "brightness(1.25)" : "brightness(0.8)",
       },
     }),
+    singleValue: (provided: T) => {
+      return {
+        ...provided,
+        color: "white",
+      };
+    },
     multiValue: (provided: T) => {
       return {
         ...provided,
