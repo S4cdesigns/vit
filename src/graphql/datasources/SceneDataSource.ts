@@ -14,14 +14,14 @@ export class SceneDataSource {
     if (sceneIds.length === 0) {
       return [];
     }
-    logger.info(`loading actors for scenes [${sceneIds.length}]`);
+    logger.silly(`loading actors for scenes [${sceneIds.length}]`);
     const allRefs = await ActorReference.getByItemBulk(sceneIds);
 
     if (!allRefs) {
       return [];
     }
 
-    logger.info(`Loaded [${Object.keys(allRefs).length}] actors`);
+    logger.silly(`Loaded [${Object.keys(allRefs).length}] actors`);
 
     let allActors: Actor[] = [];
 
@@ -55,7 +55,7 @@ export class SceneDataSource {
   });
 
   private batchlLabels = new DataLoader(async (sceneIds: readonly string[]) => {
-    logger.info(`loading labels for scenes [${sceneIds.join(",")}]`);
+    logger.silly(`loading labels for scenes [${sceneIds.join(",")}]`);
     const allSceneLabels = await LabelledItem.getByItemBulk(sceneIds);
 
     let allLabels: Label[] = [];
@@ -93,7 +93,7 @@ export class SceneDataSource {
     if (imageIds.length === 0) {
       return [];
     }
-    logger.info(`loading bulk images for imageIds [${imageIds.length}]`);
+    logger.silly(`loading bulk images for imageIds [${imageIds.length}]`);
     return await Image.getBulk(imageIds.concat());
   });
 

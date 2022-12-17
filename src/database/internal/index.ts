@@ -141,12 +141,10 @@ export namespace Izzy {
     async queryBulk(index: string, keys: readonly string[] | null): Promise<Record<string, T[]>> {
       logger.silly(`Querying index ${index} by ${keys?.join(",")} from collection: ${this.name}`);
       const { data } = await Axios.post(
-        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/query-bulk`,
-        {
-          name: this.name,
-          index,
-          keys,
-        }
+        `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${
+          this.name
+        }/index/${index}/query-bulk`,
+        { keys }
       );
 
       return data;
