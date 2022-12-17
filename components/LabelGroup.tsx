@@ -1,7 +1,5 @@
-import AddIcon from "mdi-react/AddIcon";
 import ChevronDownIcon from "mdi-react/ChevronDownIcon";
 import ChevronUpIcon from "mdi-react/ChevronUpIcon";
-import DeleteIcon from "mdi-react/DeleteIcon";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -91,7 +89,6 @@ type Props = {
 
 export default function LabelGroup({ labels, limit, onAdd, onDelete }: Props): JSX.Element {
   const max = limit || 5;
-  const t = useTranslations();
 
   const [expanded, setExpanded] = useState(false);
   const slice = expanded ? labels : labels.slice(0, max);

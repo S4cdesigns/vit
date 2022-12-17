@@ -1,4 +1,3 @@
-import DeleteIcon from "mdi-react/DeleteIcon";
 import { useContext } from "react";
 
 import { ThemeContext } from "../pages/_app";
