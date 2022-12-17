@@ -193,15 +193,17 @@ const ImageEditControls = ({
 
   if (fileToUpload) {
     return (
-      <div style={{ height: "100%" }}>
-        <ImageCropper
-          aspectRatio={aspect}
-          src={fileToUpload.buffer}
-          loading={uploading}
-          onCancel={() => setFileToUpload(undefined)}
-          onUpload={doUpload}
-        />
-      </div>
+      <Window isOpen={true} title="Edit image">
+        <div style={{ height: "90vh" }}>
+          <ImageCropper
+            aspectRatio={aspect}
+            src={fileToUpload.buffer}
+            loading={uploading}
+            onCancel={() => setFileToUpload(undefined)}
+            onUpload={doUpload}
+          />
+        </div>
+      </Window>
     );
   }
   return (
