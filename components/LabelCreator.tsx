@@ -2,49 +2,50 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useWindow } from "../composables/use_window";
+import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
+import AutoLayout from "./AutoLayout";
 import Button from "./Button";
 import InputError from "./InputError";
-import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function createActor(name: string, aliases: string[], labels: string[]) {
+async function createLabel(name: string, color: string, aliases: string[]): Promise<ILabel> {
   const query = `
-  mutation ($name: String!, $aliases: [String!]!, $labels: [String!]!) {
-    addActor(name: $name, aliases: $aliases, labels: $labels) {
+  mutation ($name: String!, $aliases: [String!]!, $color: String!) {
+    addLabel(name: $name, aliases: $aliases, color: $color) {
       _id
     }
   }
-        `;
+ `;
 
-  return await graphqlQuery(query, {
+  const result = await graphqlQuery<{ data: { addLabel: ILabel } }>(query, {
     name,
     aliases,
-    labels,
+    color,
   });
+
+  return result?.data?.addLabel;
 }
 
 type Props = {
-  onCreate: () => void;
+  onCreate: (label: ILabel) => void;
 };
 
-export default function ActorCreator({ onCreate }: Props) {
+export default function LabelCreator({ onCreate }: Props) {
   const t = useTranslations();
-  const { isOpen, close, open } = useWindow();
-
+  const [loading, setLoader] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");
-  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
-
-  const [loading, setLoader] = useState(false);
+  const [color, setColor] = useState("#000000");
+  const { isOpen, close, open } = useWindow();
 
   const reset = () => {
     setName("");
-    setAliasInput("");
-    setSelectedLabels([]);
     setError(undefined);
+    setAliasInput("");
+    setColor("#000000");
   };
 
   const doClose = () => {
@@ -60,7 +61,7 @@ export default function ActorCreator({ onCreate }: Props) {
       <Window
         onClose={doClose}
         isOpen={isOpen}
-        title={t("actions.add")}
+        title={`Create label`}
         actions={
           <>
             <Button
@@ -68,16 +69,10 @@ export default function ActorCreator({ onCreate }: Props) {
               onClick={async () => {
                 try {
                   setLoader(true);
-                  await createActor(
-                    name,
-                    aliasInput.split("\n"),
-                    selectedLabels.map(({ _id }) => _id)
-                  );
-
-                  onCreate();
+                  const newLabel = await createLabel(name, color, aliasInput.split("\n"));
+                  onCreate(newLabel);
                   doClose();
                 } catch (error) {
-                  console.error(error);
                   if (error instanceof Error) {
                     setError(error.message);
                   } else {
@@ -95,30 +90,39 @@ export default function ActorCreator({ onCreate }: Props) {
         }
       >
         <div>
-          <Subheading>Actor name</Subheading>
           <input
-            style={{ width: "100%" }}
             autoFocus
+            style={{ width: "100%" }}
             value={name}
-            onChange={(ev) => setName(ev.target.value)}
-            placeholder="Enter an actor name"
+            onChange={(event: React.FormEvent<HTMLInputElement>) => {
+              setName(event.currentTarget.value);
+            }}
+            placeholder="Enter a label name"
             type="text"
           />
           {error && <InputError message={error} />}
         </div>
-        <div>
-          <Subheading>Aliases</Subheading>
-          <textarea
-            style={{ width: "100%" }}
-            value={aliasInput}
-            onChange={(ev) => setAliasInput(ev.target.value)}
-            placeholder="1 per line"
-          />
-        </div>
-        <div>
-          <Subheading>Labels</Subheading>
-          <LabelDropdownChoice onChange={setSelectedLabels} selectedLabels={selectedLabels} />
-        </div>
+
+        <AutoLayout gap={5} layout="v">
+          <div>
+            <Subheading>Aliases</Subheading>
+            <textarea
+              style={{ width: "100%" }}
+              value={aliasInput}
+              onChange={(ev) => setAliasInput(ev.target.value)}
+              placeholder="1 per line"
+            />
+          </div>
+
+          <div>
+            <Subheading>Color</Subheading>
+            <input
+              type="color"
+              value={color}
+              onChange={(event) => setColor(event.currentTarget.value)}
+            />
+          </div>
+        </AutoLayout>
       </Window>
     </>
   );

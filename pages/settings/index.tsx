@@ -1,14 +1,17 @@
+import axios from "axios";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
 import { ReactNode } from "react";
 import useSWR from "swr";
 
 import AutoLayout from "../../components/AutoLayout";
+import Button from "../../components/Button";
 import Card from "../../components/Card";
 import CardSection from "../../components/CardSection";
 import CardTitle from "../../components/CardTitle";
 import Credits from "../../components/Credits";
 import PageWrapper from "../../components/PageWrapper";
+import ImageSettings from "../../components/settings/image_settings";
 import Text from "../../components/Text";
 import { useScanStatus } from "../../composables/use_scan_status";
 import { getFullStatus, StatusData } from "../../util/status";
@@ -98,6 +101,17 @@ function StatusSection({ status }: { status: StatusData }) {
           </table>
         </div>
         <Text>Note: Health "green" and "yellow" are OK</Text>
+        <Button
+          onClick={() => {
+            if (window.confirm("Are your sure?")) {
+              axios.post("/api/system/reindex").catch((error) => {
+                console.error(error);
+              });
+            }
+          }}
+        >
+          Reindex
+        </Button>
       </SettingsSection>
     </>
   );
@@ -129,19 +143,22 @@ export default function SettingsPage() {
           }}
         >
           <AutoLayout>
+            <SettingsSection title="Image Settings">
+              <ImageSettings />
+            </SettingsSection>
             {!!scanStatus && (
               <SettingsSection title="Scan folders">
                 <CardSection title={t("heading.videos")}>
                   <ul>
                     {scanStatus.folders?.videos.map((folder) => (
-                      <li>{folder.path}</li>
+                      <li key={folder.path}>{folder.path}</li>
                     ))}
                   </ul>
                 </CardSection>
                 <CardSection title={t("heading.images")}>
                   <ul>
                     {scanStatus.folders?.images.map((folder) => (
-                      <li>{folder.path}</li>
+                      <li key={folder.path}>{folder.path}</li>
                     ))}
                   </ul>
                 </CardSection>

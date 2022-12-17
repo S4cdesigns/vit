@@ -60,6 +60,7 @@ export default {
       labels: string[];
       lossless?: boolean;
       compress?: boolean;
+      // TODO not needed anymore? This is done in the canvas on the client
       crop?: {
         left: number;
         top: number;
@@ -152,7 +153,7 @@ export default {
           "+repage",
           outPath,
         ];
-        logger.debug(cropArgs);
+        logger.verbose(cropArgs);
         execa.sync(config.imagemagick.convertPath, cropArgs);
         image.meta.dimensions.width = args.crop.width;
         image.meta.dimensions.height = args.crop.height;

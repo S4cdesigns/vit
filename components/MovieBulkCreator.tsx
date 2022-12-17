@@ -58,6 +58,7 @@ export default function MovieBulkCreator({ onCreate }: Props) {
         <div>
           <Subheading>Movies</Subheading>
           <textarea
+            autoFocus
             style={{ width: "100%" }}
             value={input}
             onChange={(ev) => setInput(ev.target.value)}

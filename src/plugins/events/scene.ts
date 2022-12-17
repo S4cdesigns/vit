@@ -181,6 +181,10 @@ export async function onSceneCreate(
 
     const localExtractActors = await buildActorExtractor();
     for (const actorName of pluginResult.actors) {
+      if (typeof actorName !== "string" || actorName.length === 0) {
+        continue;
+      }
+
       const extractedIds = localExtractActors(actorName);
       if (extractedIds.length) {
         actorIds.push(...extractedIds);

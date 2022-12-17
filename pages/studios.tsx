@@ -10,22 +10,18 @@ import { useMemo, useState } from "react";
 import AutoLayout from "../components/AutoLayout";
 import Button from "../components/Button";
 import IconButtonFilter from "../components/IconButtonFilter";
-import LabelGroup from "../components/LabelGroup";
 import ListWrapper from "../components/ListWrapper";
 import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
-import Paper from "../components/Paper";
-import ResponsiveImage from "../components/ResponsiveImage";
 import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import Spacer from "../components/Spacer";
 import StudioCard from "../components/StudioCard";
+import StudioCreator from "../components/StudioCreator";
 import { usePaginatedList } from "../composables/use_paginated_list";
 import { fetchStudios, useStudioList } from "../composables/use_studio_list";
-import useUpdateEffect from "../composables/use_update_effect";
 import { IPaginationResult } from "../types/pagination";
 import { IStudio } from "../types/studio";
 import { buildQueryParser } from "../util/query_parser";
-import { thumbnailUrl } from "../util/thumbnail";
 
 const queryParser = buildQueryParser({
   q: {
@@ -99,6 +95,19 @@ export default function StudioListPage(props: {
       sortDir,
     }
   );
+
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+      // labels: [], // TODO:
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchStudios,
     initialPage: props.page,
@@ -106,17 +115,14 @@ export default function StudioListPage(props: {
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-      // labels: [], // TODO:
-    });
+    updateQueryParserStore();
     await fetchStudios(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   return (
     <PageWrapper title={t("foundStudios", { numItems })}>
@@ -124,10 +130,10 @@ export default function StudioListPage(props: {
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundStudios", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Button style={{ marginRight: 10 }}>+ Add studio</Button>
+          <StudioCreator onCreate={async () => await router.replace(router.asPath)} />
           {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
           {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
@@ -192,7 +198,7 @@ export default function StudioListPage(props: {
           ))}
         </ListWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>

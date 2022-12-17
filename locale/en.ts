@@ -72,6 +72,8 @@ export default {
     "{numItems, plural, =0 {No studios found} one {1 studio found} other {{numItems} studios found} }",
   foundMarkers:
     "{numItems, plural, =0 {No markers found} one {1 marker found} other {{numItems} markers found} }",
+  foundLabels:
+    "{numItems, plural, =0 {No labels found} one {1 label found} other {{numItems} labels found} }",
 
   title: "Title",
   path: "Path",

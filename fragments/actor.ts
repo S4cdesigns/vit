@@ -6,6 +6,7 @@ fragment ActorCard on Actor {
   rating
   favorite
   bookmark
+  bornOn
   thumbnail {
     _id
     color

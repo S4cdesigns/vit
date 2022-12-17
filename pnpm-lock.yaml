@@ -68,6 +68,7 @@ specifiers:
   prettier: ^2.5.1
   pretty-bytes: ^6.0.0
   react: ^17.0.2
+  react-advanced-cropper: ^0.17.0
   react-dom: ^17.0.2
   react-i18next: ^11.15.4
   react-image-crop: ^10.0.4
@@ -121,6 +122,7 @@ dependencies:
   ora: 5.4.1
   pretty-bytes: 6.0.0
   react: 17.0.2
+  react-advanced-cropper: 0.17.0_react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-i18next: 11.18.6_sfoxds7t5ydpegc3knd667wn6m
   react-image-crop: 10.0.8_react@17.0.2
@@ -2032,6 +2034,13 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  /advanced-cropper/0.17.0:
+    resolution: {integrity: sha512-j/V8p5MSkE5JZcw5qACR2L2OhBaoUZW6+wsJyA8qfUhNLX3AiEuBWMTI+A6gUCbol7PrEaGQEzayK4qcuLLyMQ==}
+    engines: {node: '>=8', npm: '>=5'}
+    dependencies:
+      tslib: 2.4.1
+    dev: false
+
   /agent-base/6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
@@ -2404,6 +2413,10 @@ packages:
   /chownr/1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
     dev: true
+
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /cli-boxes/2.2.1:
     resolution: {integrity: sha512-y4coMcylgSCdVinjiDBuR8PCC2bLjyGTwEmPb9NHR/QaNU6EUOXcTY/s6VjGMD6ENSEaeQYHCY0GNGS5jfMwPw==}
@@ -5131,6 +5144,18 @@ packages:
       minimist: 1.2.7
       strip-json-comments: 2.0.1
     dev: true
+
+  /react-advanced-cropper/0.17.0_react@17.0.2:
+    resolution: {integrity: sha512-OMvAzGuu7V0Txe5ljePIGESc846YLNSyzm/F1QmhtNUb0uzJ4ijlu3TniVSCEdX1A1dbIT7lR/fVPG+jEEMSUQ==}
+    engines: {node: '>=8', npm: '>=5'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      advanced-cropper: 0.17.0
+      classnames: 2.3.2
+      react: 17.0.2
+      tslib: 2.4.1
+    dev: false
 
   /react-dom/17.0.2_react@17.0.2:
     resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
