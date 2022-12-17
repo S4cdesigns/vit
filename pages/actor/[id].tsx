@@ -58,6 +58,18 @@ const queryParser = buildQueryParser({
   },
 });
 
+async function removeActor(id: string) {
+  const query = `
+  mutation ($ids: [String!]!) {
+    removeActors(ids: $ids)
+  }
+ `;
+
+  await graphqlQuery(query, {
+    ids: [id],
+  });
+}
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const q = `
   query ($id: String!) {
@@ -136,6 +148,15 @@ export default function ActorPage({ actor }: { actor: IActor }) {
   });
   const [src, setSrc] = useState<string | null>(null); */
 
+  const doDeleteActor = async () => {
+    if (window.confirm("Really delete?")) {
+      await removeActor(actor._id);
+      router.push("/actors").catch((error) => {
+        console.error(error);
+      });
+    }
+  };
+
   const leftCol = (
     <AutoLayout gap={10}>
       {/* ACTION BAR */}
@@ -143,7 +164,7 @@ export default function ActorPage({ actor }: { actor: IActor }) {
         <AutoLayout gap={10} layout="h">
           <Spacer />
           <ActorEditor onEdit={async () => await router.replace(router.asPath)} actor={actor} />
-          <DeleteIcon />
+          <DeleteIcon className="hover" onClick={doDeleteActor} />
         </AutoLayout>
       </Card>
       <Card style={{ padding: "20px 10px" }}>
@@ -165,27 +186,6 @@ export default function ActorPage({ actor }: { actor: IActor }) {
 
   const rightCol = (
     <AutoLayout>
-      {/*   <Window isOpen title="Set avatar">
-        <div>
-          <input
-            type="file"
-            onChange={(ev) => {
-              const fileReader = new FileReader();
-
-              fileReader.onload = (ev) => {
-                setSrc(ev.target!.result!.toString());
-              };
-
-              fileReader.readAsDataURL(ev.target.files![0]);
-            }}
-          />
-        </div>
-        {src && (
-          <div style={{ maxWidth: 720 }}>
-            <AvatarCropper src={src} onChange={setCrop} value={crop}></AvatarCropper>
-          </div>
-        )}
-      </Window> */}
       <Card>
         <div style={{ fontSize: 20 }}>{t("stats")}</div>
         <ActorStats

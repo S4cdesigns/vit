@@ -177,7 +177,9 @@ export default function ScenePage({
   const [gridLoader, setGridLoader] = useState(false);
   const { startPlayback, currentTime, paused } = useVideoControls();
 
-  const sortedMarkers = useMemo(() => markers.slice().sort((a, b) => a.time - b.time), [markers]);
+  // useMemo seems to have problems when adding new markers
+  // const sortedMarkers = useMemo(() => markers.slice().sort((a, b) => a.time - b.time), [markers]);
+  const sortedMarkers = markers.slice().sort((a, b) => a.time - b.time);
 
   const {
     actors,
@@ -288,7 +290,7 @@ export default function ScenePage({
     setPluginLoader(true);
     try {
       await runScenePlugins(scene._id);
-      router.replace(router.asPath).catch(() => {});
+      await router.replace(router.asPath);
     } catch (error) {
       console.error(error);
     }
@@ -652,9 +654,10 @@ export default function ScenePage({
               {/* MARKERS */}
               <CardTitle>Markers</CardTitle>
               <ListWrapper loading={false} noResults={scene.markers.length === 0}>
-                {/* TODO: update marker list on delete */}
                 <MarkerList
                   markers={sortedMarkers}
+                  onDelete={reloadMarkers}
+                  onEdit={reloadMarkers}
                   onClick={(marker) => {
                     startPlayback(marker.time);
                     window.scrollTo({

@@ -45,6 +45,7 @@ export default function VideoPlayer({
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
   const {
     setCurrentTime,
+    setNewPlaybackTime,
     currentTime,
     paused,
     startPlayback,
@@ -99,7 +100,7 @@ export default function VideoPlayer({
 
   // handle triggers for skipping the current playhead
   useEffect(() => {
-    if (typeof newPlaybackTime === "undefined" || isNaN(newPlaybackTime)) {
+    if (!newPlaybackTime) {
       return;
     }
 
@@ -243,7 +244,7 @@ export default function VideoPlayer({
               const xCoordInClickTarget = ev.nativeEvent.offsetX;
               const percent = xCoordInClickTarget / clickTargetWidth;
               const vid = videoEl.current!;
-              startPlayback(vid.duration * percent);
+              setNewPlaybackTime(vid.duration * percent);
             }}
             className={styles.seekbar}
           >
@@ -278,6 +279,7 @@ export default function VideoPlayer({
             />
           ))}
           <ScenePreview
+            duration={duration}
             show={hoverSeekBar}
             absolutePosition={mousePosition.x}
             percentagePosition={mousePosition.percent}

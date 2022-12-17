@@ -73,8 +73,7 @@ export default {
   foundMarkers:
     "{numItems, plural, =0 {Keine Marker gefunden} one {1 Marker gefunden} other {{numItems} Marker gefunden} }",
   foundLabels:
-    "{numItems, plural, =0 {Keine Labels gefunden} one {1 Label gefunden} other {{numItems} Label gefunden} }",
-
+    "{numItems, plural, =0 {Keine Labels gefunden} one {1 Label gefunden} other {{numItems} Labels gefunden} }",
 
   title: "Titel",
   path: "Dateipfad",

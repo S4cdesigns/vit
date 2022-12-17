@@ -2,9 +2,9 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useWindow } from "../composables/use_window";
-import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
+import InputError from "./InputError";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
@@ -18,7 +18,7 @@ async function createActor(name: string, aliases: string[], labels: string[]) {
   }
         `;
 
-  await graphqlQuery(query, {
+  return await graphqlQuery(query, {
     name,
     aliases,
     labels,
@@ -33,11 +33,24 @@ export default function ActorCreator({ onCreate }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
+  const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
   const [aliasInput, setAliasInput] = useState("");
   const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
 
   const [loading, setLoader] = useState(false);
+
+  const reset = () => {
+    setName("");
+    setAliasInput("");
+    setSelectedLabels([]);
+    setError(undefined);
+  };
+
+  const doClose = () => {
+    reset();
+    close();
+  };
 
   return (
     <>
@@ -45,7 +58,7 @@ export default function ActorCreator({ onCreate }: Props) {
         + {t("actions.add")}
       </Button>
       <Window
-        onClose={close}
+        onClose={doClose}
         isOpen={isOpen}
         title={t("actions.add")}
         actions={
@@ -60,19 +73,24 @@ export default function ActorCreator({ onCreate }: Props) {
                     aliasInput.split("\n"),
                     selectedLabels.map(({ _id }) => _id)
                   );
+
                   onCreate();
-                  close();
-                  setName("");
-                  setAliasInput("");
-                  setSelectedLabels([]);
-                } catch (error) {}
+                  doClose();
+                } catch (error) {
+                  console.error(error);
+                  if (error instanceof Error) {
+                    setError(error.message);
+                  } else {
+                    setError("An error occurred");
+                  }
+                }
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
               Create
             </Button>
-            <Button onClick={close}>Close</Button>
+            <Button onClick={doClose}>Close</Button>
           </>
         }
       >
@@ -86,6 +104,7 @@ export default function ActorCreator({ onCreate }: Props) {
             placeholder="Enter an actor name"
             type="text"
           />
+          {error && <InputError message={error} />}
         </div>
         <div>
           <Subheading>Aliases</Subheading>

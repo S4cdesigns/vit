@@ -2,8 +2,8 @@ import Axios from "axios";
 import TimeIcon from "mdi-react/TimelapseIcon";
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
-import Text from "../Text";
 
+import Text from "../Text";
 import WidgetCard from "./WidgetCard";
 
 async function getWatchStats() {

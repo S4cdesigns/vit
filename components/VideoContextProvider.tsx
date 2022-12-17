@@ -45,6 +45,7 @@ export default function VideoContextProvider(props: Props) {
         scene,
         setScene,
         newPlaybackTime,
+        setNewPlaybackTime,
         currentTime: currentPlaybackTime,
         currentTarget: playerTarget,
         paused,

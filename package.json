@@ -14,8 +14,8 @@
     "prod:once": "node version && cross-env NODE_ENV=production node build",
     "test": "vitest run --no-threads",
     "coverage": "vitest run --coverage --no-threads",
-    "build": "next build",
-    "lint": "eslint \"src/**/*.ts\"",
+    "build": "pnpm transpile:prod && next build",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint --quiet --fix \"./**/*.{ts,tsx}\""
   },
   "repository": {

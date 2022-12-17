@@ -1,7 +1,7 @@
 import HeartIcon from "mdi-react/HeartIcon";
 import Link from "next/link";
-import { useSafeMode } from "../composables/use_safe_mode";
 
+import { useSafeMode } from "../composables/use_safe_mode";
 import { thumbnailUrl } from "../util/thumbnail";
 import ResponsiveImage from "./ResponsiveImage";
 

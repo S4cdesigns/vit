@@ -60,6 +60,7 @@ export default {
       labels: string[];
       lossless?: boolean;
       compress?: boolean;
+      // TODO not needed anymore? This is done in the canvas on the client
       crop?: {
         left: number;
         top: number;

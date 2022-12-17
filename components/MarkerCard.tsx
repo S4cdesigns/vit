@@ -6,10 +6,10 @@ import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import { useState } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
-import { useSettings } from "../composables/use_settings";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
 import { bookmarkMarker, favoriteMarker, rateMarker } from "../util/mutations/marker";
+import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
 import AutoLayout from "./AutoLayout";
@@ -51,7 +51,6 @@ export default function MarkerCard({
   const [fav, setFav] = useState<boolean>(marker.favorite);
   const [bookmark, setBookmark] = useState<boolean>(marker.bookmark);
   const [rating, setRating] = useState<number>(marker.rating);
-  const { showCardLabels } = useSettings();
 
   async function toggleFav(): Promise<void> {
     const newValue = !fav;
@@ -61,8 +60,8 @@ export default function MarkerCard({
   }
 
   async function toggleBookmark(): Promise<void> {
-    const newValue = !bookmark;
-    setBookmark(newValue);
+    const newValue = marker.bookmark ? null : new Date();
+    setBookmark(!!newValue);
     await bookmarkMarker(marker._id, newValue);
     onBookmark && onBookmark(newValue);
   }
@@ -202,6 +201,7 @@ export default function MarkerCard({
           }}
         >
           {marker.name}
+          <span style={{ float: "right" }}>{formatDuration(marker.time)}</span>
         </div>
 
         {marker.actors?.length && <ActorList actors={marker.actors} />}
@@ -213,7 +213,7 @@ export default function MarkerCard({
         )}
         <div>{<Rating onChange={changeRating} value={rating || 0} />}</div>
 
-        {showCardLabels && marker.labels && <div>{<LabelGroup labels={marker.labels} />}</div>}
+        {marker.labels && <div>{<LabelGroup labels={marker.labels} />}</div>}
       </AutoLayout>
     </Paper>
   );

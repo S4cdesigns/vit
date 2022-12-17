@@ -14,6 +14,7 @@ import { formatDuration } from "../util/string";
 import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import InputError from "./InputError";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Rating from "./Rating";
 import Subheading from "./Subheading";
@@ -60,6 +61,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
+  const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [fav, setFav] = useState(false);
@@ -75,11 +77,21 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
     onOpen();
   };
 
+  const reset = () => {
+    setName("");
+    setError(undefined);
+  };
+
+  const doClose = () => {
+    reset();
+    close();
+  };
+
   return (
     <>
       <AddMarkerIcon className="hover" size={24} onClick={doOpen} />
       <Window
-        onClose={close}
+        onClose={doClose}
         isOpen={isOpen}
         title={`Add marker at ${formatDuration(currentTime)}`}
         actions={
@@ -92,7 +104,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
                   await createMarker(
                     name,
                     sceneId,
-                    parseInt(currentTime, 10),
+                    Math.floor(currentTime),
                     rating,
                     fav,
                     bookmark,
@@ -100,17 +112,22 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
                     selectedActors.map(({ _id }) => _id)
                   );
                   onCreate();
+                  reset();
                   close();
-                  setName("");
-                  setSelectedLabels([]);
-                } catch (error) {}
+                } catch (error) {
+                  if (error instanceof Error) {
+                    setError(error.message);
+                  } else {
+                    setError("An error occurred");
+                  }
+                }
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
               Create
             </Button>
-            <Button onClick={close}>Close</Button>
+            <Button onClick={doClose}>Close</Button>
           </>
         }
       >
@@ -122,6 +139,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
             placeholder="Enter a marker title"
             type="text"
           />
+          {error && <InputError message={error} />}
         </div>
         <AutoLayout gap={5} layout="h">
           <div>

@@ -45,6 +45,7 @@ type Props = {
 
 export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
+  const { sceneImageAspect } = useSettings();
   const { theme } = useContext(ThemeContext);
   const { showCardLabels } = useSettings();
 
@@ -81,7 +82,7 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   return (
     <Paper style={{ position: "relative" }}>
       <ResponsiveImage
-        aspectRatio="4 / 3"
+        aspectRatio={sceneImageAspect.cssValue}
         href={`/scene/${scene._id}`}
         src={scene.thumbnail?._id && thumbnailUrl(scene.thumbnail._id)}
         imgStyle={{
