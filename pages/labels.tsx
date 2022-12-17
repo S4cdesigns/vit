@@ -1,4 +1,3 @@
-import DeleteIcon from "mdi-react/DeleteIcon";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
@@ -129,7 +128,6 @@ export default function LabelListPage(props: { page: number; initial: ILabel[] }
         </AutoLayout>
         <ListWrapper loading={loading} noResults={!numItems}>
           <LabelSelector
-            filter={query}
             onEdit={async () => await refresh()}
             items={filteredLabels}
             onChange={setSelectedLabels}

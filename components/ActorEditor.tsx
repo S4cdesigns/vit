@@ -1,12 +1,9 @@
-import FlagIcon from "mdi-react/FlagIcon";
-import FlagOutlineIcon from "mdi-react/FlagOutlineIcon";
 import EditIcon from "mdi-react/PencilIcon";
 import moment from "moment";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
-import Select from "react-select/dist/declarations/src/Select";
 
 import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
@@ -14,10 +11,8 @@ import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
-import CountryDropdownChoice from "./CountryDropdownChoice";
-import { CountrySelector } from "./CountrySelector";
+import CountryDropdownChoice, { SimpleCountry } from "./CountryDropdownChoice";
 import ExternalLinksEditor from "./ExternalLinksEditor";
-import IconButtonMenu from "./IconButtonMenu";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
@@ -30,14 +25,23 @@ export const convertTimestampToDate = (timestamp?: number) => {
   return moment(timestamp).format("YYYY-MM-DD");
 };
 
-async function editActor(
-  id: string,
-  name: string,
-  aliases: string[],
-  externalLinks: { url: string; text: string }[],
-  labels: String[],
-  nationality?: string
-) {
+async function editActor({
+  id,
+  name,
+  aliases,
+  externalLinks,
+  labels,
+  nationality,
+  bornOn,
+}: {
+  id: string;
+  name: string;
+  aliases: string[];
+  externalLinks: { url: string; text: string }[];
+  labels: String[];
+  nationality: string | null;
+  bornOn?: number;
+}) {
   const query = `
   mutation ($ids: [String!]!, $opts: ActorUpdateOpts!) {
     updateActors(ids: $ids, opts: $opts) {
@@ -48,7 +52,7 @@ async function editActor(
 
   await graphqlQuery(query, {
     ids: [id],
-    opts: { name, aliases, externalLinks, labels, nationality },
+    opts: { name, aliases, externalLinks, labels, nationality, bornOn },
   });
 }
 
@@ -64,7 +68,9 @@ export default function ActorEditor({ onEdit, actor }: Props) {
   const { isOpen, close, open } = useWindow();
   const [name, setName] = useState(actor.name);
   const [bornOn, setBornOn] = useState(actor.bornOn);
-  const [nationality, setNationality] = useState(actor.nationality);
+  const [nationality, setNationality] = useState<SimpleCountry | null | undefined>(
+    actor.nationality
+  );
   const [aliasInput, setAliasInput] = useState(
     actor.aliases.map((alias) => ({ value: alias, label: alias }))
   );
@@ -89,14 +95,15 @@ export default function ActorEditor({ onEdit, actor }: Props) {
               onClick={async () => {
                 try {
                   setLoader(true);
-                  await editActor(
-                    actor._id,
+                  await editActor({
+                    id: actor._id,
                     name,
-                    aliasInput.map((alias) => alias.value),
+                    aliases: aliasInput.map((alias) => alias.value),
                     externalLinks,
-                    selectedLabels.map((label) => label._id),
-                    nationality?.alpha2
-                  );
+                    labels: selectedLabels.map((label) => label._id),
+                    nationality: nationality?.alpha2 || null,
+                    bornOn,
+                  });
                   onEdit();
                   close();
                   // setName("");
@@ -132,7 +139,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
                 type="date"
                 value={convertTimestampToDate(bornOn)}
                 onChange={(e) => setBornOn(new Date(e.currentTarget.value).getTime())}
-              ></input>
+              />
             </div>
             <div style={{ flex: 1 }}>
               <Subheading>Nationality</Subheading>

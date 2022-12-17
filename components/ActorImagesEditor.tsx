@@ -123,25 +123,89 @@ async function loadActor(actorId: string): Promise<ActorImages> {
 type ImageEditorProps = {
   type: imageTypes;
   image?: ActorImage;
+  uploading: boolean;
   onRemove: () => void;
-  onChange: (buffer: string, type: imageTypes, name: string) => void;
+  onImageUpload: (blob: Blob, type: string) => void;
 };
 
-const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps) => {
+const ImageEditControls = ({
+  type,
+  image,
+  onRemove,
+  uploading,
+  onImageUpload,
+}: ImageEditorProps) => {
   const { blur: safeModeBlur } = useSafeMode();
+  const { actorImageAspect } = useSettings();
+  const [fileToUpload, setFileToUpload] = useState<{
+    buffer: string;
+    type: imageTypes;
+    name?: string;
+  }>();
 
-  const handleOnChange = (event: ProgressEvent<FileReader>) => {
+  const [aspect, setAspect] = useState<number>(9 / 16);
+
+  useEffect(() => {
+    switch (fileToUpload?.type) {
+      case "hero":
+        setAspect(2.75 / 1);
+        break;
+      case "thumbnail":
+      case "altThumbnail":
+        setAspect(actorImageAspect.numericValue);
+        break;
+      case "avatar":
+        setAspect(1 / 1);
+        break;
+    }
+  }, [fileToUpload?.type]);
+
+  function changeImage(buffer: string, type: imageTypes, name?: string): void {
+    setFileToUpload({ buffer, type, name });
+  }
+
+  const handleOnChange = (event: ProgressEvent<FileReader>, filename?: string) => {
     const fileReader = event.target as FileReader;
-    if (!fileReader.result || !image) {
+
+    let name = image?.name;
+
+    if (filename) {
+      name = filename;
+    }
+
+    if (!fileReader.result) {
       return;
     }
     if (fileReader.result instanceof ArrayBuffer) {
       const base64 = btoa(String.fromCharCode(...new Uint8Array(fileReader.result)));
-      onChange(base64, type, image.name);
+      changeImage(base64, type, name);
     } else {
-      onChange(fileReader.result, type, image.name);
+      changeImage(fileReader.result, type, name);
     }
   };
+
+  const doUpload = (blob: Blob) => {
+    if (fileToUpload?.type) {
+      onImageUpload(blob, fileToUpload.type);
+    }
+    setFileToUpload(undefined);
+  };
+
+  if (fileToUpload) {
+    return (
+      <Window isOpen={true} title="Edit image">
+        <div style={{ height: "90vh" }}>
+          <ImageCropper
+            aspectRatio={aspect}
+            src={fileToUpload.buffer}
+            loading={uploading}
+            onCancel={() => setFileToUpload(undefined)}
+            onUpload={doUpload}
+          />
+        </div>
+      </Window>
+    );
+  }
   return (
     <>
       {image?._id ? (
@@ -202,7 +266,7 @@ const ImageEditControls = ({ type, image, onRemove, onChange }: ImageEditorProps
               onChange={(files) => {
                 if (files && files.length) {
                   const fileReader = new FileReader();
-                  fileReader.onload = handleOnChange;
+                  fileReader.onload = (e) => handleOnChange(e, files[0].name);
                   fileReader.readAsDataURL(files[0]);
                 }
               }}
@@ -226,10 +290,8 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
   const { isOpen, close, open } = useWindow();
   const [_loading, setLoader] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const { actorImageAspect } = useSettings();
 
   const [avatar, setAvatar] = useState<ActorImage>();
-  const [aspect, setAspect] = useState<number>(9 / 16);
   const [hero, setHero] = useState<ActorImage>();
   const [altThumbnail, setAltThumbnail] = useState<ActorImage>();
   const [thumbnail, setThumbnail] = useState<ActorImage>();
@@ -238,12 +300,6 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
     close();
     onClose?.();
   };
-
-  const [fileToUpload, setFileToUpload] = useState<{
-    buffer: string;
-    type: imageTypes;
-    name: string;
-  }>();
 
   async function removeImage(type: string): Promise<void> {
     if (!window.confirm(`Are your sure to remove the ${type} image?`)) {
@@ -254,62 +310,46 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
       case "avatar":
         await setActorAvatar(actorId, null);
         setAvatar(undefined);
-        setFileToUpload(undefined);
         break;
       case "thumbnail":
         await setActorThumbnail(actorId, null);
         setThumbnail(undefined);
-        setFileToUpload(undefined);
         break;
       case "altThumbnail":
         await setActorAltThumbnail(actorId, null);
         setAltThumbnail(undefined);
-        setFileToUpload(undefined);
         break;
       case "hero":
         await setActorHero(actorId, null);
         setHero(undefined);
-        setFileToUpload(undefined);
         break;
     }
   }
 
-  function changeImage(buffer: string, type: imageTypes, name: string): void {
-    setFileToUpload({ buffer, type, name });
-  }
-
   async function onImageUpload(blob: Blob, type: string) {
-    if (!fileToUpload?.buffer) {
-      return;
-    }
-
     setUploading(true);
-    const uploadedImage = await uploadImage({ blob: blob, name: fileToUpload.name }, actorId);
+    const uploadedImage = await uploadImage({ blob: blob, name: "TODO.jpg" }, actorId);
     setUploading(false);
 
     switch (type) {
       case "avatar": {
         const newImage = await setActorAvatar(actorId, uploadedImage._id);
         setAvatar(newImage);
-        setFileToUpload(undefined);
         break;
       }
       case "thumbnail": {
         const newImage = await setActorThumbnail(actorId, uploadedImage._id);
         setThumbnail(newImage);
-        setFileToUpload(undefined);
         break;
       }
       case "altThumbnail": {
         const newImage = await setActorAltThumbnail(actorId, uploadedImage._id);
         setAltThumbnail(newImage);
-        setFileToUpload(undefined);
         break;
       }
       case "hero": {
         const newImage = await setActorHero(actorId, uploadedImage._id);
         setHero(newImage);
-        setFileToUpload(undefined);
         break;
       }
     }
@@ -349,21 +389,6 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
       .finally(() => setLoader(false));
   }, []);
 
-  useEffect(() => {
-    switch (fileToUpload?.type) {
-      case "hero":
-        setAspect(2.75 / 1);
-        break;
-      case "thumbnail":
-      case "altThumbnail":
-        setAspect(actorImageAspect.numericValue);
-        break;
-      case "avatar":
-        setAspect(1 / 1);
-        break;
-    }
-  }, [fileToUpload?.type]);
-
   return (
     <>
       <Button onClick={open} className="hover">
@@ -374,64 +399,54 @@ export default function ActorImagesEditor({ actorId, onClose }: ActorImagesEdito
         isOpen={isOpen}
         title={t("actions.edit")}
         actions={
-          !fileToUpload && (
-            <>
-              <Button onClick={doClose}>Close</Button>
-            </>
-          )
+          <>
+            <Button onClick={doClose}>Close</Button>
+          </>
         }
       >
         <div style={{ width: "80vw", height: "70vh" }}>
-          {fileToUpload ? (
-            <div style={{ height: "100%" }}>
-              <ImageCropper
-                aspectRatio={aspect}
-                src={fileToUpload.buffer}
-                loading={uploading}
-                onCancel={() => setFileToUpload(undefined)}
-                onUpload={(blob: Blob) => onImageUpload(blob, fileToUpload.type)}
+          <div style={{ height: "100%" }}>
+            <div style={{ height: "50%", marginBottom: 20 }}>
+              <ImageEditControls
+                uploading={uploading}
+                onImageUpload={onImageUpload}
+                type="hero"
+                image={hero}
+                onRemove={async () => removeImage("hero")}
               />
             </div>
-          ) : (
-            <div style={{ height: "100%" }}>
-              <div style={{ height: "50%", marginBottom: 20 }}>
-                <ImageEditControls
-                  type="hero"
-                  image={hero}
-                  onChange={changeImage}
-                  onRemove={async () => removeImage("hero")}
-                />
-              </div>
-              <div style={{ height: "50%" }}>
-                <div style={{ display: "flex", flexDirection: "row", gap: 10, height: "100%" }}>
-                  <div style={{ flex: 1 }}>
-                    <ImageEditControls
-                      type="avatar"
-                      image={avatar}
-                      onChange={changeImage}
-                      onRemove={async () => removeImage("avatar")}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <ImageEditControls
-                      type="thumbnail"
-                      image={thumbnail}
-                      onChange={changeImage}
-                      onRemove={async () => removeImage("thumbnail")}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <ImageEditControls
-                      type="altThumbnail"
-                      image={altThumbnail}
-                      onChange={changeImage}
-                      onRemove={async () => removeImage("altThumbnail")}
-                    />
-                  </div>
+            <div style={{ height: "50%" }}>
+              <div style={{ display: "flex", flexDirection: "row", gap: 10, height: "100%" }}>
+                <div style={{ flex: 1 }}>
+                  <ImageEditControls
+                    uploading={uploading}
+                    onImageUpload={onImageUpload}
+                    type="avatar"
+                    image={avatar}
+                    onRemove={async () => removeImage("avatar")}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <ImageEditControls
+                    uploading={uploading}
+                    onImageUpload={onImageUpload}
+                    type="thumbnail"
+                    image={thumbnail}
+                    onRemove={async () => removeImage("thumbnail")}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <ImageEditControls
+                    uploading={uploading}
+                    onImageUpload={onImageUpload}
+                    type="altThumbnail"
+                    image={altThumbnail}
+                    onRemove={async () => removeImage("altThumbnail")}
+                  />
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </Window>
     </>
