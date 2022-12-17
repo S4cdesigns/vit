@@ -9,9 +9,14 @@ type SimpleCountry = Pick<ICountry, "name" | "alpha2" | "nationality" | "alias">
 type Props = {
   selected?: SimpleCountry | string;
   onChange?: (countr: SimpleCountry) => void;
+  relevancy?: number;
 };
 
-export default function CountryDropdownChoice({ selected, onChange }: Props) {
+export default function CountryDropdownChoice({
+  selected,
+  onChange,
+  relevancy: minRelevancy,
+}: Props) {
   const selectStyle = useSelectStyle();
 
   const selection = useMemo(() => {
@@ -23,6 +28,10 @@ export default function CountryDropdownChoice({ selected, onChange }: Props) {
 
     return defaultCountries.find((country) => country.alpha2 === selected);
   }, [selected]);
+
+  const countries = useMemo(() => {
+    return defaultCountries.filter(({ relevancy }) => relevancy > (minRelevancy ?? 1));
+  }, [minRelevancy]);
 
   return (
     <Select<SimpleCountry>
@@ -36,7 +45,7 @@ export default function CountryDropdownChoice({ selected, onChange }: Props) {
       isClearable
       styles={selectStyle}
       isMulti={false}
-      options={defaultCountries}
+      options={countries}
       getOptionLabel={(country) => country.name}
       getOptionValue={(country) => country.alpha2}
     />

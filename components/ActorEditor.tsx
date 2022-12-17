@@ -1,12 +1,9 @@
-import FlagIcon from "mdi-react/FlagIcon";
-import FlagOutlineIcon from "mdi-react/FlagOutlineIcon";
 import EditIcon from "mdi-react/PencilIcon";
 import moment from "moment";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
-import Select from "react-select/dist/declarations/src/Select";
 
 import { useSelectStyle } from "../composables/use_select_style";
 import { useWindow } from "../composables/use_window";
@@ -15,9 +12,7 @@ import { graphqlQuery } from "../util/gql";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
 import CountryDropdownChoice from "./CountryDropdownChoice";
-import { CountrySelector } from "./CountrySelector";
 import ExternalLinksEditor from "./ExternalLinksEditor";
-import IconButtonMenu from "./IconButtonMenu";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
