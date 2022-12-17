@@ -17,12 +17,11 @@ import IconButtonFilter from "../components/IconButtonFilter";
 import IconButtonMenu from "../components/IconButtonMenu";
 import LabelSelector from "../components/LabelSelector";
 import ListWrapper from "../components/ListWrapper";
-import MarkerCard from "../components/MarkerCard";
 import PageWrapper from "../components/PageWrapper";
 import Pagination from "../components/Pagination";
 import Rating from "../components/Rating";
 import MarkerList from "../components/scene_details/MarkerList";
-import SortDirectionButton from "../components/SortDirectionButton";
+import SortDirectionButton, { SortDirection } from "../components/SortDirectionButton";
 import Spacer from "../components/Spacer";
 import useLabelList from "../composables/use_label_list";
 import { fetchMarkers, useMarkerList } from "../composables/use_marker_list";
@@ -234,7 +233,7 @@ export default function MarkerListPage(props: {
           }}
           onBookmark={(marker, value) => {
             editMarker(marker._id, (marker) => {
-              marker.bookmark = value;
+              marker.bookmark = !!value;
               return marker;
             });
           }}
