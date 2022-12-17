@@ -1,24 +1,20 @@
-import Color from "color";
 import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
 import AddMarkerIcon from "mdi-react/PlaylistAddIcon";
 import { useTranslations } from "next-intl";
-import { useContext, useState } from "react";
-import Select from "react-select";
+import { useState } from "react";
 
-import useLabelList from "../composables/use_label_list";
 import { useVideoControls } from "../composables/use_video_control";
 import { useWindow } from "../composables/use_window";
-import actor from "../src/graphql/mutations/actor";
 import { IActor } from "../types/actor";
-import ILabel from "../types/label";
 import { graphqlQuery } from "../util/gql";
 import { formatDuration } from "../util/string";
 import ActorDropdownChoice, { SelectableActor } from "./ActorDropdownChoice";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
+import InputError from "./InputError";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Rating from "./Rating";
 import Subheading from "./Subheading";
@@ -65,6 +61,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
+  const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [fav, setFav] = useState(false);
@@ -80,11 +77,21 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
     onOpen();
   };
 
+  const reset = () => {
+    setName("");
+    setError(undefined);
+  };
+
+  const doClose = () => {
+    reset();
+    close();
+  };
+
   return (
     <>
       <AddMarkerIcon className="hover" size={24} onClick={doOpen} />
       <Window
-        onClose={close}
+        onClose={doClose}
         isOpen={isOpen}
         title={`Add marker at ${formatDuration(currentTime)}`}
         actions={
@@ -105,17 +112,22 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
                     selectedActors.map(({ _id }) => _id)
                   );
                   onCreate();
+                  reset();
                   close();
-                  setName("");
-                  setSelectedLabels([]);
-                } catch (error) {}
+                } catch (error) {
+                  if (error instanceof Error) {
+                    setError(error.message);
+                  } else {
+                    setError("An error occurred");
+                  }
+                }
                 setLoader(false);
               }}
               style={{ color: "white", background: "#3142da" }}
             >
               Create
             </Button>
-            <Button onClick={close}>Close</Button>
+            <Button onClick={doClose}>Close</Button>
           </>
         }
       >
@@ -127,6 +139,7 @@ export default function MarkerCreator({ onCreate, onOpen, sceneId, actors }: Pro
             placeholder="Enter a marker title"
             type="text"
           />
+          {error && <InputError message={error} />}
         </div>
         <AutoLayout gap={5} layout="h">
           <div>

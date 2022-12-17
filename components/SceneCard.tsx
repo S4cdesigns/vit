@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useContext } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
+import { useSettings } from "../composables/use_settings";
 import { ThemeContext } from "../pages/_app";
 import { IScene } from "../types/scene";
 import { bookmarkScene, favoriteScene, rateScene } from "../util/mutations/scene";
@@ -44,7 +45,9 @@ type Props = {
 
 export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
+  const { sceneImageAspect } = useSettings();
   const { theme } = useContext(ThemeContext);
+  const { showCardLabels } = useSettings();
 
   async function toggleFav(): Promise<void> {
     const newValue = !scene.favorite;
@@ -79,7 +82,7 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
   return (
     <Paper style={{ position: "relative" }}>
       <ResponsiveImage
-        aspectRatio="4 / 3"
+        aspectRatio={sceneImageAspect.cssValue}
         href={`/scene/${scene._id}`}
         src={scene.thumbnail?._id && thumbnailUrl(scene.thumbnail._id)}
         imgStyle={{
@@ -188,9 +191,7 @@ export default function SceneCard({ scene, onFav, onBookmark, onRate }: Props) {
           <Rating onChange={changeRating} value={scene.rating || 0} />
         </div>
 
-        <div>
-          <LabelGroup labels={scene.labels} />
-        </div>
+        <div>{showCardLabels && <LabelGroup labels={scene.labels} />}</div>
       </AutoLayout>
     </Paper>
   );

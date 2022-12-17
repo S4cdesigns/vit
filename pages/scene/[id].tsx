@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import prettyBytes from "pretty-bytes";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ActorCard from "../../components/ActorCard";
 import AutoLayout from "../../components/AutoLayout";
@@ -29,6 +29,7 @@ import PageWrapper from "../../components/PageWrapper";
 import Rating from "../../components/Rating";
 import MarkerList from "../../components/scene_details/MarkerList";
 import VideoPlayer from "../../components/scene_details/VideoPlayer";
+import SceneEditor from "../../components/SceneEditor";
 import Spacer from "../../components/Spacer";
 import Text from "../../components/Text";
 import Window from "../../components/Window";
@@ -36,6 +37,7 @@ import { useActorList } from "../../composables/use_actor_list";
 import { useMovieList } from "../../composables/use_movie_list";
 import { useVideoControls } from "../../composables/use_video_control";
 import { scenePageFragment } from "../../fragments/scene";
+import ILabel from "../../types/label";
 import { IScene } from "../../types/scene";
 import { graphqlQuery } from "../../util/gql";
 import {
@@ -56,6 +58,45 @@ const queryParser = buildQueryParser({
     default: null,
   },
 });
+
+async function removeLabel(item: string, label: string): Promise<void> {
+  const q = `
+  mutation($item: String!, $label: String!) {
+    removeLabel(item: $item, label: $label)
+  }`;
+
+  await graphqlQuery(q, {
+    item,
+    label,
+  });
+}
+
+async function updateLabels(sceneId: string, updatedLabels: string[]): Promise<ILabel[]> {
+  const q = `
+  mutation($ids: [String!]!, $opts: SceneUpdateOpts!) {
+    updateScenes(ids: $ids, opts: $opts) {
+      _id
+      labels {
+        _id
+        name
+        color
+      }
+    }
+  }`;
+
+  type updateLabelType = {
+    updateScenes: { _id: string; labels: ILabel[] }[];
+  };
+
+  const result = await graphqlQuery<updateLabelType>(q, {
+    ids: [sceneId],
+    opts: {
+      labels: updatedLabels,
+    },
+  });
+
+  return result.updateScenes[0].labels;
+}
 
 async function runFFprobe(sceneId: string) {
   const q = `
@@ -102,6 +143,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
+/**
+ * TODO: reload after mutation without refreshing the whole page and stopping the video
+ */
 export default function ScenePage({
   scene,
   startAtPosition,
@@ -116,6 +160,9 @@ export default function ScenePage({
   const [bookmark, setBookmark] = useState(!!scene.bookmark);
   const [rating, setRating] = useState(scene.rating);
   const [markers, setMarkers] = useState(scene.markers);
+  const [labels, setLabels] = useState<{ _id: string; name: string; color?: string }[]>(
+    scene.labels
+  );
   const [ffprobeData, setFFprobeData] = useState<FfprobeData | null>(null);
   const [pausedByMarker, setPausedByMarker] = useState(false);
 
@@ -129,6 +176,10 @@ export default function ScenePage({
   const [showGrid, setGrid] = useState(false);
   const [gridLoader, setGridLoader] = useState(false);
   const { startPlayback, currentTime, paused } = useVideoControls();
+
+  // useMemo seems to have problems when adding new markers
+  // const sortedMarkers = useMemo(() => markers.slice().sort((a, b) => a.time - b.time), [markers]);
+  const sortedMarkers = markers.slice().sort((a, b) => a.time - b.time);
 
   const {
     actors,
@@ -257,6 +308,19 @@ export default function ScenePage({
     setScreenshotLoader(false);
   }
 
+  async function addLabels(newLabels: string[]) {
+    const updatedLabels = await updateLabels(scene._id, [
+      ...labels.map((l) => l._id),
+      ...newLabels,
+    ]);
+    setLabels(updatedLabels);
+  }
+
+  async function deleteLabel(id: string) {
+    await removeLabel(scene._id, id);
+    setLabels(labels.filter((label) => label._id !== id));
+  }
+
   return (
     <PageWrapper padless title={scene.name}>
       <AutoLayout>
@@ -336,15 +400,23 @@ export default function ScenePage({
                   />
                   <Spacer />
                   {!!scene.studio && (
-                    <Link href={`/studio/${scene.studio._id}`} passHref>
-                      <a className="hover">
-                        <img
-                          style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
-                          src={thumbnailUrl(scene.studio.thumbnail?._id)}
-                          alt={`${scene.studio.name}`}
-                        />
-                      </a>
-                    </Link>
+                    <>
+                      <SceneEditor
+                        sceneId={scene._id}
+                        onEdit={() => {
+                          router.replace(router.asPath).catch(() => {});
+                        }}
+                      />
+                      <Link href={`/studio/${scene.studio._id}`} passHref>
+                        <a className="hover">
+                          <img
+                            style={{ maxWidth: 200, maxHeight: 64, objectFit: "cover" }}
+                            src={thumbnailUrl(scene.studio.thumbnail?._id)}
+                            alt={`${scene.studio.name}`}
+                          />
+                        </a>
+                      </Link>
+                    </>
                   )}
                 </div>
               </Card>
@@ -385,7 +457,16 @@ export default function ScenePage({
                       <Rating onChange={changeRating} value={rating}></Rating>
                     </CardSection>
                     <CardSection title="Labels">
-                      <LabelGroup limit={999} labels={scene.labels} />
+                      <LabelGroup
+                        limit={999}
+                        labels={labels}
+                        onAdd={addLabels}
+                        onDelete={async (id: string) => {
+                          if (window.confirm("Really delete this label?")) {
+                            await deleteLabel(id);
+                          }
+                        }}
+                      />
                     </CardSection>
                   </AutoLayout>
                   <AutoLayout>
@@ -518,6 +599,7 @@ export default function ScenePage({
                   <ListContainer size={150}>
                     {actors.map((actor) => (
                       <ActorCard
+                        scene={scene}
                         onFav={(value) => {
                           editActor(actor._id, (actor) => {
                             actor.favorite = value;
@@ -572,9 +654,10 @@ export default function ScenePage({
               {/* MARKERS */}
               <CardTitle>Markers</CardTitle>
               <ListWrapper loading={false} noResults={scene.markers.length === 0}>
-                {/* TODO: update marker list on delete */}
                 <MarkerList
-                  markers={scene.markers}
+                  markers={sortedMarkers}
+                  onDelete={reloadMarkers}
+                  onEdit={reloadMarkers}
                   onClick={(marker) => {
                     startPlayback(marker.time);
                     window.scrollTo({

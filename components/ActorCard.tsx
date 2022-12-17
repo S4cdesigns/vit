@@ -3,11 +3,14 @@ import BookmarkIcon from "mdi-react/BookmarkIcon";
 import BookmarkBorderIcon from "mdi-react/BookmarkOutlineIcon";
 import HeartIcon from "mdi-react/HeartIcon";
 import HeartBorderIcon from "mdi-react/HeartOutlineIcon";
+import moment from "moment";
 import { useContext, useMemo, useState } from "react";
 
 import { useSafeMode } from "../composables/use_safe_mode";
+import { useSettings } from "../composables/use_settings";
 import { ThemeContext } from "../pages/_app";
 import { IActor } from "../types/actor";
+import { IScene } from "../types/scene";
 import { bookmarkActor, favoriteActor, rateActor } from "../util/mutations/actor";
 import { thumbnailUrl } from "../util/thumbnail";
 import AutoLayout from "./AutoLayout";
@@ -31,14 +34,23 @@ type Props = {
     | "name"
     | "rating"
     | "labels"
+    | "bornOn"
   >;
+  scene?: IScene;
   onFav: (value: boolean) => void;
   onBookmark: (value: Date | null) => void;
   onRate: (rating: number) => void;
 };
 
-export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
+function calculateAge(bornOn?: number, sceneDate?: number) {
+  if (bornOn) {
+    return moment(sceneDate).diff(bornOn, "years");
+  }
+}
+
+export default function ActorCard({ actor, onFav, onBookmark, onRate, scene }: Props) {
   const { blur: safeModeBlur } = useSafeMode();
+  const { showCardLabels, actorImageAspect } = useSettings();
   const { theme } = useContext(ThemeContext);
   const [hover, setHover] = useState(false);
 
@@ -83,14 +95,14 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
     <Paper style={{ position: "relative" }}>
       <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         <ResponsiveImage
-          aspectRatio="3 / 4"
+          aspectRatio={actorImageAspect.cssValue}
           href={`/actor/${actor._id}`}
           src={thumbSrc}
           imgStyle={{
             transition: "filter 0.15s ease-in-out",
             filter: safeModeBlur,
           }}
-        />
+        ></ResponsiveImage>
       </div>
       <AutoLayout
         gap={5}
@@ -150,10 +162,16 @@ export default function ActorCard({ actor, onFav, onBookmark, onRate }: Props) {
         <div>
           <Rating onChange={changeRating} value={actor.rating || 0} />
         </div>
-
-        <div>
-          <LabelGroup labels={actor.labels} />
-        </div>
+        {showCardLabels && (
+          <div>
+            <LabelGroup labels={actor.labels} />
+          </div>
+        )}
+        {actor.bornOn && scene?.releaseDate && (
+          <div style={{ fontSize: 13 }}>
+            <div style={{}}>{calculateAge(actor.bornOn, scene.releaseDate)} y/o in this scene</div>
+          </div>
+        )}
       </AutoLayout>
     </Paper>
   );

@@ -128,6 +128,22 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
       include: selectedLabels,
     }
   );
+
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      letter,
+      nationality,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+      rating,
+      labels: selectedLabels,
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchActors,
     initialPage: props.page,
@@ -144,20 +160,14 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      letter,
-      nationality,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-      rating,
-      labels: selectedLabels,
-    });
+    updateQueryParserStore();
     await fetchActors(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   const hasNoLabels = !labelLoader && !labelList.length;
 
@@ -167,10 +177,10 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundActors", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <ActorCreator onCreate={() => onPageChange(0)} />
+          <ActorCreator onCreate={() => pageChanged(0)} />
           {/*  <Button style={{ marginRight: 10 }}>+ Bulk add</Button> */}
           {/* <Button style={{ marginRight: 10 }}>Choose</Button>
         <Button style={{ marginRight: 10 }}>Randomize</Button> */}
@@ -308,7 +318,7 @@ export default function ActorListPage(props: { page: number; initial: IPaginatio
           ))}
         </ListWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>

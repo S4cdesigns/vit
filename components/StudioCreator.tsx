@@ -5,23 +5,20 @@ import { useWindow } from "../composables/use_window";
 import { graphqlQuery } from "../util/gql";
 import Button from "./Button";
 import InputError from "./InputError";
-import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
 import Window from "./Window";
 
-async function createActor(name: string, aliases: string[], labels: string[]) {
+export async function createStudio(name: string) {
   const query = `
-  mutation ($name: String!, $aliases: [String!]!, $labels: [String!]!) {
-    addActor(name: $name, aliases: $aliases, labels: $labels) {
+  mutation ($name: String!) {
+    addStudio(name: $name) {
       _id
     }
   }
         `;
 
-  return await graphqlQuery(query, {
+  await graphqlQuery(query, {
     name,
-    aliases,
-    labels,
   });
 }
 
@@ -29,21 +26,17 @@ type Props = {
   onCreate: () => void;
 };
 
-export default function ActorCreator({ onCreate }: Props) {
+export default function StudioCreator({ onCreate }: Props) {
   const t = useTranslations();
   const { isOpen, close, open } = useWindow();
 
   const [error, setError] = useState<string | undefined>();
   const [name, setName] = useState("");
-  const [aliasInput, setAliasInput] = useState("");
-  const [selectedLabels, setSelectedLabels] = useState<readonly SelectableLabel[]>([]);
 
   const [loading, setLoader] = useState(false);
 
   const reset = () => {
     setName("");
-    setAliasInput("");
-    setSelectedLabels([]);
     setError(undefined);
   };
 
@@ -68,16 +61,10 @@ export default function ActorCreator({ onCreate }: Props) {
               onClick={async () => {
                 try {
                   setLoader(true);
-                  await createActor(
-                    name,
-                    aliasInput.split("\n"),
-                    selectedLabels.map(({ _id }) => _id)
-                  );
-
+                  await createStudio(name);
                   onCreate();
                   doClose();
                 } catch (error) {
-                  console.error(error);
                   if (error instanceof Error) {
                     setError(error.message);
                   } else {
@@ -95,29 +82,16 @@ export default function ActorCreator({ onCreate }: Props) {
         }
       >
         <div>
-          <Subheading>Actor name</Subheading>
+          <Subheading>Studio name</Subheading>
           <input
-            style={{ width: "100%" }}
             autoFocus
+            style={{ width: "100%" }}
             value={name}
             onChange={(ev) => setName(ev.target.value)}
-            placeholder="Enter an actor name"
+            placeholder="Enter a studio name"
             type="text"
           />
           {error && <InputError message={error} />}
-        </div>
-        <div>
-          <Subheading>Aliases</Subheading>
-          <textarea
-            style={{ width: "100%" }}
-            value={aliasInput}
-            onChange={(ev) => setAliasInput(ev.target.value)}
-            placeholder="1 per line"
-          />
-        </div>
-        <div>
-          <Subheading>Labels</Subheading>
-          <LabelDropdownChoice onChange={setSelectedLabels} selectedLabels={selectedLabels} />
         </div>
       </Window>
     </>

@@ -1,6 +1,7 @@
 @import "./color.scss";
 
 input[type="text"],
+input[type="number"],
 input[type="url"],
 input[type="search"],
 textarea,
@@ -32,7 +33,16 @@ select {
 }
 
 .dark {
+  input[type="date"] {
+    color-scheme: dark;
+    background: darken($bg-dark, 1%);
+    border-color: lighten($bg-dark, 2%);
+  }
+}
+
+.dark {
   input[type="text"],
+  input[type="number"],
   input[type="url"],
   input[type="search"],
   textarea,

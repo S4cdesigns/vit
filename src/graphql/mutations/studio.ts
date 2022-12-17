@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { getConfig } from "../../config";
 import { ApplyStudioLabelsEnum } from "../../config/schema";
 import { collections } from "../../database";
@@ -57,6 +59,15 @@ export default {
 
   async addStudio(_: unknown, opts: { name: string; labels?: string[] }): Promise<Studio> {
     const config = getConfig();
+
+    if (opts.name.length === 0) {
+      throw new GraphQLError("A studio name must not be empty", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      });
+    }
+
     for (const label of opts.labels || []) {
       const labelInDb = await Label.getById(label);
       if (!labelInDb) throw new Error(`Label ${label} not found`);

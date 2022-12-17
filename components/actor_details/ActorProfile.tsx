@@ -15,6 +15,7 @@ import {
   runActorPlugins,
 } from "../../util/mutations/actor";
 import { thumbnailUrl } from "../../util/thumbnail";
+import ActorImagesEditor from "../ActorImagesEditor";
 import AutoLayout from "../AutoLayout";
 import Flag from "../Flag";
 import Rating from "../Rating";
@@ -183,6 +184,7 @@ export default function ActorProfile(props: Props) {
       <Button loading={pluginLoader} onClick={triggerPlugins}>
         Run Plugins
       </Button>
+      <ActorImagesEditor actorId={props.actorId} onClose={refreshData} />
     </div>
   );
 }

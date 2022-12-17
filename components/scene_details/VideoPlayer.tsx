@@ -1,6 +1,6 @@
 import FullscreenIcon from "mdi-react/FullscreenIcon";
 import VolumeHighIcon from "mdi-react/VolumeHighIcon";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useSafeMode } from "../../composables/use_safe_mode";
 import { useVideoControls } from "../../composables/use_video_control";
@@ -9,6 +9,7 @@ import { formatDuration } from "../../util/string";
 import Loader from "../Loader";
 import Marker from "../Marker";
 import PlayPauseToggleButton from "../player/PlayPauseToggleButton";
+import ScenePreview from "../ScenePreview";
 import Spacer from "../Spacer";
 import styles from "./VideoPlayer.module.scss";
 
@@ -35,6 +36,11 @@ export default function VideoPlayer({
   const [loading, setLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
   const [hover, setHover] = useState(false);
+  const [hoverSeekBar, setHoverSeekBar] = useState(false);
+  const [mousePosition, setMousePosition] = useState<{ x: number; percent: number }>({
+    x: 0,
+    percent: 0,
+  });
   const [progress, setProgress] = useState(0);
   const [bufferRanges, setBufferRanges] = useState<{ start: number; end: number }[]>([]);
   const {
@@ -176,6 +182,7 @@ export default function VideoPlayer({
 
   return (
     <div
+      onMouseMove={() => setHover(true)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
@@ -220,6 +227,17 @@ export default function VideoPlayer({
           }}
         >
           <div
+            onMouseMove={(event: React.MouseEvent<HTMLDivElement>) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              let x = event.clientX - rect.left;
+              // Do not go "outside" the width of rectangle
+              x = Math.min(rect.right - rect.left, x);
+              x = Math.max(0, x);
+              const percent = x / rect.width;
+              setMousePosition({ x, percent });
+            }}
+            onMouseEnter={() => setHoverSeekBar(true)}
+            onMouseLeave={() => setHoverSeekBar(false)}
             onClick={(ev) => {
               const clickTarget = ev.target as HTMLDivElement;
               const clickTargetWidth = clickTarget.clientWidth;
@@ -260,6 +278,13 @@ export default function VideoPlayer({
               {...marker}
             />
           ))}
+          <ScenePreview
+            duration={duration}
+            show={hoverSeekBar}
+            absolutePosition={mousePosition.x}
+            percentagePosition={mousePosition.percent}
+            thumbnail={`/previews/${scene._id}.jpg`}
+          />
 
           <div className={styles.buttons}>
             <PlayPauseToggleButton scene={scene} />

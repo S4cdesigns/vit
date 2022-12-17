@@ -9,6 +9,7 @@ import { useSafeMode } from "../composables/use_safe_mode";
 import { IMarker } from "../types/marker";
 import { graphqlQuery } from "../util/gql";
 import { bookmarkMarker, favoriteMarker, rateMarker } from "../util/mutations/marker";
+import { formatDuration } from "../util/string";
 import { thumbnailUrl } from "../util/thumbnail";
 import ActorList from "./ActorList";
 import AutoLayout from "./AutoLayout";
@@ -59,8 +60,8 @@ export default function MarkerCard({
   }
 
   async function toggleBookmark(): Promise<void> {
-    const newValue = !bookmark;
-    setBookmark(newValue);
+    const newValue = marker.bookmark ? null : new Date();
+    setBookmark(!!newValue);
     await bookmarkMarker(marker._id, newValue);
     onBookmark && onBookmark(newValue);
   }
@@ -200,6 +201,7 @@ export default function MarkerCard({
           }}
         >
           {marker.name}
+          <span style={{ float: "right" }}>{formatDuration(marker.time)}</span>
         </div>
 
         {marker.actors?.length && <ActorList actors={marker.actors} />}

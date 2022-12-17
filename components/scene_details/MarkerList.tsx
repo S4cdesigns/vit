@@ -5,6 +5,7 @@ type Props = {
   markers: IMarker[];
   onClick: (marker: IMarker) => void;
   onDelete: () => void;
+  onEdit?: () => void;
   onBookmark: (marker: IMarker, value: Date | null) => void;
   onRate: (marker: IMarker, rating: number) => void;
   onFav: (marker: IMarker, value: boolean) => void;
@@ -25,6 +26,7 @@ export default function MarkerList({
   onRate,
   onFav,
   onDelete,
+  onEdit,
 }: Props) {
   return (
     <>
@@ -32,7 +34,8 @@ export default function MarkerList({
         <MarkerCard
           marker={marker}
           onClick={onClick ? () => onClick(marker) : undefined}
-          onDelete={onDelete ? () => onDelete() : undefined}
+          onDelete={onDelete}
+          onEdit={onEdit}
           onBookmark={onBookmark ? (value) => onBookmark(marker, value) : undefined}
           onRate={onRate ? (value) => onRate(marker, value) : undefined}
           onFav={onFav ? (value) => onFav(marker, value) : undefined}

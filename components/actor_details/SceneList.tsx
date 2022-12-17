@@ -201,6 +201,7 @@ export default function ActorDetailsPageSceneList(props: Props) {
           disabled={hasNoCollabs}
         >
           <input
+            autoFocus
             type="text"
             style={{ width: "100%", marginBottom: 10 }}
             placeholder={t("findActors")}

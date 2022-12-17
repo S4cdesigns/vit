@@ -117,6 +117,20 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
       include: selectedLabels,
     }
   );
+
+  const updateQueryParserStore = (nextPage?: number) => {
+    queryParser.store(router, {
+      q: query,
+      favorite,
+      bookmark,
+      sortBy,
+      sortDir,
+      page: nextPage || page,
+      rating,
+      labels: selectedLabels,
+    });
+  };
+
   const { page, onPageChange } = usePaginatedList({
     fetch: fetchImages,
     initialPage: props.page,
@@ -132,18 +146,14 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
   });
 
   async function refresh(): Promise<void> {
-    queryParser.store(router, {
-      q: query,
-      favorite,
-      bookmark,
-      sortBy,
-      sortDir,
-      page,
-      rating,
-      labels: selectedLabels,
-    });
+    updateQueryParserStore();
     await fetchImages(page);
   }
+
+  const pageChanged = async (page: number): Promise<void> => {
+    await onPageChange(page);
+    updateQueryParserStore(page);
+  };
 
   const hasNoLabels = !labelLoader && !labelList.length;
 
@@ -153,7 +163,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ fontSize: 20, fontWeight: "bold" }}>{t("foundImages", { numItems })}</div>
           <Spacer />
-          <Pagination numPages={numPages} current={page} onChange={(page) => onPageChange(page)} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <ImageUploader onUpload={prependImages} />
@@ -266,7 +276,7 @@ export default function ImageListPage(props: { page: number; initial: IPaginatio
           />
         </ContentWrapper>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Pagination numPages={numPages} current={page} onChange={onPageChange} />
+          <Pagination numPages={numPages} current={page} onChange={pageChanged} />
         </div>
       </AutoLayout>
     </PageWrapper>
