@@ -48,7 +48,7 @@ export default function CountryDropdownChoice({
       styles={selectStyle}
       isMulti={false}
       options={countries}
-      getOptionLabel={(country) => country.name}
+      getOptionLabel={(country) => country.alias || country.name}
       getOptionValue={(country) => country.alpha2}
     />
   );
