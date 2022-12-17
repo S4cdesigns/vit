@@ -11,7 +11,7 @@ import { IActor } from "../types/actor";
 import { graphqlQuery } from "../util/gql";
 import AutoLayout from "./AutoLayout";
 import Button from "./Button";
-import CountryDropdownChoice from "./CountryDropdownChoice";
+import CountryDropdownChoice, { SimpleCountry } from "./CountryDropdownChoice";
 import ExternalLinksEditor from "./ExternalLinksEditor";
 import LabelDropdownChoice, { SelectableLabel } from "./LabelDropdownChoice";
 import Subheading from "./Subheading";
@@ -39,7 +39,7 @@ async function editActor({
   aliases: string[];
   externalLinks: { url: string; text: string }[];
   labels: String[];
-  nationality?: string;
+  nationality: string | null;
   bornOn?: number;
 }) {
   const query = `
@@ -68,7 +68,9 @@ export default function ActorEditor({ onEdit, actor }: Props) {
   const { isOpen, close, open } = useWindow();
   const [name, setName] = useState(actor.name);
   const [bornOn, setBornOn] = useState(actor.bornOn);
-  const [nationality, setNationality] = useState(actor.nationality);
+  const [nationality, setNationality] = useState<SimpleCountry | null | undefined>(
+    actor.nationality
+  );
   const [aliasInput, setAliasInput] = useState(
     actor.aliases.map((alias) => ({ value: alias, label: alias }))
   );
@@ -99,7 +101,7 @@ export default function ActorEditor({ onEdit, actor }: Props) {
                     aliases: aliasInput.map((alias) => alias.value),
                     externalLinks,
                     labels: selectedLabels.map((label) => label._id),
-                    nationality: nationality?.alpha2,
+                    nationality: nationality?.alpha2 || null,
                     bornOn,
                   });
                   onEdit();

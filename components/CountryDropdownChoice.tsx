@@ -4,11 +4,11 @@ import Select, { SingleValue } from "react-select";
 import { useSelectStyle } from "../composables/use_select_style";
 import defaultCountries, { ICountry } from "../src/data/countries";
 
-type SimpleCountry = Pick<ICountry, "name" | "alpha2" | "nationality" | "alias">;
+export type SimpleCountry = Pick<ICountry, "name" | "alpha2" | "nationality" | "alias">;
 
 type Props = {
-  selected?: SimpleCountry | string;
-  onChange?: (countr: SimpleCountry) => void;
+  selected?: SimpleCountry | string | undefined | null;
+  onChange?: (country?: SimpleCountry | null) => void;
   relevancy?: number;
 };
 
@@ -39,6 +39,8 @@ export default function CountryDropdownChoice({
       onChange={(newValue: SingleValue<SimpleCountry>) => {
         if (newValue) {
           onChange?.(newValue);
+        } else {
+          onChange?.(null);
         }
       }}
       closeMenuOnSelect
