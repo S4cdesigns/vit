@@ -5,12 +5,14 @@ import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 
+import { MovieDataSource } from "../graphql/datasources/MovieDataSource";
 import { SceneDataSource } from "../graphql/datasources/SceneDataSource";
 import schema from "../graphql/types";
 import cors from "./cors";
 
 export interface IzzyContext extends BaseContext {
   sceneDataSource: SceneDataSource;
+  movieDataSource: MovieDataSource;
 }
 
 /* const apolloLogger: ApolloServerPlugin = {
@@ -57,6 +59,7 @@ export async function mountApolloServer(app: express.Application): Promise<void>
         // https://www.apollographql.com/docs/apollo-server/data/fetching-data/#batching-and-caching
         // https://levelup.gitconnected.com/solve-n-1-query-problem-in-graphql-with-dataloaders-18e16ac17b21
         sceneDataSource: new SceneDataSource(),
+        movieDataSource: new MovieDataSource(),
       }),
     })
   );

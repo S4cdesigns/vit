@@ -47,10 +47,7 @@ export class SceneDataSource {
         return [];
       }
 
-      const actors = actorRefs.map((ref) =>
-        allActors.find((actor) => actor._id === ref.actor)
-      ) as Actor[];
-      return actors;
+      return actorRefs.map((ref) => allActors.find((actor) => actor._id === ref.actor)) as Actor[];
     });
   });
 

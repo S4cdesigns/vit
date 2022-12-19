@@ -33,6 +33,7 @@ export default class Movie {
   }
 
   static async calculateDuration(movie: Movie): Promise<number> {
+    console.log("!!!!!!!!! Expensive Movie -> Duration calculation !!!!!!!!");
     const validScenes = (await Movie.getScenes(movie)).filter(
       (scene) => scene.meta && scene.path && scene.meta.duration
     );
@@ -80,6 +81,7 @@ export default class Movie {
   }
 
   static async getLabels(movie: Movie): Promise<Label[]> {
+    console.log("!!!!!!!!! Expensive Movie -> Labels resolution !!!!!!!!");
     const scenes = await Movie.getScenes(movie);
     const labelIds = [
       ...new Set((await mapAsync(scenes, Scene.getLabels)).flat().map((a) => a._id)),
@@ -88,6 +90,7 @@ export default class Movie {
   }
 
   static async getActors(movie: Movie): Promise<Actor[]> {
+    console.log("!!!!!!!!! Expensive Movie -> Actors resolution !!!!!!!!");
     const scenes = await Movie.getScenes(movie);
     const actorIds = [
       ...new Set((await mapAsync(scenes, Scene.getActors)).flat().map((a) => a._id)),

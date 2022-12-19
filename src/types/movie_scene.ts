@@ -23,6 +23,10 @@ export default class MovieScene {
     );
   }
 
+  static async getByMovies(movies: readonly string[]): Promise<Record<string, MovieScene[]>> {
+    return await collections.movieScenes.queryBulk("movie-index", movies);
+  }
+
   static async getByScene(scene: string): Promise<MovieScene[]> {
     return collections.movieScenes.query("scene-index", scene);
   }
