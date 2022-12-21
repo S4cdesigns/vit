@@ -24,7 +24,7 @@ if (!existsSync("tmp")) {
   logger.info("Creating temporary directory 'tmp'");
   mkdirpSync("tmp/");
 } else {
-  logger.info("Temporary directory 'tmp' already exists");
+  logger.debug("Temporary directory 'tmp' already exists");
 }
 
 export function formatCollectionName(name: string) {
