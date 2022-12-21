@@ -113,6 +113,10 @@ export default class Studio {
     return collections.studios.query("parent-index", studioId);
   }
 
+  static async getSubStudiosBulk(studioIds: readonly string[]): Promise<Record<string, Studio[]>> {
+    return collections.studios.queryBulk("parent-index", studioIds);
+  }
+
   static async getActors(studio: Studio): Promise<Actor[]> {
     const scenes = await Studio.getScenes(studio);
     const actorIds = [

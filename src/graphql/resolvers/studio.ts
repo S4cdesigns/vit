@@ -1,3 +1,4 @@
+import { IzzyContext } from "../../middlewares/apollo";
 import Actor from "../../types/actor";
 import CustomField, { CustomFieldTarget } from "../../types/custom_field";
 import Image from "../../types/image";
@@ -16,9 +17,9 @@ export default {
   async averageRating(studio: Studio): Promise<number> {
     return await Studio.getAverageRating(studio);
   },
-  thumbnail(studio: Studio): Promise<Image | null> | null {
+  thumbnail(studio: Studio, _: any, context: IzzyContext): Promise<Image | null> | null {
     if (studio.thumbnail) {
-      return Image.getById(studio.thumbnail);
+      return context.studioDataSource.getThumbnailForStudio(studio.thumbnail);
     }
     return null;
   },
@@ -29,8 +30,8 @@ export default {
     const actors = await Studio.getActors(studio);
     return actors.sort((a, b) => a.name.localeCompare(b.name));
   },
-  async labels(studio: Studio): Promise<Label[]> {
-    const labels = await Studio.getLabels(studio);
+  async labels(studio: Studio, _: any, context: IzzyContext): Promise<Label[]> {
+    const labels = await context.studioDataSource.getLabelsForStudio(studio);
     return labels.sort((a, b) => a.name.localeCompare(b.name));
   },
   movies(studio: Studio): Promise<Movie[]> {
@@ -43,10 +44,10 @@ export default {
     return null;
   },
   async substudios(studio: Studio): Promise<Studio[]> {
-    return await Studio.getSubStudios(studio._id);
+    return Studio.getSubStudios(studio._id);
   },
-  async numScenes(studio: Studio): Promise<number> {
-    return (await Studio.getScenes(studio)).length;
+  async numScenes(studio: Studio, _: any, context: IzzyContext): Promise<number> {
+    return context.studioDataSource.getNumScenes(studio);
   },
   async availableFields(): Promise<CustomField[]> {
     const fields = await CustomField.getAll();

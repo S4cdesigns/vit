@@ -33,9 +33,11 @@ export default class Movie {
   }
 
   static async calculateDuration(movie: Movie): Promise<number> {
-    const validScenes = (await Movie.getScenes(movie)).filter(
-      (scene) => scene.meta && scene.path && scene.meta.duration
-    );
+    return this.calculateDurationFromScenes(await Movie.getScenes(movie));
+  }
+
+  static calculateDurationFromScenes(scenes: Scene[]): number {
+    const validScenes = scenes.filter((scene) => scene.meta && scene.path && scene.meta.duration);
     return validScenes.reduce((dur, scene) => dur + <number>scene.meta.duration, 0);
   }
 

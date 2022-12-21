@@ -106,7 +106,7 @@ export namespace Izzy {
     }
 
     // Gets multiple items using one request
-    async getBulk(items: string[]): Promise<T[]> {
+    async getBulk(items: readonly string[]): Promise<T[]> {
       logger.silly(`Getting ${items.length} items in bulk from collection: ${this.name}`);
       const { data } = await Axios.post<{ items: T[] }>(
         `http://${izzyHost}:${getConfig().binaries.izzyPort}/collection/${this.name}/bulk`,

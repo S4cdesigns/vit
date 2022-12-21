@@ -2,12 +2,10 @@ import DataLoader from "dataloader";
 
 import Actor from "../../types/actor";
 import ActorReference from "../../types/actor_reference";
-import Image from "../../types/image";
-import Label from "../../types/label";
-import LabelledItem from "../../types/labelled_item";
 import Scene from "../../types/scene";
 import SceneView from "../../types/watch";
 import { logger } from "../../utils/logger";
+import { BatchImageLoader, BatchLabelLoader } from "./loaders";
 
 export class SceneDataSource {
   private batchActors = new DataLoader(async (sceneIds: readonly string[]) => {
@@ -25,19 +23,11 @@ export class SceneDataSource {
 
     let allActors: Actor[] = [];
 
-    try {
-      const allActorIds = Object.values(allRefs)
+    const allActorIds = Object.values(allRefs)
+      .flatMap((refs) => refs)
+      .map((actorRef) => actorRef.actor);
 
-        .flatMap((refs) => refs)
-        .map((actorRef) => actorRef.actor);
-
-      allActors = await Actor.getBulk(allActorIds);
-    } catch (error) {
-      // TODO: fallback to Scene.getActors()
-      console.error(error);
-      console.error(allRefs);
-      console.error(sceneIds);
-    }
+    allActors = await Actor.getBulk(allActorIds);
 
     return sceneIds.map(async (sceneId) => {
       const actorRefs = allRefs[sceneId];
@@ -51,48 +41,8 @@ export class SceneDataSource {
     });
   });
 
-  private batchlLabels = new DataLoader(async (sceneIds: readonly string[]) => {
-    logger.silly(`loading labels for scenes [${sceneIds.join(",")}]`);
-    const allSceneLabels = await LabelledItem.getByItemBulk(sceneIds);
-
-    let allLabels: Label[] = [];
-
-    try {
-      const allLabelIds = Object.values(allSceneLabels)
-
-        .flatMap((refs) => refs)
-        .map((labelRef) => labelRef.label);
-
-      allLabels = await Label.getBulk(allLabelIds);
-    } catch (error) {
-      // TODO: fallback to Scene.getActors()
-      console.error(error);
-      console.error(allSceneLabels);
-      console.error(sceneIds);
-    }
-
-    return sceneIds.map(async (sceneId) => {
-      const labelRefs = allSceneLabels[sceneId];
-
-      if (!labelRefs) {
-        // no labels for that scene
-        return [];
-      }
-
-      const actors = labelRefs.map((ref) =>
-        allLabels.find((label) => label._id === ref.label)
-      ) as Label[];
-      return actors;
-    });
-  });
-
-  private batchImages = new DataLoader(async (imageIds: readonly string[]) => {
-    if (imageIds.length === 0) {
-      return [];
-    }
-    logger.silly(`loading bulk images for imageIds [${imageIds.length}]`);
-    return await Image.getBulk(imageIds.concat());
-  });
+  private batchLabels = BatchLabelLoader;
+  private batchImages = BatchImageLoader;
 
   private batchSceneViews = new DataLoader(async (sceneIds: readonly string[]) => {
     if (sceneIds.length === 0) {
@@ -116,7 +66,7 @@ export class SceneDataSource {
   }
 
   async getLabelsForScene(scene: Scene) {
-    return this.batchlLabels.load(scene._id);
+    return this.batchLabels.load(scene._id);
   }
 
   async getThumbnailForScene(scene: Scene) {

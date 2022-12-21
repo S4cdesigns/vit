@@ -2,10 +2,16 @@ import DataLoader from "dataloader";
 
 import Actor from "../../types/actor";
 import ActorReference from "../../types/actor_reference";
+import Image from "../../types/image";
+import Label from "../../types/label";
 import MovieScene from "../../types/movie_scene";
 import Scene from "../../types/scene";
+import { BatchImageLoader, BatchLabelLoader } from "./loaders";
 
 export class MovieDataSource {
+  private batchImages = BatchImageLoader;
+  private batchLabels = BatchLabelLoader;
+
   private batchScenes = new DataLoader(async (movieIds: readonly string[]) => {
     const movieScenes = await MovieScene.getByMovies(movieIds);
     const allSceneIds = Object.values(movieScenes)
@@ -77,5 +83,13 @@ export class MovieDataSource {
 
   async getScenesForMovie(movieId: string): Promise<Scene[]> {
     return this.batchScenes.load(movieId);
+  }
+
+  async getCoverForMovie(imageId: string): Promise<Image> {
+    return this.batchImages.load(imageId);
+  }
+
+  async getLabelsForMovie(movieId: string): Promise<Label[]> {
+    return this.batchLabels.load(movieId);
   }
 }

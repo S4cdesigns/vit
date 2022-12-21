@@ -5,14 +5,22 @@ import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 
+import { ActorDataSource } from "../graphql/datasources/ActorDataSource";
+import { ImageDataSource } from "../graphql/datasources/ImageDataSource";
+import { MarkerDataSource } from "../graphql/datasources/MarkerDataSource";
 import { MovieDataSource } from "../graphql/datasources/MovieDataSource";
 import { SceneDataSource } from "../graphql/datasources/SceneDataSource";
+import { StudioDataSource } from "../graphql/datasources/StudioDataSource";
 import schema from "../graphql/types";
 import cors from "./cors";
 
 export interface IzzyContext extends BaseContext {
   sceneDataSource: SceneDataSource;
   movieDataSource: MovieDataSource;
+  actorDataSource: ActorDataSource;
+  studioDataSource: StudioDataSource;
+  imageDataSource: ImageDataSource;
+  markerDataSource: MarkerDataSource;
 }
 
 /* const apolloLogger: ApolloServerPlugin = {
@@ -60,6 +68,10 @@ export async function mountApolloServer(app: express.Application): Promise<void>
         // https://levelup.gitconnected.com/solve-n-1-query-problem-in-graphql-with-dataloaders-18e16ac17b21
         sceneDataSource: new SceneDataSource(),
         movieDataSource: new MovieDataSource(),
+        actorDataSource: new ActorDataSource(),
+        studioDataSource: new StudioDataSource(),
+        imageDataSource: new ImageDataSource(),
+        markerDataSource: new MarkerDataSource(),
       }),
     })
   );
