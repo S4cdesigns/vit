@@ -84,8 +84,9 @@ export default {
     return Movie.getRating(movie);
   },
 
-  duration(movie: Movie): Promise<number> {
-    return Movie.calculateDuration(movie);
+  async duration(movie: Movie, _: any, context: IzzyContext): Promise<number> {
+    const scenes = await context.movieDataSource.getScenesForMovie(movie._id);
+    return Movie.calculateDurationFromScenes(scenes);
   },
 
   async size(movie: Movie): Promise<number | null> {
