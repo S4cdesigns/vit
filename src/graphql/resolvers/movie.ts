@@ -1,4 +1,5 @@
 import { collections } from "../../database";
+import { IzzyContext } from "../../middlewares/apollo";
 import Actor from "../../types/actor";
 import Image from "../../types/image";
 import Label from "../../types/label";
@@ -59,12 +60,18 @@ export default {
     return image;
   },
 
-  scenes(movie: Movie): Promise<Scene[]> {
-    return Movie.getScenes(movie);
+  async scenes(movie: Movie, _: any, context: IzzyContext): Promise<Scene[]> {
+    const movieDataSources = context.movieDataSource;
+    return await movieDataSources.getScenesForMovie(movie._id);
   },
 
-  async actors(movie: Movie): Promise<Actor[]> {
-    const actors = await Movie.getActors(movie);
+  async actors(movie: Movie, _: any, context: IzzyContext): Promise<Actor[]> {
+    const movieDataSources = context.movieDataSource;
+    const actors = await movieDataSources.getActorsForMovie(movie._id);
+
+    if (!actors) {
+      return [];
+    }
     return actors.sort((a, b) => a.name.localeCompare(b.name));
   },
 
