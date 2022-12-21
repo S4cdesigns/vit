@@ -26,25 +26,29 @@ export default {
   async averageRating(actor: Actor): Promise<number> {
     return await Actor.getAverageRating(actor);
   },
-  async labels(actor: Actor): Promise<Label[]> {
-    const labels = await Actor.getLabels(actor);
+  async labels(actor: Actor, _: any, context: IzzyContext): Promise<Label[]> {
+    const actorDataSource = context.actorDataSource;
+    const labels = await actorDataSource.getLabelsForActor(actor);
     return labels.sort((a, b) => a.name.localeCompare(b.name));
   },
-  async avatar(actor: Actor): Promise<Image | null> {
+  async avatar(actor: Actor, _: any, context: IzzyContext): Promise<Image | null> {
     if (actor.avatar) {
-      return await Image.getById(actor.avatar);
+      const actorDataSource = context.actorDataSource;
+      return await actorDataSource.getAvatarForActor(actor);
     }
     return null;
   },
-  async thumbnail(actor: Actor): Promise<Image | null> {
+  async thumbnail(actor: Actor, _: any, context: IzzyContext): Promise<Image | null> {
     if (actor.thumbnail) {
-      return await Image.getById(actor.thumbnail);
+      const actorDataSource = context.actorDataSource;
+      return await actorDataSource.getThumbnailForActor(actor);
     }
     return null;
   },
-  async altThumbnail(actor: Actor): Promise<Image | null> {
+  async altThumbnail(actor: Actor, _: any, context: IzzyContext): Promise<Image | null> {
     if (actor.altThumbnail) {
-      return await Image.getById(actor.altThumbnail);
+      const actorDataSource = context.actorDataSource;
+      return await actorDataSource.getAltThumbnailForActor(actor);
     }
     return null;
   },

@@ -8,6 +8,7 @@ import LabelledItem from "../../types/labelled_item";
 import Scene from "../../types/scene";
 import SceneView from "../../types/watch";
 import { logger } from "../../utils/logger";
+import { BatchImageLoader } from "./loaders";
 
 export class SceneDataSource {
   private batchActors = new DataLoader(async (sceneIds: readonly string[]) => {
@@ -86,13 +87,7 @@ export class SceneDataSource {
     });
   });
 
-  private batchImages = new DataLoader(async (imageIds: readonly string[]) => {
-    if (imageIds.length === 0) {
-      return [];
-    }
-    logger.silly(`loading bulk images for imageIds [${imageIds.length}]`);
-    return await Image.getBulk(imageIds.concat());
-  });
+  private batchImages = BatchImageLoader;
 
   private batchSceneViews = new DataLoader(async (sceneIds: readonly string[]) => {
     if (sceneIds.length === 0) {
