@@ -480,7 +480,7 @@ export default class Scene {
     return collections.scenes.get(_id);
   }
 
-  static getBulk(_ids: string[]): Promise<Scene[]> {
+  static getBulk(_ids: readonly string[]): Promise<Scene[]> {
     return collections.scenes.getBulk(_ids);
   }
 

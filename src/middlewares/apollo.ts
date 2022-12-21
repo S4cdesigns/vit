@@ -6,6 +6,7 @@ import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 
 import { ActorDataSource } from "../graphql/datasources/ActorDataSource";
+import { ImageDataSource } from "../graphql/datasources/ImageDataSource";
 import { MovieDataSource } from "../graphql/datasources/MovieDataSource";
 import { SceneDataSource } from "../graphql/datasources/SceneDataSource";
 import { StudioDataSource } from "../graphql/datasources/StudioDataSource";
@@ -17,6 +18,7 @@ export interface IzzyContext extends BaseContext {
   movieDataSource: MovieDataSource;
   actorDataSource: ActorDataSource;
   studioDataSource: StudioDataSource;
+  imageDataSource: ImageDataSource;
 }
 
 /* const apolloLogger: ApolloServerPlugin = {
@@ -66,6 +68,7 @@ export async function mountApolloServer(app: express.Application): Promise<void>
         movieDataSource: new MovieDataSource(),
         actorDataSource: new ActorDataSource(),
         studioDataSource: new StudioDataSource(),
+        imageDataSource: new ImageDataSource(),
       }),
     })
   );
