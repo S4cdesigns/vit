@@ -431,6 +431,10 @@ export default class Scene {
     return collections.scenes.query("studio-index", id);
   }
 
+  static async getByStudios(ids: readonly string[]): Promise<Record<string, Scene[]>> {
+    return collections.scenes.queryBulk("studio-index", ids);
+  }
+
   static async getMarkers(scene: Scene): Promise<Marker[]> {
     return Marker.getByScene(scene._id);
   }
@@ -476,7 +480,7 @@ export default class Scene {
     return collections.scenes.get(_id);
   }
 
-  static getBulk(_ids: string[]): Promise<Scene[]> {
+  static getBulk(_ids: readonly string[]): Promise<Scene[]> {
     return collections.scenes.getBulk(_ids);
   }
 

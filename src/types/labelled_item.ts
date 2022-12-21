@@ -26,6 +26,10 @@ export default class LabelledItem {
     return collections.labelledItems.query("item-index", item);
   }
 
+  static async getByItemBulk(item: readonly string[]): Promise<Record<string, LabelledItem[]>> {
+    return collections.labelledItems.queryBulk("item-index", item);
+  }
+
   static async getByType(type: string): Promise<LabelledItem[]> {
     return collections.labelledItems.query("type-index", type);
   }

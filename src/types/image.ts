@@ -74,7 +74,7 @@ export default class Image {
       return image.color;
     }
 
-    if (image.path) {
+    if (image.path && !image.path.endsWith(".webp")) {
       logger.debug(`Extracting color from image "${image._id}"`);
       Image.extractColor(image).catch((err: Error) => {
         handleError(`Image color extraction failed for image "${image._id}" (${image.path})`, err);

@@ -107,6 +107,9 @@ export async function findAndLoadConfig(): Promise<boolean> {
       configFile = configYAMLFilename;
       return false;
     } else {
+      logger.info(
+        `Neither ${configJSONFilename} nor ${configYAMLFilename} exists, creating a new one.`
+      );
       writeNewConfig = true;
     }
   } catch (error) {

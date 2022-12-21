@@ -11,6 +11,10 @@ export default class SceneView {
     return items.sort((a, b) => a.date - b.date);
   }
 
+  static async getBySceneBulk(sceneId: string[]): Promise<Record<string, SceneView[]>> {
+    return await collections.views.queryBulk("scene-index", sceneId);
+  }
+
   static async getCount(sceneId: string): Promise<number> {
     return (await SceneView.getByScene(sceneId)).length;
   }

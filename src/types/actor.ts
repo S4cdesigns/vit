@@ -203,13 +203,20 @@ export default class Actor {
     }[]
   > {
     const scenes = await Scene.getByActor(actor._id);
+    const actorRefs = await ActorReference.getByItemBulk(scenes.map((scene) => scene._id));
 
-    return await mapAsync(scenes, async (scene) => {
+    const doGetCollabs = async (sceneId: string) => {
+      const actors = (
+        await Actor.getBulk(actorRefs[sceneId].map((actorRef) => actorRef.actor))
+      ).filter((sceneActor) => sceneActor._id !== actor._id);
+
       return {
-        scene,
-        actors: (await Scene.getActors(scene)).filter((ac) => ac._id !== actor._id),
+        scene: scenes.find((scene) => scene._id === sceneId) as Scene,
+        actors,
       };
-    });
+    };
+
+    return await mapAsync(Object.keys(actorRefs), doGetCollabs);
   }
 
   /**

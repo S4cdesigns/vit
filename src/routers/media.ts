@@ -9,6 +9,8 @@ import sceneRouter from "./scene";
 
 const router = Router();
 
+const IMAGE_CACHE_CONTROL = "public, max-age=31536000, immutable";
+
 router.use("/scene", sceneRouter);
 
 router.get("/image/path/:path", async (req, res) => {
@@ -21,6 +23,7 @@ router.get("/image/path/:path", async (req, res) => {
     const resolved = path.resolve(img.path);
     if (!existsSync(resolved)) res.redirect("/assets/broken.png");
     else {
+      res.set("Cache-control", IMAGE_CACHE_CONTROL);
       res.sendFile(resolved);
     }
   } else {
@@ -35,6 +38,7 @@ router.get("/image/:image", async (req, res) => {
     const resolved = path.resolve(image.path);
     if (!existsSync(resolved)) res.redirect("/assets/broken.png");
     else {
+      res.set("Cache-control", IMAGE_CACHE_CONTROL);
       res.sendFile(resolved);
     }
   } else {
@@ -50,6 +54,7 @@ router.get("/image/:image/thumbnail", async (req, res) => {
     if (!existsSync(resolved)) {
       res.redirect("/assets/broken.png");
     } else {
+      res.set("Cache-control", IMAGE_CACHE_CONTROL);
       res.sendFile(resolved);
     }
   } else if (image) {

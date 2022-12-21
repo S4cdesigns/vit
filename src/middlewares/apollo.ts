@@ -1,12 +1,27 @@
-import { ApolloServer } from "@apollo/server";
+import { ApolloServer, BaseContext } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 
+import { ActorDataSource } from "../graphql/datasources/ActorDataSource";
+import { ImageDataSource } from "../graphql/datasources/ImageDataSource";
+import { MarkerDataSource } from "../graphql/datasources/MarkerDataSource";
+import { MovieDataSource } from "../graphql/datasources/MovieDataSource";
+import { SceneDataSource } from "../graphql/datasources/SceneDataSource";
+import { StudioDataSource } from "../graphql/datasources/StudioDataSource";
 import schema from "../graphql/types";
 import cors from "./cors";
+
+export interface IzzyContext extends BaseContext {
+  sceneDataSource: SceneDataSource;
+  movieDataSource: MovieDataSource;
+  actorDataSource: ActorDataSource;
+  studioDataSource: StudioDataSource;
+  imageDataSource: ImageDataSource;
+  markerDataSource: MarkerDataSource;
+}
 
 /* const apolloLogger: ApolloServerPlugin = {
   requestDidStart(_requestContext): GraphQLRequestListener {
@@ -42,5 +57,22 @@ export async function mountApolloServer(app: express.Application): Promise<void>
   });
   await server.start();
 
-  app.use("/api/ql", graphqlUploadExpress(), cors, express.json(), expressMiddleware(server));
+  app.use(
+    "/api/ql",
+    graphqlUploadExpress(),
+    cors,
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({
+        // https://www.apollographql.com/docs/apollo-server/data/fetching-data/#batching-and-caching
+        // https://levelup.gitconnected.com/solve-n-1-query-problem-in-graphql-with-dataloaders-18e16ac17b21
+        sceneDataSource: new SceneDataSource(),
+        movieDataSource: new MovieDataSource(),
+        actorDataSource: new ActorDataSource(),
+        studioDataSource: new StudioDataSource(),
+        imageDataSource: new ImageDataSource(),
+        markerDataSource: new MarkerDataSource(),
+      }),
+    })
+  );
 }

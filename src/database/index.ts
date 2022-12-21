@@ -20,7 +20,12 @@ import { logger } from "../utils/logger";
 import { libraryPath } from "../utils/path";
 import { Izzy } from "./internal";
 
-mkdirpSync("tmp/");
+if (!existsSync("tmp")) {
+  logger.info("Creating temporary directory 'tmp'");
+  mkdirpSync("tmp/");
+} else {
+  logger.debug("Temporary directory 'tmp' already exists");
+}
 
 export function formatCollectionName(name: string) {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "production") {
