@@ -7,6 +7,7 @@ import http from "http";
 
 import { ActorDataSource } from "../graphql/datasources/ActorDataSource";
 import { ImageDataSource } from "../graphql/datasources/ImageDataSource";
+import { MarkerDataSource } from "../graphql/datasources/MarkerDataSource";
 import { MovieDataSource } from "../graphql/datasources/MovieDataSource";
 import { SceneDataSource } from "../graphql/datasources/SceneDataSource";
 import { StudioDataSource } from "../graphql/datasources/StudioDataSource";
@@ -19,6 +20,7 @@ export interface IzzyContext extends BaseContext {
   actorDataSource: ActorDataSource;
   studioDataSource: StudioDataSource;
   imageDataSource: ImageDataSource;
+  markerDataSource: MarkerDataSource;
 }
 
 /* const apolloLogger: ApolloServerPlugin = {
@@ -69,6 +71,7 @@ export async function mountApolloServer(app: express.Application): Promise<void>
         actorDataSource: new ActorDataSource(),
         studioDataSource: new StudioDataSource(),
         imageDataSource: new ImageDataSource(),
+        markerDataSource: new MarkerDataSource(),
       }),
     })
   );

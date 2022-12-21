@@ -1,5 +1,7 @@
 import DataLoader from "dataloader";
 
+import Actor from "../../types/actor";
+import ActorReference from "../../types/actor_reference";
 import Image from "../../types/image";
 import Label from "../../types/label";
 import LabelledItem from "../../types/labelled_item";
@@ -38,5 +40,38 @@ export const BatchLabelLoader = new DataLoader(async (itemIds: readonly string[]
       allLabels.find((label) => label._id === ref.label)
     ) as Label[];
     return actors;
+  });
+});
+
+export const BatchActorLoader = new DataLoader(async (itemIds: readonly string[]) => {
+  if (itemIds.length === 0) {
+    return [];
+  }
+  logger.silly(`loading actors for items [${itemIds.length}]`);
+  const allRefs = await ActorReference.getByItemBulk(itemIds);
+
+  if (!allRefs) {
+    return [];
+  }
+
+  logger.silly(`Loaded [${Object.keys(allRefs).length}] actors`);
+
+  let allActors: Actor[] = [];
+
+  const allActorIds = Object.values(allRefs)
+    .flatMap((refs) => refs)
+    .map((actorRef) => actorRef.actor);
+
+  allActors = await Actor.getBulk(allActorIds);
+
+  return itemIds.map(async (itemIds) => {
+    const actorRefs = allRefs[itemIds];
+
+    if (!actorRefs) {
+      // no actors for that item
+      return [];
+    }
+
+    return actorRefs.map((ref) => allActors.find((actor) => actor._id === ref.actor)) as Actor[];
   });
 });
