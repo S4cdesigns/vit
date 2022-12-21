@@ -2,9 +2,6 @@ import DataLoader from "dataloader";
 
 import Actor from "../../types/actor";
 import ActorReference from "../../types/actor_reference";
-import Image from "../../types/image";
-import Label from "../../types/label";
-import LabelledItem from "../../types/labelled_item";
 import Scene from "../../types/scene";
 import SceneView from "../../types/watch";
 import { logger } from "../../utils/logger";
