@@ -1,5 +1,6 @@
 import { Masonry } from "masonic";
 import { useTranslations } from "next-intl";
+import MovieBoxRenderer from "../components/MovieBoxRenderer";
 
 import PageWrapper from "../components/PageWrapper";
 import FavoritesCard from "../components/widgets/FavoritesCard";
@@ -21,6 +22,11 @@ export default function IndexPage() {
 
   return (
     <PageWrapper title={t("overview")}>
+      <MovieBoxRenderer
+        frontCoverUrl="http://localhost:3000/api/media/image/im_k465s3rhsFlALdwC/thumbnail?password=xxx"
+        backCoverUrl="http://localhost:3000/api/media/image/im_k465s7udiaYT7NEn/thumbnail?password=xxx"
+        spineCoverUrl="http://localhost:3000/api/media/image/im_kfflitxbdjbWUp1R/thumbnail?password=xxx"
+      />
       <Masonry
         items={widgets}
         rowGutter={10}

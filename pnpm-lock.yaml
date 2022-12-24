@@ -19,6 +19,7 @@ specifiers:
   '@types/react-dom': ^17.0.11
   '@types/semver': ^7.3.4
   '@types/sinon': ^10.0.0
+  '@types/three': ^0.146.0
   '@types/tiny-async-pool': ^1.0.0
   '@types/yargs': ^17.0.13
   '@typescript-eslint/eslint-plugin': ^5.43.0
@@ -78,6 +79,7 @@ specifiers:
   semver: ^7.3.4
   sinon: ^11.1.0
   swr: ^1.2.2
+  three: ^0.127.0
   tiny-async-pool: ^1.2.0
   ts-node: ^10.2.0
   typescript: 4.8.4
@@ -132,6 +134,7 @@ dependencies:
   sass: 1.56.1
   semver: 7.3.8
   swr: 1.3.0_react@17.0.2
+  three: 0.127.0
   tiny-async-pool: 1.3.0
   ts-node: 10.9.1_tyhq7m2nk5gisucvtywyuzeswa
   typescript: 4.8.4
@@ -157,6 +160,7 @@ devDependencies:
   '@types/react-dom': 17.0.18
   '@types/semver': 7.3.13
   '@types/sinon': 10.0.13
+  '@types/three': 0.146.0
   '@types/tiny-async-pool': 1.0.1
   '@types/yargs': 17.0.13
   '@typescript-eslint/eslint-plugin': 5.43.0_r3fpxiouhdxosbw2hq34j2ipza
@@ -1828,6 +1832,12 @@ packages:
     resolution: {integrity: sha512-9GcLXF0/v3t80caGs5p2rRfkB+a8VBGLJZVih6CNFkx8IZ994wiKKLSRs9nuFwk1HevWs/1mnUmkApGrSGsShA==}
     dev: true
 
+  /@types/three/0.146.0:
+    resolution: {integrity: sha512-75AgysUrIvTCB054eQa2pDVFurfeFW8CrMQjpzjt3yHBfuuknoSvvsESd/3EhQxPrz9si3+P0wiDUVsWUlljfA==}
+    dependencies:
+      '@types/webxr': 0.5.0
+    dev: true
+
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
@@ -1836,6 +1846,10 @@ packages:
 
   /@types/tiny-async-pool/1.0.1:
     resolution: {integrity: sha512-7msTTzXOAI9zS/u4DJLMAfAT/sz1laaZTFYVB83h0L78q4yB8RzRyxcqUlfkg12/hMC6G/cG//vbDwmdTpZ+gQ==}
+    dev: true
+
+  /@types/webxr/0.5.0:
+    resolution: {integrity: sha512-IUMDPSXnYIbEO2IereEFcgcqfDREOgmbGqtrMpVPpACTU6pltYLwHgVkrnYv0XhWEcjio9sYEfIEzgn3c7nDqA==}
     dev: true
 
   /@types/yargs-parser/21.0.0:
@@ -2602,13 +2616,6 @@ packages:
 
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
-
-  /d/1.0.1:
-    resolution: {integrity: sha512-m62ShEObQ39CfralilEQRjH6oAMtNCV1xJyEx5LpRYUVN+EviphDgUc/F3hnYbADmkiNs67Y+3ylmlG7Lnu+FA==}
-    dependencies:
-      es5-ext: 0.10.62
-      type: 1.2.0
-    dev: true
 
   /dataloader/2.1.0:
     resolution: {integrity: sha512-qTcEYLen3r7ojZNgVUaRggOI+KM7jrKxXeSHhogh/TWxYMeONEMqY+hmkobiYQozsGIyg9OYVzO4ZIfoB4I0pQ==}
@@ -5798,6 +5805,10 @@ packages:
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
+
+  /three/0.127.0:
+    resolution: {integrity: sha512-wtgrn+mhYUbobxT7QN3GPdu3SRpSBQvwY6uOzLChWS7QE//f7paDU/+wlzbg+ngeIvBBqjBHSRuywTh8A99Jng==}
+    dev: false
 
   /through/2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
